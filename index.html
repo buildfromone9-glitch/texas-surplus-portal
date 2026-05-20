@@ -1157,6 +1157,10 @@ const App = {
   init() {
     this.loadClient();
     this.loadSignedState();
+    
+    // Trigger the Supabase data loader
+    loadAgreement(); 
+    
     window.addEventListener('hashchange', () => this.render());
     this.render();
   },
