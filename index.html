@@ -2253,9 +2253,9 @@ function setupSignSubmit() {
         .from('agreements')
         .update({
           signed: true,
-          claimant_signature: App.state.signature,
-          claimant_name_typed: typedName,
-          signed_at: App.state.signedAt,
+          signature_data: App.state.signature,
+          signer_name: typedName,
+          signed_at: new Date(App.state.signedAt),
           claimant_email: emailInput.value.trim()
         })
         .eq('id', agreementId);

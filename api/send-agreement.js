@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 const SUPABASE_URL = 'https://urmwrmeycimtleoeirmn.supabase.co';
-const SUPABASE_SERVICE_KEY = 'sb_publishable_l165SNZrHJ4XqQh46bqS9g_d9L-EsJX';
+const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybXdybWV5Y2ltdGxlb2Vpcm1uIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTI0Mzc1NiwiZXhwIjoyMDk0ODE5NzU2fQ.3yTbW4w3iy1j9Nez_WCjc9NuNJ8RQSxGG2GGS2PiXak';
 
 async function uploadSignatureToSupabase(base64Sig, trackingId, signedAt) {
   try {
