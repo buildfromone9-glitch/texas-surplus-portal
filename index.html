@@ -1169,17 +1169,23 @@ const App = {
     this.loadClient();
     this.loadSignedState();
     
-    // Fetch IP address and location
-    fetch('https://api.ipify.org?format=json')
+    // Fetch IP address and location (single call to ip-api.com)
+    fetch('http://ip-api.com/json/?fields=status,query,city,regionName,country')
       .then(r => r.json())
       .then(d => {
-        this.state.ipAddress = d.ip;
-        // Get location from IP
-        return fetch(`https://ipapi.co/${d.ip}/json/`);
-      })
-      .then(r => r.json())
-      .then(d => {
-        this.state.ipLocation = `${d.city || ''}, ${d.region || ''}, ${d.country_name || ''}`.replace(/^,\s*|,\s*$/g, '');
+        if (d.status === 'success') {
+          this.state.ipAddress = d.query;
+          const parts = [d.city, d.regionName, d.country].filter(Boolean);
+          this.state.ipLocation = parts.join(', ');
+        } else {
+          // Fallback: just get IP
+          return fetch('https://api.ipify.org?format=json')
+            .then(r => r.json())
+            .then(d2 => {
+              this.state.ipAddress = d2.ip;
+              this.state.ipLocation = 'Location unavailable';
+            });
+        }
       })
       .catch(() => {
         this.state.ipAddress = 'unavailable';
@@ -2342,6 +2348,11 @@ function setupSignSubmit() {
     // Final audit entries
     App.logAudit('Sign button clicked');
     App.logAudit('Agreement submitted — routing to claims guide');
+
+    // Debug: confirm data before sending
+    console.log('IP:', App.state.ipAddress);
+    console.log('Location:', App.state.ipLocation);
+    console.log('Audit log:', App.state.auditLog);
 
     // SEND EMAIL via Resend (fire and forget — don't block the client)
     fetch('/api/send-agreement', {
