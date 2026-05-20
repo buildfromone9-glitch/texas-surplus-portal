@@ -2289,11 +2289,10 @@ function bindHandlers(route) {
       e.preventDefault();
       const payload = {
   claimant_name: document.getElementById('a-name').value.trim(),
-  claimant_email: '',
+  claimant_email: document.getElementById('a-email').value.trim(),
   tracking_id: document.getElementById('a-trk').value.trim(),
   property_id: document.getElementById('a-pid').value.trim(),
   reported_owner: document.getElementById('a-owner').value.trim(),
-  estimated_value: parseFloat(document.getElementById('a-value').value) || null,
   signed: false
 };
 const { data, error } = await supabaseClient
