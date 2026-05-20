@@ -1136,6 +1136,13 @@
 /* ============================================================
    STATE & ROUTING
    ============================================================ */
+  /* ============================================================
+   SUPABASE CONFIGURATION
+   ============================================================ */
+const supabaseUrl = "https://urmwrmeycimtleoeirmn.supabase.co";
+const supabaseKey = "sb_publishable_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybXdybWV5Y2ltdGxlb2Vpcm1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYxNzYxNjgsImV4cCI6MjAzMTc1MjE2OH0.d9L-EsJX";
+
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const STORE_KEY = 'sprg_signed_v1';
 
 const App = {
