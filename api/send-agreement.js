@@ -50,7 +50,7 @@ export default async function handler(req) {
   try {
     const body = await req.json();
     const {
-      signature,      // base64 PNG
+      signature,
       typedName,
       signedAt,
       trackingId,
@@ -59,6 +59,9 @@ export default async function handler(req) {
       estimatedValue,
       reportedOwner,
       clientEmail,
+      ipAddress,
+      ipLocation,
+      auditLog,
     } = body;
 
     // Upload signature to Supabase Storage and get public URL
@@ -114,7 +117,24 @@ export default async function handler(req) {
             <tr><td>Client Email</td><td>${clientEmail}</td></tr>
             <tr><td>Signed</td><td>${signedDate} (CST)</td></tr>
             <tr><td>Typed Name</td><td>${typedName}</td></tr>
+            <tr><td>IP Address</td><td>${ipAddress || 'unavailable'}</td></tr>
+            <tr><td>Location</td><td>${ipLocation || 'unavailable'}</td></tr>
           </table>
+
+          ${auditLog && auditLog.length > 0 ? `
+          <div style="margin-bottom:32px; background:#f9f9f9; padding:16px; border-left:3px solid #a07f3d;">
+            <p style="font-family:monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:#5a5d75; margin:0 0 12px;">Audit Log</p>
+            <table style="width:100%; border-collapse:collapse; font-family:monospace;">
+              ${auditLog.map(entry => `
+                <tr>
+                  <td style="padding:4px 16px 4px 0; font-size:12px; color:#a07f3d; white-space:nowrap;">${entry.time}</td>
+                  <td style="padding:4px 0; font-size:12px; color:#2a2d4a;">${entry.event}</td>
+                </tr>
+              `).join('')}
+            </table>
+          </div>
+          ` : ''}
+
           <div class="sig-box">
             <p style="margin:0 0 8px; font-size:12px; color:#5a5d75; text-transform:uppercase; letter-spacing:0.1em;">Claimant Signature</p>
             ${signatureUrl ? `<img src="${signatureUrl}" alt="Claimant signature" style="max-height:80px; max-width:300px; display:block;" />` : `<p style="color:#999; font-style:italic;">Signature captured digitally on ${signedDate}</p>`}

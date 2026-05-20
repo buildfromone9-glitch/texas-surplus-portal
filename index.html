@@ -1147,17 +1147,45 @@ const STORE_KEY = 'sprg_signed_v1';
 
 const App = {
   state: {
-    client: null,         // parsed customization data
-    signature: null,      // base64 PNG of drawn signature
+    client: null,
+    signature: null,
     typedName: '',
     signedAt: null,
     confirmed: false,
+    auditLog: [],
+    ipAddress: null,
+    ipLocation: null,
+  },
+
+  logAudit(event) {
+    const timestamp = new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+    });
+    this.state.auditLog.push({ time: timestamp, event });
+    console.log(`[AUDIT] ${timestamp} — ${event}`);
   },
 
   init() {
     this.loadClient();
     this.loadSignedState();
     
+    // Fetch IP address and location
+    fetch('https://api.ipify.org?format=json')
+      .then(r => r.json())
+      .then(d => {
+        this.state.ipAddress = d.ip;
+        // Get location from IP
+        return fetch(`https://ipapi.co/${d.ip}/json/`);
+      })
+      .then(r => r.json())
+      .then(d => {
+        this.state.ipLocation = `${d.city || ''}, ${d.region || ''}, ${d.country_name || ''}`.replace(/^,\s*|,\s*$/g, '');
+      })
+      .catch(() => {
+        this.state.ipAddress = 'unavailable';
+        this.state.ipLocation = 'unavailable';
+      });
+
     // Trigger the Supabase data loader
     loadAgreement(); 
     
@@ -2217,6 +2245,18 @@ function setupSignaturePad() {
   pad.addEventListener('touchmove', move, { passive: false });
   pad.addEventListener('touchend', end, { passive: false });
 
+  // Audit: log when signature is drawn
+  pad.addEventListener('mouseup', () => {
+    if (pad.classList.contains('signed')) {
+      App.logAudit('Signature drawn on canvas');
+    }
+  });
+  pad.addEventListener('touchend', () => {
+    if (pad.classList.contains('signed')) {
+      App.logAudit('Signature drawn on canvas (touch)');
+    }
+  });
+
   clearBtn?.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     hasInk = false;
@@ -2235,10 +2275,21 @@ function setupSignSubmit() {
   const submit = document.getElementById('sign-submit');
   const emailInput = document.getElementById('sign-email');
 
-  [typedInput, confirmBox, emailInput].forEach(el => {
-    el?.addEventListener('input', updateSubmitState);
-    el?.addEventListener('change', updateSubmitState);
+  typedInput?.addEventListener('input', () => {
+    updateSubmitState();
+    if (typedInput.value.trim().length >= 3) {
+      App.logAudit('Printed name entered: ' + typedInput.value.trim());
+    }
   });
+
+  confirmBox?.addEventListener('change', () => {
+    updateSubmitState();
+    if (confirmBox.checked) {
+      App.logAudit('Agreement confirmation checkbox checked');
+    }
+  });
+
+  emailInput?.addEventListener('input', updateSubmitState);
 
   submit?.addEventListener('click', async () => {
     const errEl = document.getElementById('sign-error');
@@ -2288,6 +2339,10 @@ function setupSignSubmit() {
       }
     }
 
+    // Final audit entries
+    App.logAudit('Sign button clicked');
+    App.logAudit('Agreement submitted — routing to claims guide');
+
     // SEND EMAIL via Resend (fire and forget — don't block the client)
     fetch('/api/send-agreement', {
       method: 'POST',
@@ -2302,6 +2357,9 @@ function setupSignSubmit() {
         estimatedValue: App.state.client?.estimatedValue || null,
         reportedOwner: App.state.client?.reportedOwnerName || '',
         clientEmail: emailInput.value.trim(),
+        ipAddress: App.state.ipAddress || 'unavailable',
+        ipLocation: App.state.ipLocation || 'unavailable',
+        auditLog: App.state.auditLog,
       }),
     }).catch(err => console.warn('Email send failed (non-blocking):', err));
 
@@ -2328,7 +2386,19 @@ function updateSubmitState() {
    ============================================================ */
 function bindHandlers(route) {
   if (route === 'agreement' && !App.hasSigned()) {
+    App.logAudit('Agreement page opened');
     initSignatureArea();
+
+    // Log when page is scrolled to bottom (agreement read)
+    const onScroll = () => {
+      const scrolled = window.scrollY + window.innerHeight;
+      const total = document.documentElement.scrollHeight;
+      if (scrolled >= total - 100) {
+        App.logAudit('Agreement scrolled to bottom — full document viewed');
+        window.removeEventListener('scroll', onScroll);
+      }
+    };
+    window.addEventListener('scroll', onScroll);
   }
 
   if (route === 'landing') {
