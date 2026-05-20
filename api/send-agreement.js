@@ -1,0 +1,182 @@
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
+  if (req.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+
+  try {
+    const body = await req.json();
+    const {
+      signature,      // base64 PNG
+      typedName,
+      signedAt,
+      trackingId,
+      claimantName,
+      propertyId,
+      estimatedValue,
+      reportedOwner,
+      clientEmail,
+    } = body;
+
+    const signedDate = new Date(signedAt).toLocaleString('en-US', {
+      timeZone: 'America/Chicago',
+      dateStyle: 'long',
+      timeStyle: 'short'
+    });
+
+    const feeAmount = estimatedValue ? (estimatedValue * 0.10).toFixed(2) : null;
+    const netAmount = estimatedValue ? (estimatedValue * 0.90).toFixed(2) : null;
+    const fmt = (n) => n ? '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '$ ______________';
+
+    // Build HTML for the signed agreement email to SPRG
+    const sprgEmailHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <style>
+          body { font-family: Georgia, serif; color: #15172b; background: #faf6ee; margin: 0; padding: 0; }
+          .wrapper { max-width: 700px; margin: 0 auto; padding: 40px 24px; }
+          .header { border-bottom: 2px solid #15172b; padding-bottom: 24px; margin-bottom: 32px; }
+          .header h1 { font-size: 24px; margin: 0 0 4px; }
+          .header p { margin: 0; color: #5a5d75; font-size: 14px; }
+          .badge { display: inline-block; background: #3d5c44; color: white; padding: 4px 12px; font-size: 12px; font-family: monospace; border-radius: 2px; margin-bottom: 24px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+          td { padding: 10px 12px; border-bottom: 1px solid #d8cdb3; font-size: 14px; }
+          td:first-child { font-weight: bold; color: #5a5d75; width: 200px; }
+          .sig-box { border: 1px solid #d8cdb3; padding: 16px; background: #fffcf5; margin-bottom: 32px; }
+          .sig-box img { max-height: 80px; max-width: 300px; display: block; }
+          .sig-box p { margin: 8px 0 0; font-size: 12px; color: #5a5d75; border-top: 1px solid #15172b; padding-top: 8px; }
+          .footer { font-size: 11px; color: #999; border-top: 1px solid #d8cdb3; padding-top: 16px; }
+        </style>
+      </head>
+      <body>
+        <div class="wrapper">
+          <div class="header">
+            <h1>Surplus Property Research Group</h1>
+            <p>Texas Foreclosure Surplus Recovery — Signed Agreement</p>
+          </div>
+          <div class="badge">✓ SIGNED</div>
+          <table>
+            <tr><td>Claimant</td><td>${claimantName}</td></tr>
+            <tr><td>Tracking #</td><td>${trackingId}</td></tr>
+            <tr><td>Property ID</td><td>${propertyId}</td></tr>
+            <tr><td>Reported Owner</td><td>${reportedOwner || '—'}</td></tr>
+            <tr><td>Estimated Value</td><td>${fmt(estimatedValue)}</td></tr>
+            <tr><td>SPRG Fee (10%)</td><td>${fmt(feeAmount)}</td></tr>
+            <tr><td>Net to Claimant</td><td>${fmt(netAmount)}</td></tr>
+            <tr><td>Client Email</td><td>${clientEmail}</td></tr>
+            <tr><td>Signed</td><td>${signedDate} (CST)</td></tr>
+            <tr><td>Typed Name</td><td>${typedName}</td></tr>
+          </table>
+          <div class="sig-box">
+            <p style="margin:0 0 8px; font-size:12px; color:#5a5d75; text-transform:uppercase; letter-spacing:0.1em;">Claimant Signature</p>
+            <img src="${signature}" alt="Claimant signature" />
+            <p>${typedName} — ${signedDate}</p>
+          </div>
+          <div class="footer">
+            <p>This email was automatically generated when the claimant signed the SPRG service agreement online.</p>
+            <p>Tracking: ${trackingId} | Signed: ${signedAt}</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Build confirmation email for the client
+    const clientEmailHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <style>
+          body { font-family: Georgia, serif; color: #15172b; background: #faf6ee; margin: 0; padding: 0; }
+          .wrapper { max-width: 600px; margin: 0 auto; padding: 40px 24px; }
+          .header { border-bottom: 2px solid #15172b; padding-bottom: 24px; margin-bottom: 32px; }
+          .header h1 { font-size: 22px; margin: 0 0 4px; }
+          .header p { margin: 0; color: #5a5d75; font-size: 14px; }
+          .body p { font-size: 15px; line-height: 1.7; color: #2a2d4a; }
+          .tracking { background: #f3ecdc; border-left: 3px solid #a07f3d; padding: 12px 16px; margin: 24px 0; font-size: 14px; }
+          .tracking strong { display: block; margin-bottom: 4px; }
+          .footer { font-size: 11px; color: #999; border-top: 1px solid #d8cdb3; padding-top: 16px; margin-top: 32px; }
+        </style>
+      </head>
+      <body>
+        <div class="wrapper">
+          <div class="header">
+            <h1>Surplus Property Research Group</h1>
+            <p>Texas Foreclosure Surplus Recovery</p>
+          </div>
+          <div class="body">
+            <p>Hi ${claimantName},</p>
+            <p>We have received your signed Texas Surplus Property Research Service Agreement. Your claims guide is now available in your service packet.</p>
+            <div class="tracking">
+              <strong>Your Tracking #: ${trackingId}</strong>
+              Signed: ${signedDate}
+            </div>
+            <p>To access your educational claims guide at any time, simply open the link we sent you and click "Claims Guide" in the navigation.</p>
+            <p>If you have any questions, reply to this email.</p>
+            <p>— Surplus Property Research Group</p>
+          </div>
+          <div class="footer">
+            <p>This is an automated confirmation. Tracking: ${trackingId}</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Send email to SPRG
+    const sprgRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer re_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'onboarding@resend.dev',
+        to: 'buildfromone9@gmail.com',
+        subject: `[SIGNED] ${trackingId} — ${claimantName}`,
+        html: sprgEmailHtml,
+      }),
+    });
+
+    // Send confirmation email to client
+    if (clientEmail) {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer re_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'onboarding@resend.dev',
+          to: clientEmail,
+          subject: `Your SPRG Agreement Has Been Received — ${trackingId}`,
+          html: clientEmailHtml,
+        }),
+      });
+    }
+
+    const sprgData = await sprgRes.json();
+
+    if (!sprgRes.ok) {
+      return new Response(JSON.stringify({ error: sprgData }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}

@@ -2262,11 +2262,27 @@ function setupSignSubmit() {
 
       if (error) {
         console.error('Failed to update Supabase:', error);
-        alert('Signature saved locally but database sync failed.');
       }
     }
 
-    // Re-render and route to guide
+    // SEND EMAIL via Resend (fire and forget — don't block the client)
+    fetch('/api/send-agreement', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        signature: App.state.signature,
+        typedName: typedName,
+        signedAt: App.state.signedAt,
+        trackingId: App.state.client?.trackingId || '',
+        claimantName: App.state.client?.claimantName || typedName,
+        propertyId: App.state.client?.propertyId || '',
+        estimatedValue: App.state.client?.estimatedValue || null,
+        reportedOwner: App.state.client?.reportedOwnerName || '',
+        clientEmail: emailInput.value.trim(),
+      }),
+    }).catch(err => console.warn('Email send failed (non-blocking):', err));
+
+    // Route to guide immediately — don't wait for email
     window.location.hash = '#/guide';
     App.render();
   });
