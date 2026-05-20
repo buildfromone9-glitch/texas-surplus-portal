@@ -2366,23 +2366,20 @@ document.addEventListener('DOMContentLoaded', () => App.init());
     .eq("id", agreementId)
     .single();
 
-  // THIS WILL TELL US IF SUPABASE IS BLOCKING YOU
   if (error) {
-    console.error("SUPABASE ERROR:", error.message);
-    alert("Supabase Error: " + error.message + "\n\n(Check if Row Level Security is blocking the read!)");
+    console.error("Supabase Error:", error.message);
     return;
   }
 
-  // THIS WILL SHOW US EXACTLY WHAT DATA ARRIVED
-  console.log("SUCCESS! Supabase sent this data:", data);
-
-  // Foolproof mapping: looks for both naming styles
+  // BULLETPROOF MAPPING
+  // This takes the exact column names from your Supabase screenshot
+  // and forces them into the boxes the website expects.
   App.state.client = {
-    claimantName: data.claimant_name || data.claimantName,
-    trackingId: data.tracking_id || data.trackingId,
-    propertyId: data.property_id || data.propertyId,
-    reportedOwnerName: data.reported_owner || data.reportedOwnerName || data.reported_owner_name,
-    estimatedValue: data.estimated_value || data.estimatedValue,
+    claimantName: data.claimant_name,
+    trackingId: data.tracking_id,
+    propertyId: data.property_id,
+    reportedOwnerName: data.reported_owner,
+    estimatedValue: data.estimated_value,
     dateIssued: data.created_at ? new Date(data.created_at).toLocaleDateString() : ''
   };
 
