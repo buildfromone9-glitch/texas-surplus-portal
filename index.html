@@ -1988,6 +1988,26 @@ function renderGuide() {
    VIEW: ADMIN (link generator)
    ============================================================ */
 function renderAdmin() {
+  // Password protection
+  const ADMIN_KEY = 'sprg_admin_auth';
+  const CORRECT_PASSWORD = 'Vincent@21!';
+
+  // Check if already authenticated this session
+  if (sessionStorage.getItem(ADMIN_KEY) !== 'true') {
+    const entered = prompt('Enter admin password:');
+    if (entered !== CORRECT_PASSWORD) {
+      return `
+        <main style="display:flex; align-items:center; justify-content:center; min-height:60vh;">
+          <div style="text-align:center; padding:3rem;">
+            <h2 style="font-family:var(--serif); color:var(--rust);">Access Denied</h2>
+            <p style="color:var(--ink-mute);">Incorrect password. <a href="#/">Return to home</a></p>
+          </div>
+        </main>
+      `;
+    }
+    sessionStorage.setItem(ADMIN_KEY, 'true');
+  }
+
   return `
     <main class="admin">
       <div class="admin__head">
