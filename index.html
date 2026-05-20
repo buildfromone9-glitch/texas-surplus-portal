@@ -1169,23 +1169,13 @@ const App = {
     this.loadClient();
     this.loadSignedState();
     
-    // Fetch IP address and location (single call to ip-api.com)
-    fetch('http://ip-api.com/json/?fields=status,query,city,regionName,country')
+    // Fetch IP address and location via HTTPS
+    fetch('https://freeipapi.com/api/json')
       .then(r => r.json())
       .then(d => {
-        if (d.status === 'success') {
-          this.state.ipAddress = d.query;
-          const parts = [d.city, d.regionName, d.country].filter(Boolean);
-          this.state.ipLocation = parts.join(', ');
-        } else {
-          // Fallback: just get IP
-          return fetch('https://api.ipify.org?format=json')
-            .then(r => r.json())
-            .then(d2 => {
-              this.state.ipAddress = d2.ip;
-              this.state.ipLocation = 'Location unavailable';
-            });
-        }
+        this.state.ipAddress = d.ipAddress || 'unavailable';
+        const parts = [d.cityName, d.regionName, d.countryName].filter(Boolean);
+        this.state.ipLocation = parts.join(', ') || 'unavailable';
       })
       .catch(() => {
         this.state.ipAddress = 'unavailable';
@@ -2281,10 +2271,15 @@ function setupSignSubmit() {
   const submit = document.getElementById('sign-submit');
   const emailInput = document.getElementById('sign-email');
 
+  let nameLogTimer = null;
   typedInput?.addEventListener('input', () => {
     updateSubmitState();
+    // Debounce — only log after user stops typing for 1 second
+    clearTimeout(nameLogTimer);
     if (typedInput.value.trim().length >= 3) {
-      App.logAudit('Printed name entered: ' + typedInput.value.trim());
+      nameLogTimer = setTimeout(() => {
+        App.logAudit('Printed name confirmed: ' + typedInput.value.trim());
+      }, 1000);
     }
   });
 
@@ -2397,14 +2392,18 @@ function updateSubmitState() {
    ============================================================ */
 function bindHandlers(route) {
   if (route === 'agreement' && !App.hasSigned()) {
-    App.logAudit('Agreement page opened');
+    if (App.state.auditLog.length === 0) {
+      App.logAudit('Agreement page opened');
+    }
     initSignatureArea();
 
-    // Log when page is scrolled to bottom (agreement read)
+    // Log when page is scrolled to bottom (agreement read) — only once
+    let scrollLogged = false;
     const onScroll = () => {
       const scrolled = window.scrollY + window.innerHeight;
       const total = document.documentElement.scrollHeight;
-      if (scrolled >= total - 100) {
+      if (scrolled >= total - 100 && !scrollLogged) {
+        scrollLogged = true;
         App.logAudit('Agreement scrolled to bottom — full document viewed');
         window.removeEventListener('scroll', onScroll);
       }
