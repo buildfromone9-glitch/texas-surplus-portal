@@ -2267,7 +2267,6 @@ function bindHandlers(route) {
   if (route === 'landing') {
     const form = document.getElementById('search-form-el');
     form?.addEventListener('submit', (e) => {
-      e.preventDefault();
       const data = new FormData(form);
       const successEl = document.getElementById('form-success');
       successEl.innerHTML = `<strong>Request received.</strong> Thank you, ${esc(data.get('fullName'))}. If we identify a matching property, we'll email ${esc(data.get('email'))} within 3–5 business days with a personalized service packet. There is no charge for the search.`;
