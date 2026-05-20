@@ -2352,7 +2352,7 @@ function copyToClipboard(text, btn) {
    GO
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => App.init());
-  async function loadAgreement() {
+ async function loadAgreement() {
   const hash = window.location.hash;
   const queryString = hash.includes('?') ? hash.split('?')[1] : '';
   const params = new URLSearchParams(queryString);
@@ -2366,18 +2366,22 @@ document.addEventListener('DOMContentLoaded', () => App.init());
     .eq("id", agreementId)
     .single();
 
+  // THIS WILL TELL US IF SUPABASE IS BLOCKING YOU
   if (error) {
-    console.error("Supabase Error:", error.message);
+    console.error("SUPABASE ERROR:", error.message);
+    alert("Supabase Error: " + error.message + "\n\n(Check if Row Level Security is blocking the read!)");
     return;
   }
 
-  // THIS IS THE MAPPING FIX:
-  // It takes the database names (left) and converts them to code names (right)
+  // THIS WILL SHOW US EXACTLY WHAT DATA ARRIVED
+  console.log("SUCCESS! Supabase sent this data:", data);
+
+  // Foolproof mapping: looks for both naming styles
   App.state.client = {
     claimantName: data.claimant_name || data.claimantName,
     trackingId: data.tracking_id || data.trackingId,
     propertyId: data.property_id || data.propertyId,
-    reportedOwnerName: data.reported_owner || data.reportedOwnerName,
+    reportedOwnerName: data.reported_owner || data.reportedOwnerName || data.reported_owner_name,
     estimatedValue: data.estimated_value || data.estimatedValue,
     dateIssued: data.created_at ? new Date(data.created_at).toLocaleDateString() : ''
   };
