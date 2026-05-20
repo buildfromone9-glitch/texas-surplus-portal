@@ -2019,6 +2019,16 @@ function renderAdmin() {
           <label for="a-owner">Reported Owner Name on File</label>
           <input type="text" id="a-owner" required placeholder="As shown in Comptroller database" />
         </div>
+        <div class="field--row">
+          <div class="field">
+            <label for="a-value">Estimated Reported Value (USD)</label>
+            <input type="number" id="a-value" step="0.01" required placeholder="e.g., 24000.00" />
+          </div>
+          <div class="field">
+            <label for="a-research-date">Date Researched by SPRG</label>
+            <input type="text" id="a-research-date" placeholder="MM/DD/YYYY" />
+          </div>
+        </div>
        </div>
         <div class="form__submit">
           <button type="submit" class="btn">Generate Personalized Link <span class="btn__arrow">→</span></button>
@@ -2305,6 +2315,9 @@ function bindHandlers(route) {
         tracking_id: document.getElementById('a-trk').value.trim(),
         property_id: document.getElementById('a-pid').value.trim(),
         reported_owner: document.getElementById('a-owner').value.trim(),
+        estimated_value: parseFloat(document.getElementById('a-value').value) || null,
+        fee_percent: 10,
+        research_date: document.getElementById('a-research-date').value.trim(),
         signed: false
       };
       const { data, error } = await supabaseClient
@@ -2393,6 +2406,8 @@ document.addEventListener('DOMContentLoaded', () => App.init());
     propertyId: data.property_id,
     reportedOwnerName: data.reported_owner,
     estimatedValue: data.estimated_value,
+    feePercent: data.fee_percent || 10,
+    dateResearched: data.research_date || '',
     dateIssued: data.created_at ? new Date(data.created_at).toLocaleDateString() : ''
   };
 
