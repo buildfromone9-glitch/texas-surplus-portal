@@ -2210,7 +2210,7 @@ function setupSignSubmit() {
     el?.addEventListener('change', updateSubmitState);
   });
 
-  submit?.addEventListener('click', () => {
+  submit?.addEventListener('click', async () => {
     const errEl = document.getElementById('sign-error');
     const pad = document.getElementById('sig-pad');
     const canvas = document.getElementById('sig-canvas');
@@ -2231,7 +2231,7 @@ function setupSignSubmit() {
       errEl.style.display = 'block';
       return;
     }
-App.state.signature = canvas.toDataURL('image/png');
+    App.state.signature = canvas.toDataURL('image/png');
     App.state.typedName = typedName;
     App.state.signedAt = new Date().toISOString();
     App.saveSignedState();
@@ -2300,30 +2300,30 @@ function bindHandlers(route) {
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const payload = {
-  claimant_name: document.getElementById('a-name').value.trim(),
-  claimant_email: document.getElementById('a-email').value.trim(),
-  tracking_id: document.getElementById('a-trk').value.trim(),
-  property_id: document.getElementById('a-pid').value.trim(),
-  reported_owner: document.getElementById('a-owner').value.trim(),
-  signed: false
-};
-const { data, error } = await supabaseClient
-  .from('agreements')
-  .insert([payload])
-  .select();
+        claimant_name: document.getElementById('a-name').value.trim(),
+        claimant_email: document.getElementById('a-email').value.trim(),
+        tracking_id: document.getElementById('a-trk').value.trim(),
+        property_id: document.getElementById('a-pid').value.trim(),
+        reported_owner: document.getElementById('a-owner').value.trim(),
+        signed: false
+      };
+      const { data, error } = await supabaseClient
+        .from('agreements')
+        .insert([payload])
+        .select();
 
-if (error) {
-  console.error(error);
-  alert('Failed to create agreement.');
-  return;
-}
+      if (error) {
+        console.error(error);
+        alert('Failed to create agreement: ' + error.message);
+        return;
+      }
 
-const agreementId = data[0].id;
+      const agreementId = data[0].id;
 
-const fullUrl =
-  window.location.origin +
-  window.location.pathname +
-  `#/agreement?id=${agreementId}`;
+      const fullUrl =
+        window.location.origin +
+        window.location.pathname +
+        `#/agreement?id=${agreementId}`;
       const result = document.getElementById('admin-result');
       result.style.display = 'block';
       result.innerHTML = `
