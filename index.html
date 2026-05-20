@@ -2371,8 +2371,17 @@ document.addEventListener('DOMContentLoaded', () => App.init());
     return;
   }
 
-  // This updates the app state with real database data
-  App.state.client = data;
+  // THIS IS THE MAPPING FIX:
+  // It takes the database names (left) and converts them to code names (right)
+  App.state.client = {
+    claimantName: data.claimant_name || data.claimantName,
+    trackingId: data.tracking_id || data.trackingId,
+    propertyId: data.property_id || data.propertyId,
+    reportedOwnerName: data.reported_owner || data.reportedOwnerName,
+    estimatedValue: data.estimated_value || data.estimatedValue,
+    dateIssued: data.created_at ? new Date(data.created_at).toLocaleDateString() : ''
+  };
+
   App.render();
 }
 </script>
