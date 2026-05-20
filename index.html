@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Surplus Property Research Group — Texas Foreclosure Surplus Recovery</title>
+<meta name="description" content="Educational public-records research service helping Texans recover unclaimed foreclosure surplus funds held by the Texas Comptroller." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     ============================================================ */
+  :root {
+    --ink: #15172b;
+    --ink-soft: #2a2d4a;
+    --ink-mute: #5a5d75;
+    --paper: #faf6ee;
+    --paper-deep: #f3ecdc;
+    --paper-edge: #e6dcc4;
+    --cream: #fffcf5;
+    --rule: #d8cdb3;
+    --rule-soft: #ebe2cd;
+    --gold: #a07f3d;
+    --gold-deep: #806530;
+    --gold-soft: #c9a85f;
+    --rust: #8b3a2a;
+    --moss: #3d5c44;
+    --shadow: 0 1px 0 rgba(21,23,43,.04), 0 4px 24px -8px rgba(21,23,43,.12);
+    --shadow-lift: 0 2px 0 rgba(21,23,43,.05), 0 18px 48px -16px rgba(21,23,43,.22);
+    --serif: 'Fraunces', 'Iowan Old Style', 'Georgia', serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
+    --content-w: 720px;
+    --wide-w: 1100px;
+  }
+
+  /* ============================================================
+     BASE
+     ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(160,127,61,0.045), transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(21,23,43,0.025), transparent 50%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  /* Subtle paper grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.09 0 0 0 0 0.17 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  #app { position: relative; z-index: 2; }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--serif);
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0 0 0.5em;
+    letter-spacing: -0.01em;
+    font-variation-settings: 'SOFT' 50;
+  }
+  h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.02; letter-spacing: -0.03em; font-weight: 350; }
+  h2 { font-size: clamp(1.7rem, 3.5vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; }
+  h3 { font-size: 1.3rem; line-height: 1.25; }
+  h4 { font-size: 1.05rem; line-height: 1.3; font-family: var(--sans); font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-soft); }
+  p { margin: 0 0 1em; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; text-decoration-thickness: 1px; transition: color 120ms; }
+  a:hover { color: var(--gold-deep); }
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+  hr { border: 0; height: 1px; background: var(--rule); margin: 2.5em 0; }
+
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+  .container { max-width: var(--content-w); margin: 0 auto; padding: 0 1.5rem; }
+  .container-wide { max-width: var(--wide-w); margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ============================================================
+     HEADER / NAV
+     ============================================================ */
+  .site-header {
+    border-bottom: 1px solid var(--rule);
+    background: rgba(250, 246, 238, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .site-header__inner {
+    max-width: var(--wide-w);
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .brand__mark {
+    width: 38px; height: 38px;
+    border: 1px solid var(--ink);
+    display: grid; place-items: center;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-style: italic;
+    background: var(--cream);
+    flex-shrink: 0;
+  }
+  .brand__name {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  .brand__name small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    margin-top: 2px;
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  .nav-links a {
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-soft);
+    transition: color 120ms;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+  .nav-links a.active::after {
+    content: '';
+    display: block;
+    width: 100%; height: 1px;
+    background: var(--gold);
+    margin-top: 4px;
+  }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-links.show-mobile { display: flex; gap: 0.75rem; }
+    .nav-links a { font-size: 0.75rem; }
+  }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero {
+    padding: clamp(3rem, 8vw, 6rem) 1.5rem clamp(2rem, 5vw, 4rem);
+    border-bottom: 1px solid var(--rule);
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(243, 236, 220, 0.4) 100%);
+  }
+  .hero__inner { max-width: var(--wide-w); margin: 0 auto; }
+  .hero__eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero__eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--gold);
+  }
+  .hero__title {
+    max-width: 900px;
+    margin-bottom: 1.5rem;
+  }
+  .hero__title em {
+    font-style: italic;
+    color: var(--gold-deep);
+    font-variation-settings: 'SOFT' 100;
+  }
+  .hero__lede {
+    font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+    max-width: 640px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+  }
+  .hero__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  /* Personalized banner (shown when ?c= present) */
+  .personal-banner {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 2px;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .personal-banner__icon {
+    width: 32px; height: 32px;
+    border: 1px solid var(--gold-soft);
+    display: grid; place-items: center;
+    color: var(--gold-soft);
+    flex-shrink: 0;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+  .personal-banner__text { font-size: 0.95rem; line-height: 1.4; }
+  .personal-banner__text strong { color: var(--gold-soft); font-weight: 500; }
+
+  /* ============================================================
+     BUTTONS
+     ============================================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.6rem;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--cream);
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(.2,.7,.3,1);
+    border-radius: 0;
+    font-family: var(--sans);
+  }
+  .btn:hover {
+    background: transparent;
+    color: var(--ink);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px -4px rgba(21,23,43,.3);
+  }
+  .btn--ghost {
+    background: transparent;
+    color: var(--ink);
+  }
+  .btn--ghost:hover {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .btn--gold {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--cream);
+  }
+  .btn--gold:hover {
+    background: var(--gold-deep);
+    border-color: var(--gold-deep);
+    color: var(--cream);
+  }
+  .btn--small {
+    padding: 0.6rem 1rem;
+    font-size: 0.75rem;
+  }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .btn__arrow { font-family: var(--serif); font-size: 1.1rem; line-height: 1; }
+
+  /* ============================================================
+     SECTIONS
+     ============================================================ */
+  .section {
+    padding: clamp(3rem, 6vw, 5rem) 1.5rem;
+  }
+  .section--alt { background: var(--paper-deep); border-top: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+  .section__head {
+    max-width: var(--wide-w);
+    margin: 0 auto 3rem;
+    text-align: left;
+  }
+  .section__eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .section__eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px; height: 1px;
+    background: var(--gold);
+  }
+
+  /* ============================================================
+     STEPS (How it works)
+     ============================================================ */
+  .steps {
+    max-width: var(--wide-w);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: var(--cream);
+  }
+  .step {
+    padding: 2rem 1.75rem;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .step:last-child { border-right: none; }
+  .step__num {
+    font-family: var(--serif);
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--gold);
+    font-style: italic;
+    font-variation-settings: 'SOFT' 100;
+    margin-bottom: 1rem;
+  }
+  .step__title {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+  .step__body {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+  @media (max-width: 880px) {
+    .step { border-right: none; border-bottom: 1px solid var(--rule); }
+    .step:last-child { border-bottom: none; }
+  }
+
+  /* ============================================================
+     DISCLOSURE BLOCK
+     ============================================================ */
+  .disclosure {
+    max-width: var(--content-w);
+    margin: 0 auto;
+    padding: 2.25rem 2rem;
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--gold);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+  }
+  .disclosure h3 {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-deep);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .disclosure p { font-size: 0.95rem; line-height: 1.65; color: var(--ink-soft); }
+  .disclosure p:last-child { margin-bottom: 0; }
+  .disclosure strong { color: var(--ink); }
+
+  /* ============================================================
+     FORM
+     ============================================================ */
+  .form {
+    max-width: var(--content-w);
+    margin: 0 auto;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+  }
+  .form__title {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .form__intro { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 2rem; }
+  .field { margin-bottom: 1.25rem; }
+  .field--row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .field--row { grid-template-columns: 1fr; } }
+  .field label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--ink);
+    border-radius: 0;
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(160, 127, 61, 0.15);
+  }
+  .field textarea { min-height: 100px; resize: vertical; }
+  .field__hint { font-size: 0.8rem; color: var(--ink-mute); margin-top: 0.3rem; }
+  .form__submit { margin-top: 1.5rem; }
+  .form__success {
+    padding: 1.25rem;
+    background: rgba(61, 92, 68, 0.08);
+    border-left: 3px solid var(--moss);
+    color: var(--moss);
+    font-size: 0.95rem;
+    margin-top: 1.5rem;
+  }
+
+  /* ============================================================
+     AGREEMENT VIEW
+     ============================================================ */
+  .agreement-wrap { max-width: 820px; margin: 0 auto; padding: 0 1.5rem; }
+  .agreement-cover {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 3rem;
+  }
+  .agreement-cover__label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 1.5rem;
+  }
+  .agreement-cover__title {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.05;
+    margin-bottom: 2rem;
+    letter-spacing: -0.025em;
+    font-weight: 350;
+  }
+  .agreement-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem 2rem;
+    padding: 1.5rem;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .agreement-meta__item dt {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    margin-bottom: 0.3rem;
+  }
+  .agreement-meta__item dd {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .agreement-section { margin-bottom: 2.5rem; }
+  .agreement-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule-soft);
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .agreement-section h2 .num {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--gold-deep);
+    font-weight: 500;
+  }
+  .agreement-section h3 {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin: 1.5rem 0 0.6rem;
+  }
+  .agreement-section p, .agreement-section li {
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .agreement-section ol, .agreement-section ul {
+    padding-left: 1.5em;
+    margin: 0 0 1em;
+  }
+  .agreement-section li { margin-bottom: 0.5em; }
+
+  .agreement-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    font-size: 0.95rem;
+  }
+  .agreement-table th, .agreement-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--rule-soft);
+    text-align: left;
+    vertical-align: top;
+  }
+  .agreement-table th {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    background: var(--paper-deep);
+  }
+  .agreement-table tr:last-child td { border-bottom: none; }
+  .agreement-table .amount { font-family: var(--mono); font-size: 0.95rem; }
+
+  /* Notice block */
+  .notice-block {
+    padding: 1.5rem 1.75rem;
+    background: var(--ink);
+    color: var(--cream);
+    margin: 2rem 0;
+    border-radius: 2px;
+  }
+  .notice-block h3 {
+    color: var(--gold-soft);
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  .notice-block p { color: var(--cream); font-size: 0.92rem; margin-bottom: 0; }
+  .notice-block strong { color: var(--gold-soft); font-weight: 500; }
+
+  /* ============================================================
+     SIGNATURE
+     ============================================================ */
+  .sig-section {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 2px solid var(--ink);
+  }
+  .sig-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    margin-top: 2rem;
+  }
+  @media (max-width: 720px) { .sig-grid { grid-template-columns: 1fr; } }
+  .sig-block h4 {
+    margin-bottom: 1rem;
+    font-family: var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+  }
+  .sig-pad {
+    border: 1px solid var(--rule);
+    background: var(--cream);
+    height: 160px;
+    position: relative;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .sig-pad canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .sig-pad__placeholder {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-mute);
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+  .sig-pad.signed .sig-pad__placeholder { display: none; }
+  .sig-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--ink-mute);
+  }
+  .sig-clear {
+    background: none;
+    border: none;
+    color: var(--rust);
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+  .sig-static {
+    border: 1px solid var(--rule);
+    background: var(--cream);
+    padding: 1rem;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sig-static__sig {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--ink);
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+  }
+  .sig-static__line {
+    border-top: 1px solid var(--ink);
+    padding-top: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .agree-confirm {
+    margin: 2.5rem 0 1.5rem;
+    padding: 1.5rem;
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+  .agree-confirm input[type="checkbox"] {
+    width: 20px; height: 20px;
+    margin-top: 2px;
+    accent-color: var(--gold);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .agree-confirm label { font-size: 0.92rem; line-height: 1.55; cursor: pointer; color: var(--ink-soft); }
+  .agree-confirm label strong { color: var(--ink); }
+
+  /* ============================================================
+     GUIDE / DOC VIEW
+     ============================================================ */
+  .doc {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+  .doc__cover {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 3rem;
+  }
+  .doc__cover-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 1.5rem;
+  }
+  .doc__cover h1 {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+  .doc__cover h1 em { font-style: italic; color: var(--gold-deep); font-variation-settings: 'SOFT' 100; }
+  .doc__cover-sub {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    max-width: 540px;
+    line-height: 1.55;
+  }
+
+  .toc {
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    padding: 2rem 2.25rem;
+    margin-bottom: 4rem;
+  }
+  .toc h3 {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink-mute);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  .toc li {
+    counter-increment: toc;
+    padding: 0.65rem 0;
+    border-bottom: 1px dotted var(--rule);
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .toc li:last-child { border-bottom: none; }
+  .toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .toc li a {
+    flex-grow: 1;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 1.05rem;
+  }
+  .toc li a:hover { color: var(--gold-deep); }
+
+  .doc__section { margin-bottom: 4rem; }
+  .doc__section-num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .doc__section-num::before {
+    content: '';
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+  .doc__section h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.3rem);
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    letter-spacing: -0.015em;
+  }
+  .doc__section p { font-size: 1rem; line-height: 1.7; color: var(--ink-soft); }
+  .doc__section p strong { color: var(--ink); }
+  .doc__section h3 {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    margin: 2rem 0 0.75rem;
+    color: var(--ink);
+  }
+  .doc__section h4 {
+    font-family: var(--sans);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin: 1.5rem 0 0.6rem;
+    font-weight: 600;
+  }
+  .doc__section ul, .doc__section ol {
+    margin: 0.8em 0 1.3em;
+    padding-left: 1.5em;
+  }
+  .doc__section li {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 0.4em;
+  }
+  .doc__section blockquote {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    line-height: 1.35;
+    font-style: italic;
+    color: var(--ink);
+    border-left: 3px solid var(--gold);
+    padding: 0.3rem 0 0.3rem 1.5rem;
+    margin: 2rem 0;
+    font-variation-settings: 'SOFT' 100;
+  }
+
+  /* Two-column lists in the guide */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+  .two-col__pane {
+    padding: 1.5rem;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+  }
+  .two-col__pane h4 { margin-top: 0; color: var(--gold-deep); }
+
+  /* Step card in guide */
+  .step-card {
+    margin: 2rem 0;
+    padding: 1.75rem 2rem;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--ink);
+    position: relative;
+  }
+  .step-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .step-card__num {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    line-height: 1;
+    color: var(--gold);
+    font-style: italic;
+    font-variation-settings: 'SOFT' 100;
+  }
+  .step-card__title {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    margin: 0;
+    flex-grow: 1;
+  }
+  .step-card__time {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    background: var(--paper-deep);
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--rule);
+  }
+  .step-card__body p { margin-bottom: 0.8em; }
+  .step-card__body p:last-child { margin-bottom: 0; }
+
+  /* Callout */
+  .callout {
+    margin: 1.5rem 0;
+    padding: 1.2rem 1.5rem;
+    background: var(--paper-deep);
+    border-left: 3px solid var(--gold);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .callout--warn {
+    border-left-color: var(--rust);
+    background: rgba(139, 58, 42, 0.06);
+  }
+  .callout strong, .callout--warn strong {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.4rem;
+    color: var(--gold-deep);
+    font-weight: 600;
+  }
+  .callout--warn strong { color: var(--rust); }
+
+  /* Timeline */
+  .timeline {
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px; top: 8px; bottom: 8px;
+    width: 1px;
+    background: var(--rule);
+  }
+  .timeline li {
+    position: relative;
+    padding: 0 0 1.75rem 2.5rem;
+    margin: 0;
+  }
+  .timeline li::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 8px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--gold);
+  }
+  .timeline__when {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 0.3rem;
+  }
+  .timeline__what { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.55; }
+  .timeline__what strong { color: var(--ink); }
+
+  /* FAQ */
+  .faq__item {
+    border-bottom: 1px solid var(--rule);
+    padding: 1.5rem 0;
+  }
+  .faq__item:first-child { padding-top: 0; }
+  .faq__q {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .faq__a { font-size: 0.95rem; color: var(--ink-soft); line-height: 1.65; margin: 0; }
+
+  /* Doc tables */
+  .doc__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+  }
+  .doc__table th, .doc__table td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .doc__table th {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    background: var(--paper-deep);
+    font-weight: 600;
+  }
+  .doc__table tr:last-child td { border-bottom: none; }
+
+  /* ============================================================
+     LOCKED VIEW
+     ============================================================ */
+  .locked {
+    max-width: 560px;
+    margin: 5rem auto;
+    padding: 3rem 2.5rem;
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    text-align: center;
+    box-shadow: var(--shadow-lift);
+  }
+  .locked__icon {
+    width: 60px; height: 60px;
+    margin: 0 auto 1.5rem;
+    border: 1px solid var(--ink);
+    display: grid; place-items: center;
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    background: var(--paper-deep);
+  }
+  .locked h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+  .locked p { color: var(--ink-soft); margin-bottom: 2rem; }
+
+  /* ============================================================
+     ADMIN
+     ============================================================ */
+  .admin {
+    max-width: 760px;
+    margin: 3rem auto;
+    padding: 0 1.5rem 4rem;
+  }
+  .admin__head {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+  }
+  .admin__title { font-size: 2.2rem; margin-bottom: 0.5rem; }
+  .admin__sub { color: var(--ink-soft); font-size: 1rem; }
+  .admin__output {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    word-break: break-all;
+    line-height: 1.5;
+  }
+  .admin__output-label {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--gold-soft);
+    margin-bottom: 0.75rem;
+  }
+  .admin__actions { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    background: var(--ink);
+    color: var(--paper-edge);
+    padding: 3rem 1.5rem 2rem;
+    margin-top: 4rem;
+  }
+  .site-footer__inner {
+    max-width: var(--wide-w);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 3rem;
+  }
+  @media (max-width: 720px) { .site-footer__inner { grid-template-columns: 1fr; gap: 2rem; } }
+  .site-footer h4 {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-soft);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .site-footer p, .site-footer li { font-size: 0.85rem; color: var(--paper-edge); line-height: 1.55; }
+  .site-footer ul { list-style: none; padding: 0; margin: 0; }
+  .site-footer ul li { margin-bottom: 0.5em; }
+  .site-footer a { color: var(--paper-edge); text-decoration-color: var(--gold-soft); }
+  .site-footer a:hover { color: var(--cream); }
+  .site-footer__legal {
+    max-width: var(--wide-w);
+    margin: 2.5rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--ink-soft);
+    font-size: 0.78rem;
+    color: var(--ink-mute);
+    line-height: 1.55;
+  }
+  .site-footer__legal strong { color: var(--paper-edge); }
+
+  /* ============================================================
+     PRINT
+     ============================================================ */
+  @media print {
+    body { background: white; color: black; }
+    body::before { display: none; }
+    .site-header, .site-footer, .no-print, .nav-links { display: none !important; }
+    .doc, .agreement-wrap { max-width: 100%; padding: 0; }
+    .step-card, .callout, .notice-block, .disclosure, .agreement-meta, .toc {
+      break-inside: avoid;
+      box-shadow: none;
+    }
+    .doc__section, .agreement-section { break-inside: avoid; }
+    a { color: black; text-decoration: none; }
+    .sig-pad { border: 1px solid #000; }
+  }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+<script>
+/* ============================================================
+   STATE & ROUTING
+   ============================================================ */
+const STORE_KEY = 'sprg_signed_v1';
+
+const App = {
+  state: {
+    client: null,         // parsed customization data
+    signature: null,      // base64 PNG of drawn signature
+    typedName: '',
+    signedAt: null,
+    confirmed: false,
+  },
+
+  init() {
+    this.loadClient();
+    this.loadSignedState();
+    window.addEventListener('hashchange', () => this.render());
+    this.render();
+  },
+
+  loadClient() {
+    const params = new URLSearchParams(window.location.search);
+    const c = params.get('c');
+    if (c) {
+      try {
+        const decoded = atob(c.replace(/-/g, '+').replace(/_/g, '/'));
+        this.state.client = JSON.parse(decodeURIComponent(escape(decoded)));
+      } catch (e) {
+        console.warn('Failed to parse client param', e);
+      }
+    }
+  },
+
+  loadSignedState() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // Only load if it's for this same client (by trackingId)
+        const currentTrk = this.state.client?.trackingId || 'guest';
+        if (parsed.trackingId === currentTrk) {
+          this.state.signature = parsed.signature;
+          this.state.typedName = parsed.typedName;
+          this.state.signedAt = parsed.signedAt;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load signed state', e);
+    }
+  },
+
+  saveSignedState() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({
+        trackingId: this.state.client?.trackingId || 'guest',
+        signature: this.state.signature,
+        typedName: this.state.typedName,
+        signedAt: this.state.signedAt,
+      }));
+    } catch (e) { console.warn('Save failed', e); }
+  },
+
+  hasSigned() {
+    return !!(this.state.signature && this.state.typedName && this.state.signedAt);
+  },
+
+  getRoute() {
+    const hash = window.location.hash.replace(/^#\/?/, '').split('?')[0];
+    return hash || 'landing';
+  },
+
+  render() {
+    const route = this.getRoute();
+    const app = document.getElementById('app');
+    let html = renderHeader(route);
+    switch (route) {
+      case 'agreement': html += renderAgreement(); break;
+      case 'guide':     html += renderGuide(); break;
+      case 'admin':     html += renderAdmin(); break;
+      case 'landing':
+      default:          html += renderLanding(); break;
+    }
+    html += renderFooter();
+    app.innerHTML = html;
+    bindHandlers(route);
+    window.scrollTo(0, 0);
+  },
+};
+
+/* ============================================================
+   PARTIAL: HEADER
+   ============================================================ */
+function renderHeader(route) {
+  return `
+    <header class="site-header no-print">
+      <div class="site-header__inner">
+        <a href="#/" class="brand">
+          <div class="brand__mark">S</div>
+          <div class="brand__name">
+            Surplus Property Research
+            <small>Texas Foreclosure Recovery Service</small>
+          </div>
+        </a>
+        <nav class="nav-links">
+          <a href="#/" class="${route === 'landing' ? 'active' : ''}">Overview</a>
+          <a href="#/agreement" class="${route === 'agreement' ? 'active' : ''}">Agreement</a>
+          <a href="#/guide" class="${route === 'guide' ? 'active' : ''}">Claims Guide</a>
+        </nav>
+      </div>
+    </header>
+  `;
+}
+
+/* ============================================================
+   PARTIAL: FOOTER
+   ============================================================ */
+function renderFooter() {
+  return `
+    <footer class="site-footer no-print">
+      <div class="site-footer__inner">
+        <div>
+          <h4>Surplus Property Research Group</h4>
+          <p>Educational public-records research service. Not a law firm. Not your representative before the State. We help you understand the process — you do the filing.</p>
+        </div>
+        <div>
+          <h4>Contact SPRG</h4>
+          <ul>
+            <li>[your-email@surpluspropertyresearch.com]</li>
+            <li>[your phone number]</li>
+            <li>[your mailing address]</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Texas State Resources</h4>
+          <ul>
+            <li><a href="https://claimittexas.gov" target="_blank" rel="noopener">claimittexas.gov</a></li>
+            <li>Texas Comptroller<br/>Unclaimed Property Division<br/>P.O. Box 12019, Austin, TX 78711-2019</li>
+            <li>Tex. Prop. Code ch. 74 · § 74.507</li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__legal">
+        This site is an educational resource prepared by Surplus Property Research Group. <strong>It is not legal advice and does not create an attorney-client relationship.</strong> Information is current as of the date of preparation; State procedures and document requirements may change without notice. Always follow the on-screen instructions on the official Comptroller portal. For case-specific legal questions, consult a licensed Texas attorney.
+      </div>
+    </footer>
+  `;
+}
+
+/* ============================================================
+   VIEW: LANDING
+   ============================================================ */
+function renderLanding() {
+  const c = App.state.client;
+  const personalBanner = c ? `
+    <div class="personal-banner">
+      <div class="personal-banner__icon">✦</div>
+      <div class="personal-banner__text">
+        Welcome, <strong>${esc(c.claimantName || 'Claimant')}</strong>. Your personalized service packet is ready for review. Tracking <span style="font-family:var(--mono); font-size:0.85em;">${esc(c.trackingId || '—')}</span>.
+      </div>
+    </div>
+  ` : '';
+
+  const ctaText = c ? 'Review Your Agreement' : 'Request a Free Surplus Search';
+  const ctaHref = c ? '#/agreement' : '#search-form';
+
+  return `
+    <section class="hero">
+      <div class="hero__inner">
+        ${personalBanner}
+        <div class="hero__eyebrow">Texas Foreclosure Surplus Recovery</div>
+        <h1 class="hero__title">Did your Texas home sell at foreclosure for <em>more</em> than you owed?</h1>
+        <p class="hero__lede">If your property was sold at a mortgage or bank foreclosure auction in Texas, the sale price may have exceeded what you owed. Any leftover money — the surplus — belongs to you. After a waiting period, unclaimed surplus is transferred to the Texas Comptroller, where it waits for the rightful owner to claim it.</p>
+        <div class="hero__cta-row">
+          <a href="${ctaHref}" class="btn">${ctaText} <span class="btn__arrow">→</span></a>
+          <a href="#/guide" class="btn btn--ghost">Read the Claims Guide</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="section__head">
+        <div class="section__eyebrow">How It Works</div>
+        <h2>A research service, not a representative.</h2>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">SPRG is an educational public-records research firm. We don't represent you, file claims, or give legal advice. We locate funds the State of Texas is already holding for former property owners and provide a step-by-step roadmap so you can file the claim yourself — directly with the State, for free.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">01</div>
+          <h3 class="step__title">Request a free search</h3>
+          <p class="step__body">Submit your foreclosed-property address using the form below. No fee, no obligation.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">02</div>
+          <h3 class="step__title">Review the agreement</h3>
+          <p class="step__body">If we identify funds the State is holding that match your information, we'll send you the service agreement. No upfront fee.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">03</div>
+          <h3 class="step__title">Receive your claims kit</h3>
+          <p class="step__body">After signing, you'll get the Property ID and a public-process roadmap to file your claim with the Comptroller.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">04</div>
+          <h3 class="step__title">Claim your funds</h3>
+          <p class="step__body">You file directly through claimittexas.gov. When the State pays you, our 10% contingency service fee is due.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="disclosure">
+        <h3>Required Consumer Disclosure</h3>
+        <p>Unclaimed property held by the Texas Comptroller of Public Accounts can be claimed by the rightful owner directly from the State <strong>at no cost</strong>. The State of Texas does not charge a fee to return unclaimed property. You have the legal right to search for, and claim, these funds yourself, for free, without hiring a third-party research service and without signing any agreement.</p>
+        <p>You can search the official state database at any time at <a href="https://claimittexas.gov" target="_blank" rel="noopener">claimittexas.gov</a>.</p>
+        <p><strong>You are not required to use our service to recover funds the State of Texas is holding for you.</strong></p>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="search-form">
+      <div class="form">
+        <h2 class="form__title">Free Surplus Search Request</h2>
+        <p class="form__intro">No charge, no obligation. If we find a match, we'll send you the agreement and a research packet.</p>
+        <form id="search-form-el">
+          <div class="field">
+            <label for="full-name">Full Legal Name</label>
+            <input type="text" id="full-name" name="fullName" required />
+          </div>
+          <div class="field--row">
+            <div class="field">
+              <label for="email">Best Contact Email</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+            <div class="field">
+              <label for="phone">Contact Phone</label>
+              <input type="tel" id="phone" name="phone" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="address">Foreclosed Property Address</label>
+            <input type="text" id="address" name="address" required placeholder="Street, City, County, ZIP" />
+          </div>
+          <div class="field">
+            <label for="year">Approximate Year of Foreclosure</label>
+            <input type="text" id="year" name="year" placeholder="e.g., 2019" />
+          </div>
+          <div class="form__submit">
+            <button type="submit" class="btn">Submit Search Request <span class="btn__arrow">→</span></button>
+          </div>
+          <div id="form-success" class="form__success" style="display:none;"></div>
+        </form>
+      </div>
+    </section>
+  `;
+}
+
+/* ============================================================
+   VIEW: AGREEMENT
+   ============================================================ */
+function renderAgreement() {
+  const c = App.state.client || {};
+  const signed = App.hasSigned();
+
+  // If they've already signed, show the signed version
+  const sigBlock = signed ? `
+    <div class="sig-grid">
+      <div class="sig-block">
+        <h4>Claimant</h4>
+        <div class="sig-static">
+          <div class="sig-static__sig">
+            <img src="${App.state.signature}" alt="Claimant signature" style="max-height:80px; max-width:100%;" />
+          </div>
+          <div class="sig-static__line">${esc(App.state.typedName)} — ${new Date(App.state.signedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+        </div>
+      </div>
+      <div class="sig-block">
+        <h4>Surplus Property Research Group</h4>
+        <div class="sig-static">
+          <div class="sig-static__sig" style="font-size:1.2rem;">Dennis S. &nbsp;·&nbsp; Joel V.</div>
+          <div class="sig-static__line">Co-Operators · countersigned upon receipt</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:2.5rem; padding:1.5rem; background:rgba(61,92,68,0.08); border-left:3px solid var(--moss); font-size:0.95rem;">
+      <strong style="color:var(--moss); display:block; margin-bottom:0.4rem;">Agreement signed</strong>
+      You signed this agreement on ${new Date(App.state.signedAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })}. You can now access the full educational claims guide.
+    </div>
+    <div class="hero__cta-row no-print" style="margin-top:2rem;">
+      <a href="#/guide" class="btn">Open the Claims Guide <span class="btn__arrow">→</span></a>
+      <button class="btn btn--ghost" onclick="window.print()">Print / Save Signed Copy</button>
+    </div>
+  ` : `
+    <div id="signature-area"></div>
+  `;
+
+  return `
+    <main class="agreement-wrap">
+      <div class="agreement-cover">
+        <div class="agreement-cover__label">Service Packet & Agreement</div>
+        <h1 class="agreement-cover__title">Texas Mortgage<br/>Surplus Recovery</h1>
+        <dl class="agreement-meta">
+          <div class="agreement-meta__item">
+            <dt>Prepared for</dt>
+            <dd>${esc(c.claimantName || '[Claimant Name]')}</dd>
+          </div>
+          <div class="agreement-meta__item">
+            <dt>Tracking #</dt>
+            <dd>${esc(c.trackingId || '[Internal ID]')}</dd>
+          </div>
+          <div class="agreement-meta__item">
+            <dt>Issued</dt>
+            <dd>${esc(c.dateIssued || new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }))}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="notice-block">
+        <h3>Notice to Claimant</h3>
+        <p>The funds described in this agreement are held in trust by the Texas Comptroller of Public Accounts. <strong>The State of Texas does not charge a fee to return unclaimed property.</strong> You have the absolute right to claim these funds directly from the State, free of charge, at <span style="font-family:var(--mono); color:var(--gold-soft);">claimittexas.gov</span>, without hiring SPRG and without signing this agreement. By signing below, you acknowledge that you have read this notice and choose to engage SPRG voluntarily.</p>
+      </div>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 1</span> Parties</h2>
+        <p>This Agreement is between Surplus Property Research Group ("SPRG") and the undersigned individual ("Claimant"). Each is a "Party" and together the "Parties."</p>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 2</span> Nature of the Property and Services Provided</h2>
+        <p>Pursuant to Tex. Prop. Code § 74.507(c)(1), the Parties agree:</p>
+        <ul>
+          <li><strong>Nature of the property:</strong> Unclaimed mortgage foreclosure surplus funds reported to and currently held by the Texas Comptroller of Public Accounts, Unclaimed Property Division, identified by the Property ID set forth in Part C of this packet.</li>
+          <li><strong>Services to be provided:</strong> SPRG will (a) deliver to Claimant the Texas Comptroller Property ID, the reported owner name on file, and other publicly available record information identifying the property; and (b) provide a generic, publicly available summary of the State's standard claim-submission process.</li>
+          <li><strong>Services NOT provided:</strong> SPRG will not (i) complete, sign, file, or submit any claim form to the Comptroller on Claimant's behalf; (ii) draft any legal motion or pleading; (iii) appear or correspond with the Comptroller in any representative capacity; or (iv) provide legal, tax, or financial advice tailored to Claimant's circumstances.</li>
+        </ul>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 3</span> Reasonably Expected Recovery and Fee Computation</h2>
+        <p>Pursuant to Tex. Prop. Code § 74.507(c)(3), the Parties acknowledge the following good-faith estimate of the value of the property reasonably expected to be recovered, computed both before and after the contingency service fee provided for in Section 4:</p>
+        <table class="agreement-table">
+          <thead>
+            <tr><th>Description</th><th style="text-align:right;">Amount (USD)</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>(a) Reported/estimated value of the property held by the Comptroller (gross, before fee)</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.estimatedValue)}</td>
+            </tr>
+            <tr>
+              <td>(b) SPRG's contingency service fee (10% of amount actually disbursed to Claimant; inclusive of all SPRG expenses)</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.estimatedValue ? c.estimatedValue * 0.1 : null)}</td>
+            </tr>
+            <tr>
+              <td>(c) Estimated net amount payable to Claimant after SPRG's fee (a − b)</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.estimatedValue ? c.estimatedValue * 0.9 : null)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.88rem; color:var(--ink-mute); font-style:italic;">Estimate only. The actual amount the Comptroller releases may differ from line (a) because of senior or competing claims, processing adjustments, identity-verification outcomes, offsets, or other factors outside SPRG's control. SPRG's fee is calculated on the amount actually disbursed to Claimant, not on line (a).</p>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 4</span> Contingency Service Fee</h2>
+        <ol start="1">
+          <li>Claimant agrees to pay SPRG a contingency service fee equal to <strong>ten percent (10%)</strong> of the gross amount actually disbursed to Claimant by the Texas Comptroller in respect of the property identified in Part C.</li>
+          <li>Pursuant to Tex. Prop. Code § 74.507(a), the fee is inclusive of all expenses incurred by SPRG. SPRG will not charge or receive from Claimant, in connection with the property identified in Part C, any amount that, together with all expenses, exceeds 10% of the value of the property recovered.</li>
+          <li><strong>No upfront fee.</strong> Claimant owes SPRG nothing at signing. If the State does not approve Claimant's claim, or does not release any funds, Claimant owes SPRG $0.00 and this Agreement terminates automatically.</li>
+          <li><strong>Partial recovery.</strong> If the State releases only a portion of the estimated amount, the 10% fee is calculated on the amount actually disbursed. Funds applied by the State to offsets, withholdings, child-support liens, tax liens, or other statutory deductions are not "disbursed to Claimant" and are excluded from the fee base.</li>
+        </ol>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 5</span> Payment</h2>
+        <ol>
+          <li><strong>Notification of Disbursement.</strong> Claimant shall notify SPRG in writing within <strong>three (3) business days</strong> after Claimant receives, or is notified by the Comptroller of, any disbursement in respect of the property identified in Part C. Notice by email to SPRG's email address on file is sufficient. The notice shall include (i) the date of disbursement, (ii) the gross amount received, and (iii) the method of payment (check, ACH, or otherwise).</li>
+          <li>The 10% contingency service fee is due within <strong>ten (10) business days</strong> after Claimant receives the disbursement from the Comptroller (whether by check, ACH, or other means).</li>
+          <li>SPRG will issue a written invoice to the email address on file. Claimant may pay by check, ACH, or other commercially reasonable method identified on the invoice.</li>
+          <li><strong>Notice-and-Cure; Demand Letter.</strong> If Claimant fails to remit timely payment, SPRG shall send Claimant a written demand letter. A demand letter is valid and sufficient under this Agreement if sent both (i) by email to Claimant's email address on file and (ii) by certified U.S. mail, return receipt requested, to Claimant's last known mailing address. Claimant shall have <strong>fifteen (15) days</strong> from the date the demand letter is sent (the "Notice Period") to cure the default before SPRG pursues any further remedy. Failure of the certified mail to be physically claimed by Claimant does not invalidate the notice so long as both methods of delivery were used.</li>
+        </ol>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 6</span> Legal and Licensing Boundaries</h2>
+        <ol>
+          <li>SPRG is not Claimant's attorney, agent, or representative for any purpose. Nothing in this Agreement creates an attorney-client relationship, a fiduciary duty, or a power of attorney.</li>
+          <li>Per Tex. Prop. Code § 74.507(b), SPRG will not file or receive any claim form on Claimant's behalf. All claim forms must be completed, signed, and submitted by Claimant or by Claimant's lawful attorney-in-fact or legal representative.</li>
+          <li>The process summary in the educational claims guide is a generic description of the Comptroller's publicly published claim procedure. It is not legal advice and does not address Claimant's specific legal rights, eligibility, lien priority, heirship issues, or filing strategy. Claimant should consult a licensed Texas attorney for any case-specific questions.</li>
+          <li>SPRG does not, by entering this Agreement, hold itself out as a licensed private investigator, attorney, surveyor, or any other licensed professional. SPRG's activities are limited to (i) research and review of public information as defined in Tex. Gov. Code ch. 552 and (ii) delivery of generic process information for educational purposes.</li>
+        </ol>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 7</span> Competing Claims, Liens, and Heirs</h2>
+        <ol>
+          <li>Claimant acknowledges that other persons (including but not limited to junior lienholders, judgment creditors, ex-spouses, co-owners, or heirs of a deceased owner) may have superior or competing rights to all or part of the property. SPRG does not adjudicate entitlement and makes no representation as to Claimant's legal entitlement to the funds.</li>
+          <li>SPRG does not represent any other potential claimant to the same property and will not knowingly enter into a service agreement with more than one claimant for the same Property ID. If multiple persons present credible claims to the same property, SPRG may, at its discretion, withdraw and terminate this Agreement with no fee owed by Claimant.</li>
+          <li>If Claimant is making this claim as an heir, executor, administrator, or other representative of a deceased owner, Claimant represents that Claimant has, or will obtain, lawful authority to make the claim under Texas law and will provide any required documentation (e.g., death certificate, Letters Testamentary, Affidavit of Heirship) to the State.</li>
+        </ol>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 8</span> Confidentiality and Data Use</h2>
+        <ol>
+          <li>SPRG will treat Claimant's personal information (including any government-issued identifiers) as confidential and will use it solely to perform this Agreement. SPRG will not sell or rent Claimant's personal information.</li>
+          <li>SPRG will maintain commercially reasonable administrative, technical, and physical safeguards for Claimant's information and will retain it only as long as necessary for this Agreement, applicable recordkeeping, and any actual or threatened dispute.</li>
+        </ol>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 9</span> Termination</h2>
+        <ol>
+          <li>Either Party may terminate this Agreement, without fee or penalty, at any time before Claimant submits a claim to the Comptroller using the information delivered by SPRG, by written notice (email is sufficient).</li>
+          <li>This Agreement automatically terminates if the Comptroller closes the file without disbursing any funds to Claimant.</li>
+          <li>If a recovery has already been made or is imminent at the time of attempted termination by Claimant, SPRG's right to its 10% contingency service fee on the actual disbursement survives termination.</li>
+        </ol>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 10</span> No Guarantee</h2>
+        <p>SPRG makes no representation, warranty, or guarantee that the Comptroller will approve Claimant's claim, that any particular amount will be released, or that any particular processing timeline will apply. SPRG's role is limited to providing public-record information and a generic process summary for educational purposes.</p>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 11</span> Governing Law; Venue; Disputes</h2>
+        <ol>
+          <li>This Agreement shall be governed by the laws of the State of Texas.</li>
+          <li>Venue for any action arising out of this Agreement shall lie in a court of competent jurisdiction in the county of Claimant's residence at the time the action is filed or, at Claimant's option, in the county where the foreclosed property is located. This venue provision is non-exclusive as to Claimant and exclusive as to SPRG.</li>
+          <li>Before filing suit, the Parties will attempt in good faith to resolve any dispute through written notice and at least one telephone or video conference. Either Party may, at its option, submit the dispute to mediation in Texas before filing suit.</li>
+        </ol>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 12</span> Severability and Statutory Compliance</h2>
+        <p>If any provision of this Agreement (including the 10% fee) is determined to exceed or conflict with any applicable Texas statute (including Tex. Prop. Code § 74.507), the provision will be reformed to the maximum extent permitted by law, and the remainder of this Agreement will remain in effect.</p>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 13</span> Entire Agreement</h2>
+        <p>This Agreement is the entire agreement between the Parties regarding the property identified in Part C. It supersedes any prior oral or written communications. It may be amended only in a writing signed by both Parties.</p>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">Part C</span> Property Tracking Data</h2>
+        <p>The following information was located through public-records research and is provided so Claimant can locate the corresponding entry in the Texas Comptroller's unclaimed property database and submit a claim directly to the State.</p>
+        <table class="agreement-table">
+          <tbody>
+            <tr><td><strong>Texas Comptroller Property ID</strong></td><td class="amount">${esc(c.propertyId || '[to be assigned]')}</td></tr>
+            <tr><td><strong>Reported Owner Name on File</strong></td><td>${esc(c.reportedOwnerName || '[to be assigned]')}</td></tr>
+            <tr><td><strong>Reported Property Address</strong></td><td>${esc(c.reportedAddress || '[to be assigned]')}</td></tr>
+            <tr><td><strong>Reporting Holder</strong></td><td>${esc(c.reportingHolder || '[to be assigned]')}</td></tr>
+            <tr><td><strong>Estimated Reported Value</strong></td><td class="amount">${formatMoney(c.estimatedValue)}</td></tr>
+            <tr><td><strong>Date Researched by SPRG</strong></td><td>${esc(c.dateResearched || c.dateIssued || new Date().toLocaleDateString('en-US'))}</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.88rem; color:var(--ink-mute); font-style:italic;">Source: Texas Comptroller of Public Accounts, Unclaimed Property Database, claimittexas.gov (public information).</p>
+      </section>
+
+      <section class="sig-section">
+        <h2 style="font-size:1.6rem; margin-bottom:0.4rem;">Acknowledgment and Signature</h2>
+        <p style="color:var(--ink-soft); font-size:0.95rem;">Claimant has read and understood the Required Consumer Disclosure and the entirety of this Agreement, including the right to claim the funds directly from the State of Texas at no cost without using SPRG.</p>
+        ${sigBlock}
+      </section>
+    </main>
+  `;
+}
+
+/* ============================================================
+   VIEW: GUIDE (gated)
+   ============================================================ */
+function renderGuide() {
+  if (!App.hasSigned()) {
+    return `
+      <div class="locked">
+        <div class="locked__icon">✦</div>
+        <h2>Sign the Agreement to Unlock</h2>
+        <p>The full educational claims guide is included with your service packet. To access it, please review and sign the service agreement first.</p>
+        <a href="#/agreement" class="btn">Open the Agreement <span class="btn__arrow">→</span></a>
+      </div>
+    `;
+  }
+
+  const c = App.state.client || {};
+
+  return `
+    <main class="doc">
+      <div class="doc__cover">
+        <div class="doc__cover-label">Educational Claims Guide</div>
+        <h1>Recovering Your Texas <em>Foreclosure</em> Surplus Funds</h1>
+        <p class="doc__cover-sub">A step-by-step packet for filing directly with the Texas Comptroller of Public Accounts. Prepared for <strong>${esc(c.claimantName || '[Claimant Name]')}</strong> · Tracking <span style="font-family:var(--mono); font-size:0.9em;">${esc(c.trackingId || '—')}</span></p>
+      </div>
+
+      <div class="callout">
+        <strong>Important Legal Notice</strong>
+        Surplus Property Research Group ("SPRG") is an educational public-records research service. SPRG is not a law firm. Nothing in this guide is legal advice or creates an attorney-client relationship. For case-specific questions — including heir claims, competing claims, lien disputes, or high-dollar matters — consult a licensed Texas attorney.
+      </div>
+
+      <div class="toc">
+        <h3>Inside This Packet</h3>
+        <ol>
+          <li><a href="#s1">Welcome &amp; How to Use This Packet</a></li>
+          <li><a href="#s2">Your Rights — Read This First</a></li>
+          <li><a href="#s3">Background: What Surplus Funds Are</a></li>
+          <li><a href="#s4">The Recovery Process — Nine Steps</a></li>
+          <li><a href="#s5">Required Documents Checklist</a></li>
+          <li><a href="#s6">Special Situation — Claiming as an Heir</a></li>
+          <li><a href="#s7">Common Pitfalls &amp; What Slows Claims Down</a></li>
+          <li><a href="#s8">What to Expect — Timeline</a></li>
+          <li><a href="#s9">Your Obligations Under the Service Agreement</a></li>
+          <li><a href="#s10">Frequently Asked Questions</a></li>
+        </ol>
+      </div>
+
+      <section class="doc__section" id="s1">
+        <div class="doc__section-num">Section 01</div>
+        <h2>Welcome &amp; How to Use This Packet</h2>
+        <p>If your Texas home went to a mortgage or bank foreclosure sale, and the property sold for more than what you owed, that extra money — the surplus — belongs to you under Texas law. After a waiting period, unclaimed surplus funds are turned over to the <strong>Texas Comptroller of Public Accounts, Unclaimed Property Division</strong>, where they sit until the rightful owner files a claim.</p>
+        <p>This packet exists for one purpose: to give you a clear, accurate, plain-English roadmap so you can claim your money directly from the State of Texas, on your own, through the State's free portal at <strong>claimittexas.gov</strong>.</p>
+        <h3>What this packet is</h3>
+        <ul>
+          <li>An educational guide explaining the State's standard claim process.</li>
+          <li>A checklist of the documents the State will most often ask for.</li>
+          <li>A set of pitfalls to help you avoid the common mistakes that slow claims down or get them denied.</li>
+          <li>A reference for your obligations under the service agreement you signed with SPRG.</li>
+        </ul>
+        <h3>What this packet is not</h3>
+        <ul>
+          <li>It is <strong>not legal advice</strong>. SPRG is not your lawyer.</li>
+          <li>It is not a substitute for the Texas Comptroller's own instructions. If the State's portal tells you something different from this packet, follow the State.</li>
+          <li>It does not authorize SPRG to file, sign, or submit any claim form on your behalf. You — or your lawful attorney-in-fact or legal representative — must file the claim yourself.</li>
+        </ul>
+        <div class="callout">
+          <strong>How to Read This Packet</strong>
+          Start with Section 02 (Your Rights). Then read Section 04 (The Recovery Process) straight through before you begin. The State's portal is straightforward, but small mistakes early on — wrong claimant type, missing document, mismatched name — can add weeks of delay. A slow read now saves time later.
+        </div>
+        <blockquote>"The State of Texas is already holding your money. You don't have to find it. You just have to claim it."</blockquote>
+      </section>
+
+      <section class="doc__section" id="s2">
+        <div class="doc__section-num">Section 02</div>
+        <h2>Your Rights — Read This First</h2>
+        <h3>Your right to claim directly &amp; for free</h3>
+        <p>The State of Texas does not charge a fee to return unclaimed property. You have the absolute legal right to search for, and claim, these funds yourself, at no cost, through the official state database at <strong>claimittexas.gov</strong>, without hiring SPRG and without signing any agreement. <strong>You are not required to use SPRG's service to recover funds the State is holding for you.</strong></p>
+        <h3>What that means in practice</h3>
+        <p>You signed a service agreement with SPRG because the research and the step-by-step roadmap have value to you. That's fine — many people prefer not to navigate state databases and document requirements on their own. But you should know exactly what you are paying for and what you are not:</p>
+        <div class="two-col">
+          <div class="two-col__pane">
+            <h4>You ARE paying SPRG for</h4>
+            <ul>
+              <li>Locating the property record in the Comptroller's database.</li>
+              <li>Delivering the Property ID and reported owner name.</li>
+              <li>This educational packet and process roadmap.</li>
+            </ul>
+          </div>
+          <div class="two-col__pane">
+            <h4>You are NOT paying SPRG for</h4>
+            <ul>
+              <li>Filing or signing your claim form (the law forbids it; you must file yourself).</li>
+              <li>Legal advice, tax advice, or financial advice.</li>
+              <li>Any communication with the Comptroller on your behalf.</li>
+            </ul>
+          </div>
+        </div>
+        <h3>Texas law caps the fee at 10%</h3>
+        <p>Under <strong>Texas Property Code § 74.507</strong>, anyone who, for a fee, helps you locate or recover property held by the Comptroller is capped at <strong>10%</strong> of the amount recovered, inclusive of all expenses. SPRG's fee under your agreement is exactly 10% — no more — and is owed only on funds actually disbursed to you. If the State does not approve your claim, you owe SPRG nothing.</p>
+        <div class="callout callout--warn">
+          <strong>Red Flag</strong>
+          If any third party — including a "lawyer," "claims specialist," or another search firm — tells you the fee is more than 10%, walk away. Texas law caps it at 10%, full stop.
+        </div>
+      </section>
+
+      <section class="doc__section" id="s3">
+        <div class="doc__section-num">Section 03</div>
+        <h2>Background: What Surplus Funds Are &amp; How They Got to the State</h2>
+        <h3>The short version</h3>
+        <p>When a mortgage lender forecloses on a Texas home and sells it at auction, the sale price is sometimes higher than what the borrower owed — the unpaid loan balance, interest, late fees, attorney's fees, and trustee costs. The extra money is called the surplus (sometimes "excess proceeds").</p>
+        <h3>Where the money goes — the path</h3>
+        <ol>
+          <li><strong>Foreclosure sale.</strong> The substitute trustee conducts the sale. After paying senior debts and costs, any leftover money is the surplus.</li>
+          <li><strong>Held by the trustee or court.</strong> The trustee may hold the surplus for a period of time, or — depending on circumstances — deposit it into the county court registry.</li>
+          <li><strong>Reported to the State.</strong> If the surplus is not claimed by the former owner within the abandonment period (generally one to three years, depending on the property type), the holder is required by Chapter 74 of the Texas Property Code to remit it to the Comptroller.</li>
+          <li><strong>Held by the Comptroller.</strong> The Comptroller holds the funds indefinitely until the rightful owner claims them. The money does not expire and does not get "absorbed" by the State.</li>
+        </ol>
+        <div class="callout">
+          <strong>Scope of This Packet</strong>
+          This packet covers only surplus funds that have already been transferred to the Texas Comptroller and are listed on claimittexas.gov. It does <strong>not</strong> cover excess proceeds still held in a county court registry (different procedure), tax-sale excess proceeds under Tex. Tax Code § 34.04 (different procedure), or any funds held by a private trustee. If your situation falls into one of those categories, consult a Texas attorney.
+        </div>
+        <h3>Who is the rightful owner?</h3>
+        <p>Generally, the surplus belongs to the former owner of record at the time of the foreclosure. Other parties may also have rights — junior lienholders, judgment creditors, ex-spouses with community-property interests, or, if the former owner has since passed away, the owner's heirs. The Comptroller verifies entitlement during the claim review.</p>
+        <h3>Why hire SPRG at all?</h3>
+        <p>Two reasons. First, many former owners don't know the State is holding money for them — and even if they checked claimittexas.gov, they may not recognize the entry because the reporting holder lists the property under names and addresses they no longer use. SPRG matches public records to your information so you know the funds exist. Second, the State's documentation requirements can be confusing the first time through. This guide demystifies them.</p>
+      </section>
+
+      <section class="doc__section" id="s4">
+        <div class="doc__section-num">Section 04</div>
+        <h2>The Recovery Process — Nine Steps</h2>
+        <p>Each step below corresponds to something you will do, either on the State's portal or in gathering documents. <strong>SPRG does not do any of these steps for you.</strong> Take them in order.</p>
+
+        ${stepCard(1, 'Verify Your Property Record', '5 minutes', `
+          <p>Open Part C of your Service Packet. You'll find the <strong>Texas Comptroller Property ID</strong>, the reported owner name on file, the reported property address, and the reporting holder (bank or trustee). Confirm these details match your information. Small mismatches (initials, middle names, prior addresses) are normal — note them so you can address them in your claim.</p>
+          <p>If anything looks wrong — for example, a property address you've never lived at — contact SPRG before filing. You may have been matched to the wrong record.</p>
+        `)}
+
+        ${stepCard(2, 'Start Your Claim on claimittexas.gov', '15 minutes', `
+          <p>Open a web browser and go directly to <strong>claimittexas.gov</strong> (also reachable at claimittexas.org). This is the only official site of the Texas Comptroller's Unclaimed Property Division. Do not pay any third-party site that offers to file your claim for a fee — that is not how the State works.</p>
+          <ul>
+            <li>Use the search function to look up the <strong>Property ID</strong> from Part C, or search by the reported owner name.</li>
+            <li>When you find the matching record, click <strong>Claim It</strong> (or "Add to Claim") to add it to your claim cart.</li>
+            <li>If multiple records appear under your name from the same foreclosure (some sales generate more than one entry), add all that apply.</li>
+            <li>Click <strong>Proceed / Continue</strong> when finished.</li>
+          </ul>
+          <div class="callout callout--warn"><strong>Watch the URL</strong>Always confirm the address bar shows <strong>claimittexas.gov</strong>. Lookalike sites and paid search ads may impersonate the State. The real portal never asks for payment.</div>
+        `)}
+
+        ${stepCard(3, 'Indicate Your Relationship to the Property', '10 minutes', `
+          <p>The portal will ask how you are related to the reported owner. The most common choices are:</p>
+          <ul>
+            <li><strong>Owner</strong> — you are the person whose name appears on the record (the former property owner).</li>
+            <li><strong>Heir / Personal Representative</strong> — the original owner has passed away and you are inheriting or administering the estate. (See Section 06 for what's required.)</li>
+            <li><strong>Authorized Representative</strong> — you hold a power of attorney for the owner, or are a legal guardian, conservator, or attorney-in-fact.</li>
+          </ul>
+          <p>Pick the option that accurately describes your relationship. Choosing "Owner" when you are actually an heir is the single most common reason a claim gets denied and has to be refiled.</p>
+        `)}
+
+        ${stepCard(4, 'Enter Your Personal Information', '10 minutes', `
+          <p>The portal will ask for your current legal name, current address, phone, and email, plus identifiers the State uses to verify you. Be exact — use your legal name as it appears on your driver's license or state ID, not a nickname.</p>
+          <p>If your name has changed since the foreclosure (marriage, divorce, court order), make a note of it. You will likely need to provide a marriage certificate, divorce decree, or court order in Step 6 to bridge the old name to the new.</p>
+        `)}
+
+        ${stepCard(5, 'Generate &amp; Review the Claim Form', '20 minutes', `
+          <p>The portal will generate the official State of Texas claim form, pre-filled with the information you entered. <strong>Download it. Print it. Read it carefully.</strong></p>
+          <ul>
+            <li>Check that every field is correct — name spelling, address, property ID, claimed amount.</li>
+            <li>Sign in the locations indicated on the form. Use your full legal signature in blue or black ink.</li>
+            <li><strong>Notarization:</strong> For higher-dollar claims (the State sets the threshold and may update it), the form requires your signature to be notarized by a licensed Texas notary public. If your form says "notarize," do not skip this — an unnotarized form when notarization was required will bounce.</li>
+          </ul>
+          <div class="callout"><strong>Where to Get Notarized</strong>Most banks notarize for free if you are an account holder. UPS Stores, FedEx Office, AAA offices, and many public libraries also offer notary services for a small fee. Bring photo ID.</div>
+        `)}
+
+        ${stepCard(6, 'Gather Your Supporting Documents', '1–3 days', `
+          <p>The State will tell you exactly which documents are required for your specific claim. The list depends on claim type (owner vs heir) and dollar amount. The full checklist is in Section 05 of this packet.</p>
+          <p>Make clean, legible copies of every document. Originals stay with you unless the State specifically directs otherwise (rare). PDFs scanned at 300 dpi are ideal for the upload portal.</p>
+        `)}
+
+        ${stepCard(7, 'Submit Your Claim to the State', '30 minutes', `
+          <p>You have two options. Use online submission whenever possible — it is faster, trackable, and reduces the chance of lost paperwork.</p>
+          <h4>Option A — Online (recommended)</h4>
+          <ul>
+            <li>Return to your claim on claimittexas.gov.</li>
+            <li>Upload your signed claim form and every required document through the secure upload portal.</li>
+            <li>Save the claim number / tracking number the State assigns. Write it down. Keep it.</li>
+          </ul>
+          <h4>Option B — By mail</h4>
+          <p>Send your signed (and, if required, notarized) claim form and copies of all supporting documents by certified mail, return receipt requested, to:</p>
+          <p style="font-family:var(--serif); font-style:italic; padding-left:1rem; border-left:2px solid var(--gold); margin:1rem 0;">
+            Texas Comptroller of Public Accounts<br/>
+            Unclaimed Property Division<br/>
+            P.O. Box 12019<br/>
+            Austin, TX 78711-2019
+          </p>
+          <div class="callout"><strong>Keep Copies of Everything</strong>Before you submit (online or by mail), make a complete copy of the full claim packet for your own records. Keep it for at least seven years.</div>
+        `)}
+
+        ${stepCard(8, 'Respond Promptly to Any State Requests', 'As needed', `
+          <p>The Comptroller's examiner may email or mail you asking for additional documentation, clarification, or a corrected form. Respond within the timeframe the State specifies (<strong>typically 30 days</strong>). Unanswered requests are the second-most-common reason claims stall.</p>
+          <p>Check the email account you registered with the portal at least twice a week, including the spam folder, while your claim is pending. Notifications often come from a "@cpa.texas.gov" address.</p>
+        `)}
+
+        ${stepCard(9, 'Receive Disbursement &amp; Notify SPRG', 'Same day', `
+          <p>When the State approves your claim, you will receive payment — by check mailed to your address on file, or in some cases by ACH direct deposit. The amount will be the gross surplus less any State-imposed offsets (such as outstanding child-support liens, tax liens, or other statutory deductions).</p>
+          <div class="callout callout--warn"><strong>Required by Your Agreement</strong>You must notify SPRG in writing within <strong>three (3) business days</strong> after you receive (or are notified of) any disbursement. Email to SPRG's address on file is sufficient. Include the disbursement date, gross amount received, and method of payment (check or ACH). See Section 09 for the full obligation.</div>
+        `)}
+      </section>
+
+      <section class="doc__section" id="s5">
+        <div class="doc__section-num">Section 05</div>
+        <h2>Required Documents Checklist</h2>
+        <p>The State of Texas customizes the document list to each claim. The categories below cover what the Comptroller most commonly requires for a former-owner foreclosure-surplus claim. <strong>Always follow the exact list shown to you on the portal.</strong></p>
+
+        <h3>Identity verification</h3>
+        <ul>
+          <li><strong>Government-issued photo ID.</strong> Texas driver's license, Texas ID card, U.S. passport, or military ID. Must be current (not expired).</li>
+          <li><strong>Proof of Social Security Number.</strong> A photocopy of your Social Security card is best. The State may also accept a redacted W-2, redacted SSA benefits statement, or other SSA-issued document showing your full SSN. Black out everything except your name and SSN.</li>
+          <li><strong>Proof of current address.</strong> Recent utility bill, bank statement, lease, or property tax statement showing your current mailing address (within the last 60–90 days).</li>
+        </ul>
+
+        <h3>Proof of former ownership of the foreclosed property</h3>
+        <p>You need to connect your identity today to your ownership of the property at the time of foreclosure. Provide at least one — ideally two — of the following:</p>
+        <ul>
+          <li>Recorded deed showing you as grantee at the property address (county clerk's office has copies).</li>
+          <li>Old mortgage statement from the lender that foreclosed, in your name at the property address.</li>
+          <li>Property tax statement from the appraisal district, in your name at the property address (CAD records are public and free).</li>
+          <li>Closing / settlement statement (HUD-1 or Closing Disclosure) from when you purchased the property.</li>
+          <li>Foreclosure notice or trustee's deed mailed to you at the property address.</li>
+          <li>Utility bill (electric, water, gas) in your name at the property address from any month you lived there.</li>
+        </ul>
+
+        <h3>Name-change bridging documents (only if your name has changed)</h3>
+        <ul>
+          <li><strong>Marriage certificate</strong> — connects maiden name to married name.</li>
+          <li><strong>Divorce decree</strong> — if your divorce restored a previous name.</li>
+          <li><strong>Court order changing name</strong> — for any other legal name change.</li>
+        </ul>
+
+        <div class="callout"><strong>Pro Tip</strong>The Comptroller's examiners are humans with a checklist. Make their job easy: clear scans, every page right-side-up, no glare, no cut-off corners. A neat packet gets approved faster than a sloppy one with the same information.</div>
+      </section>
+
+      <section class="doc__section" id="s6">
+        <div class="doc__section-num">Section 06</div>
+        <h2>Special Situation — Claiming as an Heir</h2>
+        <p>If the former owner has passed away, the surplus belongs to that person's estate, and you can claim it as an heir, executor, or personal representative. <strong>Heir claims are more involved than owner claims</strong> — plan on extra time and expect the State to scrutinize the supporting documents carefully.</p>
+        <h3>What you'll need on top of the regular checklist</h3>
+        <table class="doc__table">
+          <thead>
+            <tr><th>Situation</th><th>Documents You'll Likely Need</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Probated will exists</strong></td><td>Certified copy of the will, Order Admitting Will to Probate, Letters Testamentary issued to the executor.</td></tr>
+            <tr><td><strong>Estate opened but no will</strong></td><td>Letters of Administration issued by the probate court, court order identifying the heirs.</td></tr>
+            <tr><td><strong>No estate opened (small estate)</strong></td><td>Affidavit of Heirship meeting Texas requirements (typically signed by two disinterested witnesses with personal knowledge of the family history), recorded at the county clerk's office where the property is located.</td></tr>
+            <tr><td><strong>All heirs claiming</strong></td><td>Original owner's death certificate (certified copy), proof of identity for each claiming heir, and (if applicable) a written agreement among heirs on how to split the funds.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout--warn"><strong>Consult a Texas Attorney</strong>Affidavits of Heirship, probate filings, and disputes among heirs are areas where small mistakes cause big delays — or permanently forfeit the funds to another claimant. If you are claiming as an heir, especially if the surplus is substantial, the cost of an hour of a Texas probate attorney's time is usually money well spent.</div>
+        <h3>If multiple heirs may claim</h3>
+        <p>SPRG will not knowingly enter a service agreement with more than one claimant for the same Property ID. If competing heirs surface during your claim, your service agreement allows SPRG to withdraw — and you will owe SPRG nothing for the work already done. Your right to claim from the State, of course, continues regardless.</p>
+      </section>
+
+      <section class="doc__section" id="s7">
+        <div class="doc__section-num">Section 07</div>
+        <h2>Common Pitfalls &amp; What Slows Claims Down</h2>
+        <p>Most foreclosure surplus claims are approved. The ones that get denied, or sit in limbo for months, usually fail for predictable reasons. Knowing what they are is half the battle.</p>
+        <h3>1. Wrong claimant type selected</h3>
+        <p>Choosing "Owner" when you should have chosen "Heir/Representative" (or vice versa) almost always triggers a denial. Re-read Step 3 and pick the option that accurately describes you.</p>
+        <h3>2. Name mismatch with no bridging document</h3>
+        <p>If the property record lists "Maria Garcia" but your ID says "Maria Lopez," you need a marriage certificate or court order tying the names together. Without it, the examiner cannot confirm you're the same person.</p>
+        <h3>3. Address that doesn't connect you to the property</h3>
+        <p>Some claimants try to prove ownership using utility bills from a current address — which doesn't help. You need at least one document showing your name at the foreclosed property's address.</p>
+        <h3>4. Illegible or partial scans</h3>
+        <p>Dark, blurry, or cropped scans get flagged. Use a flatbed scanner if you can, or a phone scanning app (CamScanner, Adobe Scan, Apple Notes) with shadows controlled and the whole document in frame.</p>
+        <h3>5. Missing notarization on a high-dollar form</h3>
+        <p>If the form says "notarize," the form must be notarized. The State will not accept a workaround.</p>
+        <h3>6. Ignoring the State's follow-up email</h3>
+        <p>If the examiner emails asking for one more document and you don't respond within 30 days, your claim may be administratively closed. Check the email account on file at least twice a week.</p>
+        <h3>7. Falling for impersonator websites or third-party "filers"</h3>
+        <p>The State never charges to return your money. Anyone who tells you otherwise — including a website you found through a search ad — is not the State. Always type claimittexas.gov directly into your browser.</p>
+        <h3>8. Liens you didn't know about</h3>
+        <p>The State may offset child-support arrears, state tax debts, or other statutory liens from your disbursement. This isn't an error and isn't reviewable through the claims process — it's a separate state-law procedure. Your 10% fee to SPRG, by contrast, is calculated only on the net amount actually disbursed to you, not the gross.</p>
+      </section>
+
+      <section class="doc__section" id="s8">
+        <div class="doc__section-num">Section 08</div>
+        <h2>What to Expect — Timeline</h2>
+        <p>Texas processing times vary by claim type, dollar amount, and the State's workload. The chart below is a realistic estimate — not a guarantee. Heir claims and high-dollar claims sit at the longer end of the range; clean owner claims of modest amounts can move quickly.</p>
+        <ul class="timeline">
+          <li>
+            <div class="timeline__when">Day 0</div>
+            <div class="timeline__what"><strong>You submit your claim</strong> on claimittexas.gov with all required documents. The portal assigns you a claim / tracking number — write it down.</div>
+          </li>
+          <li>
+            <div class="timeline__when">Days 1–7</div>
+            <div class="timeline__what"><strong>Initial intake review.</strong> The Comptroller's office confirms your packet is complete on its face. If anything is missing or unclear, expect an email asking for it.</div>
+          </li>
+          <li>
+            <div class="timeline__when">Weeks 2–6</div>
+            <div class="timeline__what"><strong>Examiner review.</strong> A claims examiner verifies your identity, your ownership of the foreclosed property, and that no competing claim is on file. They may request additional documents during this stage — respond promptly.</div>
+          </li>
+          <li>
+            <div class="timeline__when">Weeks 4–12 (typical)</div>
+            <div class="timeline__what"><strong>Approval &amp; disbursement.</strong> Once approved, the State issues payment by check (mailed to your address on file) or ACH. Simple owner claims often resolve toward the shorter end; heir or contested claims toward the longer end.</div>
+          </li>
+          <li>
+            <div class="timeline__when">Within 3 business days of receipt</div>
+            <div class="timeline__what"><strong>You notify SPRG</strong> in writing of the disbursement. (Required by your service agreement — see Section 09.)</div>
+          </li>
+          <li>
+            <div class="timeline__when">Within 10 business days of receipt</div>
+            <div class="timeline__what"><strong>You pay SPRG's 10% contingency service fee</strong> on the net amount actually disbursed to you, per the invoice SPRG sends.</div>
+          </li>
+        </ul>
+        <div class="callout"><strong>If Things Stall</strong>If your claim has been pending for more than 90 days with no contact from an examiner, you can check status by calling the Unclaimed Property Division directly (number listed on claimittexas.gov) or by logging back into the portal. SPRG cannot check status on your behalf — that requires identifying yourself to the State.</div>
+      </section>
+
+      <section class="doc__section" id="s9">
+        <div class="doc__section-num">Section 09</div>
+        <h2>Your Obligations Under the Service Agreement</h2>
+        <p>You signed a Texas Surplus Property Research Service Agreement with SPRG. This section summarizes your ongoing duties under that agreement. It is a plain-English recap — the agreement itself controls in any conflict.</p>
+        <h3>1. File the claim yourself</h3>
+        <p>SPRG is legally prohibited from filing on your behalf under Tex. Prop. Code § 74.507(b). You — or your lawful attorney-in-fact or legal representative — must complete, sign, and submit every claim form.</p>
+        <h3>2. Notify SPRG of disbursement within 3 business days <span style="font-family:var(--mono); font-size:0.7em; color:var(--rust); letter-spacing:0.1em;">— MATERIAL</span></h3>
+        <p>When the State pays you, you must notify SPRG in writing within <strong>three (3) business days</strong>. Email to SPRG's address on file is sufficient. Include:</p>
+        <ul>
+          <li>The date of disbursement.</li>
+          <li>The gross amount you received.</li>
+          <li>The method of payment (check, ACH, or otherwise).</li>
+        </ul>
+        <p>This obligation is a <strong>material term</strong> of your agreement. Skipping it is a breach, even if you intend to pay the fee later.</p>
+        <h3>3. Pay the 10% contingency service fee within 10 business days</h3>
+        <p>SPRG will email you a written invoice. Payment is due within 10 business days of your receipt of disbursement. The fee is 10% of the gross amount actually disbursed to you — not the originally estimated amount, and not any portion the State offset for liens or other statutory deductions.</p>
+        <h3>4. Notice-and-cure if payment is missed</h3>
+        <p>If you fail to remit timely payment, SPRG will send you a written demand letter. Under your agreement, the demand letter is valid only if sent both:</p>
+        <ol>
+          <li>By email to your email address on file, and</li>
+          <li>By certified U.S. mail, return receipt requested, to your last known mailing address.</li>
+        </ol>
+        <p>You then have <strong>fifteen (15) days</strong> from the date the demand letter is sent to cure the default before SPRG may pursue further remedies. (Note: not picking up the certified mail does not invalidate the notice, so long as both methods of delivery were used.)</p>
+        <h3>5. Keep your contact info current</h3>
+        <p>If you change your email or mailing address between signing the agreement and being paid, let SPRG know. The notices above are sent to the address on file at the time they are sent.</p>
+        <div class="callout"><strong>Reminder</strong>This section is a summary. The signed Service Agreement is the controlling document. Read it again before disbursement, and consult a Texas attorney if anything is unclear.</div>
+      </section>
+
+      <section class="doc__section" id="s10">
+        <div class="doc__section-num">Section 10</div>
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq__item"><h3 class="faq__q">Do I really have to file the claim myself? Can't SPRG just do it?</h3><p class="faq__a"><strong>No, SPRG cannot file for you.</strong> Texas Property Code § 74.507(b) prohibits a finder from filing or receiving a claim form on a claimant's behalf. Even if SPRG wanted to, the law forbids it. You must file the claim — or have your lawful attorney-in-fact or legal representative file — yourself.</p></div>
+        <div class="faq__item"><h3 class="faq__q">What if the State pays less than the amount listed in my packet?</h3><p class="faq__a">It happens — the State may apply offsets for tax debts, child-support liens, or other statutory deductions, and processing adjustments are common. SPRG's 10% fee is calculated only on the amount actually disbursed to you, not on the original estimate.</p></div>
+        <div class="faq__item"><h3 class="faq__q">What if the State denies my claim entirely?</h3><p class="faq__a">You owe SPRG nothing. Your service agreement terminates automatically when the Comptroller closes the file without disbursement. You can also refile if the denial was due to a fixable issue (missing document, wrong claimant type), and SPRG's research remains useful — though a new agreement may be required if substantial new work is needed.</p></div>
+        <div class="faq__item"><h3 class="faq__q">How long does this really take?</h3><p class="faq__a">For a clean owner claim with all documents in order: typically <strong>4–8 weeks</strong> from submission to disbursement. For heir claims or claims requiring extra documentation: <strong>2–6 months or longer</strong>. The State does not commit to a deadline; respond fast to their requests and your claim moves faster.</p></div>
+        <div class="faq__item"><h3 class="faq__q">Can SPRG check on my claim status?</h3><p class="faq__a">No. The Comptroller's office discusses claim status only with the claimant or their authorized representative. You can check status by logging into your account at claimittexas.gov or by calling the Unclaimed Property Division directly.</p></div>
+        <div class="faq__item"><h3 class="faq__q">What if I want to back out and file on my own?</h3><p class="faq__a">You can terminate the service agreement at any time before you submit a claim using SPRG's information — no fee, no penalty. Just notify SPRG in writing (email is fine). After you've submitted using SPRG's information, the 10% fee is still owed if the claim is paid.</p></div>
+        <div class="faq__item"><h3 class="faq__q">What if I find money under my name that wasn't in SPRG's research?</h3><p class="faq__a">Money the State is holding under your name that SPRG did not identify and disclose to you is not covered by your service agreement, and no fee is owed on it. You can claim it directly from the State for free, like any owner.</p></div>
+        <div class="faq__item"><h3 class="faq__q">Is the 10% fee taxable income to SPRG, deductible by me?</h3><p class="faq__a">Tax questions are case-specific. SPRG does not give tax advice. Talk to a CPA or tax professional, especially if the disbursement is large.</p></div>
+        <div class="faq__item"><h3 class="faq__q">What if I die before the claim is paid?</h3><p class="faq__a">The claim becomes part of your estate. Your executor or heirs would need to substitute themselves into the claim, providing the documents listed in Section 06. Your service agreement with SPRG also binds your estate up to the 10% fee on any amount eventually disbursed.</p></div>
+        <div class="faq__item"><h3 class="faq__q">Who do I contact at SPRG with questions?</h3><p class="faq__a">Use the contact information in the footer of this page. SPRG can answer process and research questions. <strong>SPRG cannot give legal advice, file your claim, or talk to the State on your behalf.</strong></p></div>
+      </section>
+
+      <div class="no-print" style="margin-top:4rem; text-align:center;">
+        <button class="btn btn--ghost" onclick="window.print()">Print or Save Guide as PDF</button>
+      </div>
+    </main>
+  `;
+}
+
+/* ============================================================
+   VIEW: ADMIN (link generator)
+   ============================================================ */
+function renderAdmin() {
+  return `
+    <main class="admin">
+      <div class="admin__head">
+        <div style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:1rem;">SPRG Internal · Not for Client Use</div>
+        <h1 class="admin__title">Generate a Client Packet Link</h1>
+        <p class="admin__sub">Fill in the customizable fields below. The tool will generate a URL you can email or text to the client. Opening the URL will personalize the landing page and pre-fill their agreement.</p>
+      </div>
+
+      <form id="admin-form" class="form" style="border:1px solid var(--rule); padding:2rem; background:var(--cream);">
+        <div class="field">
+          <label for="a-name">Claimant Full Legal Name</label>
+          <input type="text" id="a-name" required placeholder="e.g., Maria Lopez" />
+        </div>
+        <div class="field--row">
+          <div class="field">
+            <label for="a-trk">Tracking # (Internal ID)</label>
+            <input type="text" id="a-trk" required placeholder="e.g., TRK-2026-0148" />
+          </div>
+          <div class="field">
+            <label for="a-issued">Date Issued</label>
+            <input type="text" id="a-issued" placeholder="MM/DD/YYYY" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="a-pid">Texas Comptroller Property ID</label>
+          <input type="text" id="a-pid" placeholder="e.g., A0123456789" />
+        </div>
+        <div class="field">
+          <label for="a-owner">Reported Owner Name on File</label>
+          <input type="text" id="a-owner" placeholder="As shown in Comptroller database" />
+        </div>
+        <div class="field">
+          <label for="a-addr">Reported Property Address</label>
+          <input type="text" id="a-addr" placeholder="Foreclosed property street, city, ZIP" />
+        </div>
+        <div class="field">
+          <label for="a-holder">Reporting Holder (Bank / Trustee)</label>
+          <input type="text" id="a-holder" placeholder="e.g., Wells Fargo Bank, N.A." />
+        </div>
+        <div class="field--row">
+          <div class="field">
+            <label for="a-value">Estimated Reported Value (USD)</label>
+            <input type="number" id="a-value" step="0.01" placeholder="e.g., 8500.00" />
+          </div>
+          <div class="field">
+            <label for="a-researched">Date Researched by SPRG</label>
+            <input type="text" id="a-researched" placeholder="MM/DD/YYYY" />
+          </div>
+        </div>
+        <div class="form__submit">
+          <button type="submit" class="btn">Generate Personalized Link <span class="btn__arrow">→</span></button>
+        </div>
+      </form>
+
+      <div id="admin-result" style="display:none;"></div>
+    </main>
+  `;
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[c]));
+}
+
+function formatMoney(n) {
+  if (n === null || n === undefined || n === '' || isNaN(Number(n))) return '$ ______________';
+  const num = Number(n);
+  return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function stepCard(num, title, time, body) {
+  const n = String(num).padStart(2, '0');
+  return `
+    <div class="step-card">
+      <div class="step-card__header">
+        <span class="step-card__num">${n}</span>
+        <h3 class="step-card__title">${title}</h3>
+        <span class="step-card__time">${time}</span>
+      </div>
+      <div class="step-card__body">${body}</div>
+    </div>
+  `;
+}
+
+function b64encJson(obj) {
+  const json = JSON.stringify(obj);
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  return b64.replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+/* ============================================================
+   SIGNATURE CANVAS
+   ============================================================ */
+function initSignatureArea() {
+  const area = document.getElementById('signature-area');
+  if (!area) return;
+
+  area.innerHTML = `
+    <div class="sig-grid">
+      <div class="sig-block">
+        <h4>Claimant Signature</h4>
+        <div class="sig-pad" id="sig-pad">
+          <canvas id="sig-canvas"></canvas>
+          <div class="sig-pad__placeholder">Sign here using mouse or finger</div>
+        </div>
+        <div class="sig-controls">
+          <span>Draw your signature above</span>
+          <button type="button" class="sig-clear" id="sig-clear">Clear</button>
+        </div>
+        <div class="field" style="margin-top:1.25rem;">
+          <label for="typed-name">Printed Name (typed)</label>
+          <input type="text" id="typed-name" placeholder="Type your full legal name" />
+        </div>
+        <div class="field">
+          <label for="sign-email">Email on File</label>
+          <input type="email" id="sign-email" placeholder="your@email.com" />
+        </div>
+      </div>
+      <div class="sig-block">
+        <h4>Surplus Property Research Group</h4>
+        <div class="sig-static">
+          <div class="sig-static__sig">D. S. &nbsp;·&nbsp; J. V.</div>
+          <div class="sig-static__line">Co-Operators · countersigned upon receipt</div>
+        </div>
+        <div style="margin-top:1.25rem; padding:1rem; background:var(--paper-deep); font-size:0.85rem; color:var(--ink-soft); line-height:1.5;">
+          SPRG will countersign and email a fully-executed PDF copy to the address you provide above within one business day of receipt.
+        </div>
+      </div>
+    </div>
+
+    <div class="agree-confirm">
+      <input type="checkbox" id="confirm-box" />
+      <label for="confirm-box">
+        <strong>I have read and understood</strong> the Required Consumer Disclosure and the entirety of this Agreement, including my right to claim the funds directly from the State of Texas at no cost without using SPRG. I am signing voluntarily and authorize SPRG to perform the research services described in § 2.
+      </label>
+    </div>
+
+    <div class="hero__cta-row" style="margin-top:2rem;">
+      <button type="button" class="btn" id="sign-submit" disabled>Sign &amp; Continue to Claims Guide <span class="btn__arrow">→</span></button>
+    </div>
+
+    <p id="sign-error" style="color:var(--rust); margin-top:1rem; font-size:0.9rem; display:none;"></p>
+  `;
+
+  setupSignaturePad();
+  setupSignSubmit();
+}
+
+function setupSignaturePad() {
+  const pad = document.getElementById('sig-pad');
+  const canvas = document.getElementById('sig-canvas');
+  const clearBtn = document.getElementById('sig-clear');
+  if (!pad || !canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let hasInk = false;
+
+  function resize() {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = pad.offsetWidth * ratio;
+    canvas.height = pad.offsetHeight * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.strokeStyle = '#15172b';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function getPos(e) {
+    const rect = pad.getBoundingClientRect();
+    const point = e.touches ? e.touches[0] : e;
+    return {
+      x: point.clientX - rect.left,
+      y: point.clientY - rect.top,
+    };
+  }
+
+  function start(e) {
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+  function move(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    if (!hasInk) {
+      hasInk = true;
+      pad.classList.add('signed');
+    }
+  }
+  function end(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    drawing = false;
+  }
+
+  pad.addEventListener('mousedown', start);
+  pad.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  pad.addEventListener('touchstart', start, { passive: false });
+  pad.addEventListener('touchmove', move, { passive: false });
+  pad.addEventListener('touchend', end, { passive: false });
+
+  clearBtn?.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasInk = false;
+    pad.classList.remove('signed');
+    updateSubmitState();
+  });
+
+  // Update submit button state on signature change
+  const observer = new MutationObserver(updateSubmitState);
+  observer.observe(pad, { attributes: true, attributeFilter: ['class'] });
+}
+
+function setupSignSubmit() {
+  const typedInput = document.getElementById('typed-name');
+  const confirmBox = document.getElementById('confirm-box');
+  const submit = document.getElementById('sign-submit');
+  const emailInput = document.getElementById('sign-email');
+
+  [typedInput, confirmBox, emailInput].forEach(el => {
+    el?.addEventListener('input', updateSubmitState);
+    el?.addEventListener('change', updateSubmitState);
+  });
+
+  submit?.addEventListener('click', () => {
+    const errEl = document.getElementById('sign-error');
+    const pad = document.getElementById('sig-pad');
+    const canvas = document.getElementById('sig-canvas');
+    const typedName = typedInput.value.trim();
+
+    if (!pad.classList.contains('signed')) {
+      errEl.textContent = 'Please draw your signature in the box above.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (typedName.length < 3) {
+      errEl.textContent = 'Please type your full legal name to confirm your signature.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!confirmBox.checked) {
+      errEl.textContent = 'Please check the confirmation box to agree to the terms.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    App.state.signature = canvas.toDataURL('image/png');
+    App.state.typedName = typedName;
+    App.state.signedAt = new Date().toISOString();
+    App.saveSignedState();
+
+    // Re-render and route to guide
+    window.location.hash = '#/guide';
+    App.render();
+  });
+}
+
+function updateSubmitState() {
+  const submit = document.getElementById('sign-submit');
+  if (!submit) return;
+  const pad = document.getElementById('sig-pad');
+  const typed = document.getElementById('typed-name');
+  const confirm = document.getElementById('confirm-box');
+  const ready = pad?.classList.contains('signed')
+             && typed?.value.trim().length >= 3
+             && confirm?.checked;
+  submit.disabled = !ready;
+}
+
+/* ============================================================
+   FORM & ADMIN HANDLERS
+   ============================================================ */
+function bindHandlers(route) {
+  if (route === 'agreement' && !App.hasSigned()) {
+    initSignatureArea();
+  }
+
+  if (route === 'landing') {
+    const form = document.getElementById('search-form-el');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const successEl = document.getElementById('form-success');
+      successEl.innerHTML = `<strong>Request received.</strong> Thank you, ${esc(data.get('fullName'))}. If we identify a matching property, we'll email ${esc(data.get('email'))} within 3–5 business days with a personalized service packet. There is no charge for the search.`;
+      successEl.style.display = 'block';
+      // NOTE: To wire this up for real, POST to your backend, Formspree, or a webhook here.
+      form.reset();
+      successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+
+  if (route === 'admin') {
+    const form = document.getElementById('admin-form');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const payload = {
+        claimantName: document.getElementById('a-name').value.trim(),
+        trackingId:   document.getElementById('a-trk').value.trim(),
+        dateIssued:   document.getElementById('a-issued').value.trim(),
+        propertyId:   document.getElementById('a-pid').value.trim(),
+        reportedOwnerName: document.getElementById('a-owner').value.trim(),
+        reportedAddress: document.getElementById('a-addr').value.trim(),
+        reportingHolder: document.getElementById('a-holder').value.trim(),
+        estimatedValue: parseFloat(document.getElementById('a-value').value) || null,
+        dateResearched: document.getElementById('a-researched').value.trim(),
+      };
+      const encoded = b64encJson(payload);
+      const baseUrl = window.location.origin + window.location.pathname;
+      const fullUrl = `${baseUrl}?c=${encoded}#/`;
+
+      const result = document.getElementById('admin-result');
+      result.style.display = 'block';
+      result.innerHTML = `
+        <div class="admin__output">
+          <div class="admin__output-label">Personalized Client URL</div>
+          <div id="generated-url" style="user-select:all;">${esc(fullUrl)}</div>
+        </div>
+        <div class="admin__actions">
+          <button class="btn btn--small" onclick="copyToClipboard('${fullUrl.replace(/'/g, "\\'")}', this)">Copy URL</button>
+          <a class="btn btn--small btn--gold" href="mailto:?subject=${encodeURIComponent('Your Texas Surplus Property Research Packet — Tracking ' + payload.trackingId)}&body=${encodeURIComponent('Hello ' + payload.claimantName + ',\n\nYour personalized SPRG service packet is ready for review. Please use the link below to view your service agreement and, after signing, access the educational claims guide.\n\n' + fullUrl + '\n\nThe link is unique to your case. If you have questions before signing, reply to this email or call us.\n\n— Surplus Property Research Group')}">Email to Client</a>
+          <a class="btn btn--small btn--ghost" href="${fullUrl}" target="_blank">Preview as Client</a>
+        </div>
+        <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--ink-mute); line-height:1.5;">Send this URL to the client by email or text. When they open it, they'll see a personalized welcome on the landing page and a fully filled-in agreement ready for signature. After signing, they automatically gain access to the full educational claims guide.</p>
+      `;
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+}
+
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = original; }, 1800);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Copied ✓';
+  });
+}
+
+/* ============================================================
+   GO
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>
