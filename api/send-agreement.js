@@ -1,5 +1,47 @@
 export const config = { runtime: 'edge' };
 
+const SUPABASE_URL = 'https://urmwrmeycimtleoeirmn.supabase.co';
+const SUPABASE_SERVICE_KEY = 'sb_publishable_l165SNZrHJ4XqQh46bqS9g_d9L-EsJX';
+
+async function uploadSignatureToSupabase(base64Sig, trackingId, signedAt) {
+  try {
+    // Convert base64 to binary
+    const base64Data = base64Sig.replace(/^data:image\/png;base64,/, '');
+    const binaryStr = atob(base64Data);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+
+    const filename = `${trackingId}_${Date.now()}.png`;
+
+    // Upload to Supabase Storage
+    const uploadRes = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/signatures/${filename}`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'image/png',
+          'x-upsert': 'true',
+        },
+        body: bytes,
+      }
+    );
+
+    if (!uploadRes.ok) {
+      console.error('Supabase upload failed:', await uploadRes.text());
+      return null;
+    }
+
+    // Return public URL
+    return `${SUPABASE_URL}/storage/v1/object/public/signatures/${filename}`;
+  } catch (err) {
+    console.error('Signature upload error:', err);
+    return null;
+  }
+}
+
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
@@ -18,6 +60,9 @@ export default async function handler(req) {
       reportedOwner,
       clientEmail,
     } = body;
+
+    // Upload signature to Supabase Storage and get public URL
+    const signatureUrl = await uploadSignatureToSupabase(signature, trackingId, signedAt);
 
     const signedDate = new Date(signedAt).toLocaleString('en-US', {
       timeZone: 'America/Chicago',
@@ -72,7 +117,7 @@ export default async function handler(req) {
           </table>
           <div class="sig-box">
             <p style="margin:0 0 8px; font-size:12px; color:#5a5d75; text-transform:uppercase; letter-spacing:0.1em;">Claimant Signature</p>
-            <img src="${signature}" alt="Claimant signature" />
+            ${signatureUrl ? `<img src="${signatureUrl}" alt="Claimant signature" style="max-height:80px; max-width:300px; display:block;" />` : `<p style="color:#999; font-style:italic;">Signature captured digitally on ${signedDate}</p>`}
             <p>${typedName} — ${signedDate}</p>
           </div>
           <div class="footer">
