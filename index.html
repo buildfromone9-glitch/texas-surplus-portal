@@ -2261,7 +2261,10 @@ function setupSignSubmit() {
         .eq('id', agreementId);
 
       if (error) {
-        console.error('Failed to update Supabase:', error);
+        console.error('Failed to update Supabase:', error.message, error.details);
+        alert('Debug - Update error: ' + error.message);
+      } else {
+        console.log('Supabase updated successfully for id:', agreementId);
       }
     }
 
@@ -2417,6 +2420,7 @@ document.addEventListener('DOMContentLoaded', () => App.init());
   // This takes the exact column names from your Supabase screenshot
   // and forces them into the boxes the website expects.
   App.state.client = {
+    id: data.id,
     claimantName: data.claimant_name,
     trackingId: data.tracking_id,
     propertyId: data.property_id,
