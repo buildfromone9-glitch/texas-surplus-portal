@@ -1582,9 +1582,15 @@ function renderAgreement() {
           <tbody>
             <tr><td><strong>Texas Comptroller Property ID</strong></td><td class="amount">${esc(c.propertyId || '[to be assigned]')}</td></tr>
             <tr><td><strong>Reported Owner Name on File</strong></td><td>${esc(c.reportedOwnerName || '[to be assigned]')}</td></tr>
-            <tr><td><strong>Reported Property Address</strong></td><td>${esc(c.reportedAddress || '[to be assigned]')}</td></tr>
-            <tr><td><strong>Reporting Holder</strong></td><td>${esc(c.reportingHolder || '[to be assigned]')}</td></tr>
-            <tr><td><strong>Estimated Reported Value</strong></td><td class="amount">${formatMoney(c.estimatedValue)}</td></tr>
+ <tr>
+  <td>
+    <strong>Estimated Reported Value</strong><br>
+    <span style="font-size:0.82rem; color:var(--ink-soft);">
+      (Estimate only. Actual disbursement may differ)
+    </span>
+  </td>
+  <td class="amount">${formatMoney(c.estimatedValue)}</td>
+</tr>
             <tr><td><strong>Date Researched by SPRG</strong></td><td>${esc(c.dateResearched || c.dateIssued || new Date().toLocaleDateString('en-US'))}</td></tr>
           </tbody>
         </table>
