@@ -2295,23 +2295,34 @@ function bindHandlers(route) {
 
   if (route === 'admin') {
     const form = document.getElementById('admin-form');
-    form?.addEventListener('submit', (e) => {
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const payload = {
-        claimantName: document.getElementById('a-name').value.trim(),
-        trackingId:   document.getElementById('a-trk').value.trim(),
-        dateIssued:   document.getElementById('a-issued').value.trim(),
-        propertyId:   document.getElementById('a-pid').value.trim(),
-        reportedOwnerName: document.getElementById('a-owner').value.trim(),
-        reportedAddress: document.getElementById('a-addr').value.trim(),
-        reportingHolder: document.getElementById('a-holder').value.trim(),
-        estimatedValue: parseFloat(document.getElementById('a-value').value) || null,
-        dateResearched: document.getElementById('a-researched').value.trim(),
-      };
-      const encoded = b64encJson(payload);
-      const baseUrl = window.location.origin + window.location.pathname;
-      const fullUrl = `${baseUrl}?c=${encoded}#/`;
+  claimant_name: document.getElementById('a-name').value.trim(),
+  claimant_email: '',
+  tracking_id: document.getElementById('a-trk').value.trim(),
+  property_id: document.getElementById('a-pid').value.trim(),
+  reported_owner: document.getElementById('a-owner').value.trim(),
+  estimated_value: parseFloat(document.getElementById('a-value').value) || null,
+  signed: false
+};
+const { data, error } = await supabaseClient
+  .from('agreements')
+  .insert([payload])
+  .select();
 
+if (error) {
+  console.error(error);
+  alert('Failed to create agreement.');
+  return;
+}
+
+const agreementId = data[0].id;
+
+const fullUrl =
+  window.location.origin +
+  window.location.pathname +
+  `#/agreement?id=${agreementId}`;
       const result = document.getElementById('admin-result');
       result.style.display = 'block';
       result.innerHTML = `
@@ -2321,11 +2332,12 @@ function bindHandlers(route) {
         </div>
         <div class="admin__actions">
           <button class="btn btn--small" onclick="copyToClipboard('${fullUrl.replace(/'/g, "\\'")}', this)">Copy URL</button>
-          <a class="btn btn--small btn--gold" href="mailto:?subject=${encodeURIComponent('Your Texas Surplus Property Research Packet — Tracking ' + payload.trackingId)}&body=${encodeURIComponent('Hello ' + payload.claimantName + ',\n\nYour personalized SPRG service packet is ready for review. Please use the link below to view your service agreement and, after signing, access the educational claims guide.\n\n' + fullUrl + '\n\nThe link is unique to your case. If you have questions before signing, reply to this email or call us.\n\n— Surplus Property Research Group')}">Email to Client</a>
+          <a class="btn btn--small btn--gold" href="mailto:?subject=${encodeURIComponent('Your Texas Surplus Property Research Packet — Tracking ' + payload.tracking_id)}&body=${encodeURIComponent('Hello ' + payload.claimant_name + ',\n\nYour personalized SPRG service packet is ready for review. Please use the link below to view your service agreement and, after signing, access the educational claims guide.\n\n' + fullUrl + '\n\nThe link is unique to your case. If you have questions before signing, reply to this email or call us.\n\n— Surplus Property Research Group')}">Email to Client</a>
           <a class="btn btn--small btn--ghost" href="${fullUrl}" target="_blank">Preview as Client</a>
         </div>
         <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--ink-mute); line-height:1.5;">Send this URL to the client by email or text. When they open it, they'll see a personalized welcome on the landing page and a fully filled-in agreement ready for signature. After signing, they automatically gain access to the full educational claims guide.</p>
       `;
+      form.reset();
       result.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
