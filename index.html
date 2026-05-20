@@ -2352,6 +2352,29 @@ function copyToClipboard(text, btn) {
    GO
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => App.init());
+  async function loadAgreement() {
+  const hash = window.location.hash;
+  const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+  const params = new URLSearchParams(queryString);
+  const agreementId = params.get("id");
+
+  if (!agreementId) return;
+
+  const { data, error } = await supabaseClient
+    .from("agreements")
+    .select("*")
+    .eq("id", agreementId)
+    .single();
+
+  if (error) {
+    console.error("Supabase Error:", error.message);
+    return;
+  }
+
+  // This updates the app state with real database data
+  App.state.client = data;
+  App.render();
+}
 </script>
 </body>
 </html>
