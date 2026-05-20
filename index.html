@@ -1355,7 +1355,11 @@ function renderLanding() {
       <div class="form">
         <h2 class="form__title">Free Surplus Search Request</h2>
         <p class="form__intro">No charge, no obligation. If we find a match, we'll send you the agreement and a research packet.</p>
-        <form id="search-form-el">
+        <form
+          id="search-form-el"
+          action="https://formspree.io/f/xqejewzo"
+          method="POST"
+        >
           <div class="field">
             <label for="full-name">Full Legal Name</label>
             <input type="text" id="full-name" name="fullName" required />
