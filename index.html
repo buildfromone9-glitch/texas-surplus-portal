@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23faf6ee'/><rect x='1' y='1' width='30' height='30' fill='none' stroke='%2315172b' stroke-width='1.5'/><text x='16' y='23' font-family='Georgia,serif' font-size='20' font-style='italic' text-anchor='middle' fill='%2315172b'>S</text></svg>" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23faf6ee'/%3E%3Crect x='1.5' y='1.5' width='29' height='29' fill='none' stroke='%2315172b' stroke-width='2'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-size='21' font-style='italic' text-anchor='middle' fill='%2315172b'%3ES%3C/text%3E%3C/svg%3E" />
+  <link rel="alternate icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315172b'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-size='21' font-style='italic' text-anchor='middle' fill='%23faf6ee'%3ES%3C/text%3E%3C/svg%3E" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Surplus Property Research Group — Texas Foreclosure Surplus Recovery</title>
 <meta name="description" content="Educational public-records research service helping Texans recover unclaimed foreclosure surplus funds held by the Texas Comptroller." />
@@ -1184,13 +1185,7 @@ const App = {
         this.state.ipLocation = 'unavailable';
       });
 
-    // Trigger the Supabase data loader (MUST await so client data loads before render)
-    await loadAgreement();
-
-    // Load signed state AFTER agreement loads so we key by real agreementId
-    this.loadSignedState();
-
-    // Check for existing Supabase auth session
+    // Check Supabase auth session FIRST so admin login renders immediately
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session?.user) this.state.adminUser = session.user;
 
@@ -1200,7 +1195,21 @@ const App = {
       this.render();
     });
 
-    window.addEventListener('hashchange', () => this.render());
+    // Only load agreement data on agreement route (not admin)
+    const currentRoute = this.getRoute();
+    if (currentRoute === 'agreement') {
+      await loadAgreement();
+      this.loadSignedState();
+    }
+
+    window.addEventListener('hashchange', async () => {
+      const route = this.getRoute();
+      if (route === 'agreement') {
+        await loadAgreement();
+        this.loadSignedState();
+      }
+      this.render();
+    });
     this.render();
   },
 
