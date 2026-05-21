@@ -2584,42 +2584,6 @@ function bindHandlers(route) {
       });
     }
 
-    // Send invite email button handler
-    document.getElementById('send-invite-btn')?.addEventListener('click', async (e) => {
-      const btn = e.currentTarget;
-      const statusEl = document.getElementById('send-invite-status');
-      btn.disabled = true;
-      btn.textContent = 'Sending…';
-      statusEl.style.display = 'inline';
-      statusEl.style.color = 'var(--ink-mute)';
-      statusEl.textContent = '';
-
-      try {
-        const res = await fetch('/api/send-invite', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            claimantEmail: btn.dataset.email,
-            claimantName: btn.dataset.name,
-            trackingId: btn.dataset.tracking,
-            agreementUrl: btn.dataset.url,
-          }),
-        });
-        if (res.ok) {
-          btn.textContent = 'Sent ✓';
-          statusEl.style.color = 'var(--moss)';
-          statusEl.textContent = `Email delivered to ${btn.dataset.email}`;
-        } else {
-          throw new Error('Send failed');
-        }
-      } catch (err) {
-        btn.disabled = false;
-        btn.textContent = 'Email to Client';
-        statusEl.style.color = 'var(--rust)';
-        statusEl.textContent = 'Failed to send. Try again.';
-      }
-    });
-
     // Logout button handler
     const logoutBtn = document.getElementById('admin-logout-btn');
     if (logoutBtn) {
@@ -2680,6 +2644,43 @@ function bindHandlers(route) {
       `;
       form.reset();
       result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Wire up Email to Client button AFTER it's rendered in the DOM
+      document.getElementById('send-invite-btn')?.addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        const statusEl = document.getElementById('send-invite-status');
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        statusEl.style.display = 'inline';
+        statusEl.style.color = 'var(--ink-mute)';
+        statusEl.textContent = '';
+        try {
+          const res = await fetch('/api/send-invite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              claimantEmail: btn.dataset.email,
+              claimantName: btn.dataset.name,
+              trackingId: btn.dataset.tracking,
+              agreementUrl: btn.dataset.url,
+            }),
+          });
+          if (res.ok) {
+            btn.textContent = 'Sent ✓';
+            statusEl.style.color = 'var(--moss)';
+            statusEl.textContent = `Delivered to ${btn.dataset.email}`;
+          } else {
+            const err = await res.json();
+            throw new Error(JSON.stringify(err));
+          }
+        } catch (err) {
+          console.error('Send invite failed:', err);
+          btn.disabled = false;
+          btn.textContent = 'Email to Client';
+          statusEl.style.color = 'var(--rust)';
+          statusEl.textContent = 'Failed to send. Try again.';
+        }
+      });
     });
 
     // ── Invoice form setup ──
