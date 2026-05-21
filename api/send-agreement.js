@@ -30,6 +30,55 @@ async function uploadSignatureToSupabase(base64Sig, trackingId) {
   }
 }
 
+async function uploadAgreementPDF(pdfBase64, trackingId) {
+  try {
+    const pdfBuffer = Buffer.from(pdfBase64, 'base64');
+    const filename = `${trackingId}_${Date.now()}.pdf`;
+    const uploadRes = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/agreements/${filename}`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'application/pdf',
+          'x-upsert': 'true',
+        },
+        body: pdfBuffer,
+      }
+    );
+    if (!uploadRes.ok) {
+      console.error('PDF upload failed:', await uploadRes.text());
+      return null;
+    }
+    return `${SUPABASE_URL}/storage/v1/object/public/agreements/${filename}`;
+  } catch (err) {
+    console.error('PDF upload error:', err);
+    return null;
+  }
+}
+
+async function saveAgreementURL(agreementId, pdfUrl) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/agreements?id=eq.${agreementId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({ agreements_full: pdfUrl }),
+      }
+    );
+    if (!res.ok) console.error('Failed to save agreement URL:', await res.text());
+    else console.log('agreements_full saved for ID:', agreementId);
+  } catch (err) {
+    console.error('saveAgreementURL error:', err);
+  }
+}
+
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
@@ -51,10 +100,18 @@ export default async function handler(req) {
       ipLocation,
       auditLog,
       pdfBase64,
+      agreementId,
     } = body;
 
     // Upload signature image to Supabase Storage
     const signatureUrl = await uploadSignatureToSupabase(signature, trackingId);
+
+    // Upload full agreement PDF to Supabase Storage and save URL to agreements_full column
+    let agreementPdfUrl = null;
+    if (pdfBase64 && agreementId) {
+      agreementPdfUrl = await uploadAgreementPDF(pdfBase64, trackingId);
+      if (agreementPdfUrl) await saveAgreementURL(agreementId, agreementPdfUrl);
+    }
 
     const signedDate = new Date(signedAt).toLocaleString('en-US', {
       timeZone: 'America/Chicago',
