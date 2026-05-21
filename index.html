@@ -2462,7 +2462,10 @@ function setupSignSubmit() {
     }
 
     // SEND EMAIL — clean and simple, no PDF generation needed
-    const agreementPageUrl = `${window.location.origin}${window.location.pathname}#/agreement?id=${agreementId}`;
+    const accessToken = App.state.client?.accessToken;
+    const agreementPageUrl = accessToken
+      ? `${window.location.origin}${window.location.pathname}#/agreement?token=${accessToken}`
+      : `${window.location.origin}${window.location.pathname}#/agreement?id=${agreementId}`;
     try {
       const res = await fetch('/api/send-agreement', {
         method: 'POST',
@@ -2605,7 +2608,8 @@ function bindHandlers(route) {
         estimated_value: parseFloat(document.getElementById('a-value').value) || null,
         fee_percent: 10,
         research_date: document.getElementById('a-research-date').value.trim(),
-        signed: false
+        signed: false,
+        access_token: generateAccessToken(),
       };
       const { data, error } = await supabaseClient
         .from('agreements')
@@ -2620,10 +2624,11 @@ function bindHandlers(route) {
 
       const agreementId = data[0].id;
 
+      const accessToken = data[0].access_token;
       const fullUrl =
         window.location.origin +
         window.location.pathname +
-        `#/agreement?id=${agreementId}`;
+        `#/agreement?token=${accessToken}`;
       const result = document.getElementById('admin-result');
       result.style.display = 'block';
       result.innerHTML = `
@@ -2784,22 +2789,34 @@ function copyToClipboard(text, btn) {
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => App.init());
 
+function generateAccessToken() {
+  const chars = 'abcdefghijkmnpqrstuvwxyz23456789';
+  let token = '';
+  for (let i = 0; i < 24; i++) {
+    token += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return token;
+}
+
 
  async function loadAgreement() {
   const hash = window.location.hash;
   const queryString = hash.includes('?') ? hash.split('?')[1] : '';
   const params = new URLSearchParams(queryString);
-  const agreementId = params.get("id");
 
-  if (!agreementId) return;
+  // Support both token (new) and id (legacy) lookups
+  const token = params.get('token');
+  const legacyId = params.get('id');
 
-  console.log('[SPRG] Loading agreement ID:', agreementId);
+  if (!token && !legacyId) return;
 
-  const { data, error } = await supabaseClient
-    .from("agreements")
-    .select("*")
-    .eq("id", agreementId)
-    .single();
+  console.log('[SPRG] Loading agreement by', token ? 'token' : 'id');
+
+  const query = token
+    ? supabaseClient.from('agreements').select('*').eq('access_token', token).single()
+    : supabaseClient.from('agreements').select('*').eq('id', legacyId).single();
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("[SPRG] Supabase load error:", error.code, error.message, error.details, error.hint);
@@ -2826,6 +2843,7 @@ document.addEventListener('DOMContentLoaded', () => App.init());
   // and forces them into the boxes the website expects.
   App.state.client = {
     id: data.id,
+    accessToken: data.access_token,
     claimantName: data.claimant_name,
     trackingId: data.tracking_id,
     propertyId: data.property_id,
