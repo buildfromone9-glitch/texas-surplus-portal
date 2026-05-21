@@ -1,83 +1,7 @@
-export const config = { runtime: 'nodejs' };
+export const config = { runtime: 'edge' };
 
-const SUPABASE_URL = 'https://urmwrmeycimtleoeirmn.supabase.co';
-const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVybXdybWV5Y2ltdGxlb2Vpcm1uIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTI0Mzc1NiwiZXhwIjoyMDk0ODE5NzU2fQ.3yTbW4w3iy1j9Nez_WCjc9NuNJ8RQSxGG2GGS2PiXak';
 const RESEND_KEY = 're_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi';
 const SPRG_EMAIL = 'buildfromone9@gmail.com';
-
-async function uploadSignatureToSupabase(base64Sig, trackingId) {
-  try {
-    const base64Data = base64Sig.replace(/^data:image\/png;base64,/, '');
-    const binaryStr = Buffer.from(base64Data, 'base64');
-    const filename = `${trackingId}_${Date.now()}.png`;
-    const uploadRes = await fetch(
-      `${SUPABASE_URL}/storage/v1/object/signatures/${filename}`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'Content-Type': 'image/png',
-          'x-upsert': 'true',
-        },
-        body: binaryStr,
-      }
-    );
-    if (!uploadRes.ok) return null;
-    return `${SUPABASE_URL}/storage/v1/object/public/signatures/${filename}`;
-  } catch (err) {
-    console.error('Signature upload error:', err);
-    return null;
-  }
-}
-
-async function uploadAgreementPDF(pdfBase64, trackingId) {
-  try {
-    const pdfBuffer = Buffer.from(pdfBase64, 'base64');
-    const filename = `${trackingId}_${Date.now()}.pdf`;
-    const uploadRes = await fetch(
-      `${SUPABASE_URL}/storage/v1/object/agreements/${filename}`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'Content-Type': 'application/pdf',
-          'x-upsert': 'true',
-        },
-        body: pdfBuffer,
-      }
-    );
-    if (!uploadRes.ok) {
-      console.error('PDF upload failed:', await uploadRes.text());
-      return null;
-    }
-    return `${SUPABASE_URL}/storage/v1/object/public/agreements/${filename}`;
-  } catch (err) {
-    console.error('PDF upload error:', err);
-    return null;
-  }
-}
-
-async function saveAgreementURL(agreementId, pdfUrl) {
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/agreements?id=eq.${agreementId}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'apikey': SUPABASE_SERVICE_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal',
-        },
-        body: JSON.stringify({ agreements_full: pdfUrl }),
-      }
-    );
-    if (!res.ok) console.error('Failed to save agreement URL:', await res.text());
-    else console.log('agreements_full saved for ID:', agreementId);
-  } catch (err) {
-    console.error('saveAgreementURL error:', err);
-  }
-}
 
 export default async function handler(req) {
   if (req.method !== 'POST') {
@@ -85,9 +9,7 @@ export default async function handler(req) {
   }
 
   try {
-    const body = await req.json();
     const {
-      signature,
       typedName,
       signedAt,
       trackingId,
@@ -99,29 +21,8 @@ export default async function handler(req) {
       ipAddress,
       ipLocation,
       auditLog,
-      agreementPdfUrl,
-      agreementId,
-    } = body;
-
-    // Upload signature image to Supabase Storage
-    const signatureUrl = await uploadSignatureToSupabase(signature, trackingId);
-
-    // Fetch the PDF from Supabase Storage URL and convert to base64 for email attachment
-    let pdfAttachmentBase64 = null;
-    if (agreementPdfUrl) {
-      try {
-        const pdfRes = await fetch(agreementPdfUrl);
-        if (pdfRes.ok) {
-          const pdfBuf = await pdfRes.arrayBuffer();
-          pdfAttachmentBase64 = Buffer.from(pdfBuf).toString('base64');
-          console.log('PDF fetched for attachment:', Math.round(pdfBuf.byteLength / 1024), 'KB');
-        } else {
-          console.error('Failed to fetch PDF from URL:', pdfRes.status);
-        }
-      } catch (err) {
-        console.error('PDF fetch error:', err.message);
-      }
-    }
+      agreementPageUrl,
+    } = await req.json();
 
     const signedDate = new Date(signedAt).toLocaleString('en-US', {
       timeZone: 'America/Chicago',
@@ -129,107 +30,97 @@ export default async function handler(req) {
       timeStyle: 'short'
     });
 
+    const fmt = (n) => n ? '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—';
     const feeAmount = estimatedValue ? (estimatedValue * 0.10).toFixed(2) : null;
     const netAmount = estimatedValue ? (estimatedValue * 0.90).toFixed(2) : null;
-    const fmt = (n) => n ? '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '$ ______________';
 
-    const sprgEmailHtml = `
-      <!DOCTYPE html><html><head><meta charset="UTF-8"/>
-      <style>
-        body{font-family:Georgia,serif;color:#15172b;background:#faf6ee;margin:0;padding:0}
-        .wrapper{max-width:700px;margin:0 auto;padding:40px 24px}
-        .header{border-bottom:2px solid #15172b;padding-bottom:24px;margin-bottom:32px}
-        .header h1{font-size:24px;margin:0 0 4px}
-        .header p{margin:0;color:#5a5d75;font-size:14px}
-        .badge{display:inline-block;background:#3d5c44;color:white;padding:4px 12px;font-size:12px;font-family:monospace;border-radius:2px;margin-bottom:24px}
-        table{width:100%;border-collapse:collapse;margin-bottom:32px}
-        td{padding:10px 12px;border-bottom:1px solid #d8cdb3;font-size:14px}
-        td:first-child{font-weight:bold;color:#5a5d75;width:200px}
-        .sig-box{border:1px solid #d8cdb3;padding:16px;background:#fffcf5;margin-bottom:32px}
-        .footer{font-size:11px;color:#999;border-top:1px solid #d8cdb3;padding-top:16px}
-      </style></head><body>
-      <div class="wrapper">
-        <div class="header"><h1>Surplus Property Research Group</h1><p>Texas Foreclosure Surplus Recovery — Signed Agreement</p></div>
-        <div class="badge">✓ SIGNED</div>
-        <p style="font-size:14px;color:#2a2d4a;">The full signed agreement is attached as a PDF.</p>
-        <table>
-          <tr><td>Claimant</td><td>${claimantName}</td></tr>
-          <tr><td>Tracking #</td><td>${trackingId}</td></tr>
-          <tr><td>Property ID</td><td>${propertyId}</td></tr>
-          <tr><td>Reported Owner</td><td>${reportedOwner || '—'}</td></tr>
-          <tr><td>Estimated Value</td><td>${fmt(estimatedValue)}</td></tr>
-          <tr><td>SPRG Fee (10%)</td><td>${fmt(feeAmount)}</td></tr>
-          <tr><td>Net to Claimant</td><td>${fmt(netAmount)}</td></tr>
-          <tr><td>Client Email</td><td>${clientEmail}</td></tr>
-          <tr><td>Signed</td><td>${signedDate} (CST)</td></tr>
-          <tr><td>Typed Name</td><td>${typedName}</td></tr>
-          <tr><td>IP Address</td><td>${ipAddress || 'unavailable'}</td></tr>
-          <tr><td>Location</td><td>${ipLocation || 'unavailable'}</td></tr>
-        </table>
-        ${auditLog && auditLog.length > 0 ? `
-        <div style="margin-bottom:32px;background:#f9f9f9;padding:16px;border-left:3px solid #a07f3d;">
-          <p style="font-family:monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#5a5d75;margin:0 0 12px;">Audit Log</p>
-          <table style="width:100%;border-collapse:collapse;font-family:monospace;">
-            ${auditLog.map(entry => `
-              <tr>
-                <td style="padding:4px 16px 4px 0;font-size:12px;color:#a07f3d;white-space:nowrap;">${entry.time}</td>
-                <td style="padding:4px 0;font-size:12px;color:#2a2d4a;">${entry.event}</td>
-              </tr>`).join('')}
-          </table>
-        </div>` : ''}
-        <div class="sig-box">
-          <p style="margin:0 0 8px;font-size:12px;color:#5a5d75;text-transform:uppercase;letter-spacing:0.1em;">Claimant Signature</p>
-          ${signatureUrl ? `<img src="${signatureUrl}" alt="Claimant signature" style="max-height:80px;max-width:300px;display:block;"/>` : `<p style="color:#999;font-style:italic;">Signature captured digitally on ${signedDate}</p>`}
-          <p style="margin:8px 0 0;font-size:12px;color:#5a5d75;border-top:1px solid #15172b;padding-top:8px;">${typedName} — ${signedDate}</p>
-        </div>
-        <div class="footer">
-          <p>This email was automatically generated when the claimant signed the SPRG service agreement online.</p>
-          <p>Tracking: ${trackingId} | Signed: ${signedAt}</p>
-        </div>
-      </div></body></html>`;
+    // Email to SPRG
+    const sprgHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<style>
+  body{font-family:Georgia,serif;color:#15172b;background:#faf6ee;margin:0;padding:0}
+  .wrap{max-width:700px;margin:0 auto;padding:40px 24px}
+  .hdr{border-bottom:2px solid #15172b;padding-bottom:24px;margin-bottom:32px}
+  .hdr h1{font-size:24px;margin:0 0 4px}
+  .hdr p{margin:0;color:#5a5d75;font-size:14px}
+  .badge{display:inline-block;background:#3d5c44;color:white;padding:4px 14px;font-size:12px;font-family:monospace;border-radius:2px;margin-bottom:28px;letter-spacing:.05em}
+  table{width:100%;border-collapse:collapse;margin-bottom:32px}
+  td{padding:10px 12px;border-bottom:1px solid #d8cdb3;font-size:14px}
+  td:first-child{font-weight:bold;color:#5a5d75;width:200px}
+  .btn{display:inline-block;background:#15172b;color:#fff;padding:12px 28px;text-decoration:none;font-family:monospace;font-size:13px;letter-spacing:.08em;border-radius:2px;margin:8px 0 32px}
+  .audit{background:#f9f9f9;padding:20px;border-left:3px solid #a07f3d;margin-bottom:32px}
+  .audit-title{font-family:monospace;font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:#5a5d75;margin:0 0 14px}
+  .audit table{margin:0}
+  .audit td{border:none;padding:4px 0;font-family:monospace;font-size:12px}
+  .audit td:first-child{color:#a07f3d;width:110px;font-weight:normal}
+  .ftr{font-size:11px;color:#999;border-top:1px solid #d8cdb3;padding-top:16px}
+</style></head><body>
+<div class="wrap">
+  <div class="hdr"><h1>Surplus Property Research Group</h1><p>Texas Foreclosure Surplus Recovery — Signed Agreement</p></div>
+  <div class="badge">✓ SIGNED</div>
+  <table>
+    <tr><td>Claimant</td><td>${claimantName}</td></tr>
+    <tr><td>Tracking #</td><td>${trackingId}</td></tr>
+    <tr><td>Property ID</td><td>${propertyId}</td></tr>
+    <tr><td>Reported Owner</td><td>${reportedOwner || '—'}</td></tr>
+    <tr><td>Estimated Value</td><td>${fmt(estimatedValue)}</td></tr>
+    <tr><td>SPRG Fee (10%)</td><td>${fmt(feeAmount)}</td></tr>
+    <tr><td>Net to Claimant</td><td>${fmt(netAmount)}</td></tr>
+    <tr><td>Client Email</td><td>${clientEmail}</td></tr>
+    <tr><td>Signed</td><td>${signedDate} (CST)</td></tr>
+    <tr><td>Signed By</td><td>${typedName}</td></tr>
+    <tr><td>IP Address</td><td>${ipAddress || 'unavailable'}</td></tr>
+    <tr><td>Location</td><td>${ipLocation || 'unavailable'}</td></tr>
+  </table>
 
-    const clientEmailHtml = `
-      <!DOCTYPE html><html><head><meta charset="UTF-8"/>
-      <style>
-        body{font-family:Georgia,serif;color:#15172b;background:#faf6ee;margin:0;padding:0}
-        .wrapper{max-width:600px;margin:0 auto;padding:40px 24px}
-        .header{border-bottom:2px solid #15172b;padding-bottom:24px;margin-bottom:32px}
-        .header h1{font-size:22px;margin:0 0 4px}
-        .header p{margin:0;color:#5a5d75;font-size:14px}
-        .footer{font-size:11px;color:#999;border-top:1px solid #d8cdb3;padding-top:16px;margin-top:32px}
-      </style></head><body>
-      <div class="wrapper">
-        <div class="header"><h1>Surplus Property Research Group</h1><p>Texas Foreclosure Surplus Recovery</p></div>
-        <p style="font-size:15px;line-height:1.7;color:#2a2d4a;">Hi ${claimantName},</p>
-        <p style="font-size:15px;line-height:1.7;color:#2a2d4a;">We have received your signed Texas Surplus Property Research Service Agreement. Your fully signed agreement is attached to this email as a PDF for your records.</p>
-        <div style="background:#f3ecdc;border-left:3px solid #a07f3d;padding:12px 16px;margin:24px 0;font-size:14px;">
-          <strong style="display:block;margin-bottom:4px;">Your Tracking #: ${trackingId}</strong>
-          Signed: ${signedDate}
-        </div>
-        <p style="font-size:15px;line-height:1.7;color:#2a2d4a;">To access your educational claims guide, open the link we sent you and click "Claims Guide" in the navigation.</p>
-        <div style="margin:24px 0;padding:16px 20px;background:#f3ecdc;border-left:3px solid #a07f3d;">
-          <p style="font-family:monospace;font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:#a07f3d;margin:0 0 10px;">Important: When You Receive Your Disbursement</p>
-          <p style="font-size:14px;line-height:1.6;color:#2a2d4a;margin:0 0 8px;">Per Section 1 of your Agreement, notify SPRG in writing within <strong>3 business days</strong> of receiving your disbursement. Reply to this email with:</p>
-          <ul style="font-size:14px;line-height:1.9;color:#2a2d4a;margin:0;padding-left:18px;">
-            <li>Date of disbursement</li>
-            <li>Gross amount received ($)</li>
-            <li>Method of payment (check, ACH, or other)</li>
-          </ul>
-        </div>
-        <p style="font-size:15px;line-height:1.7;color:#2a2d4a;">— Surplus Property Research Group</p>
-        <div class="footer"><p>Tracking: ${trackingId}</p></div>
-      </div></body></html>`;
+  <a href="${agreementPageUrl}" class="btn">VIEW FULL SIGNED AGREEMENT →</a>
 
-    // Build attachments from fetched PDF
-    const attachments = [];
-    if (pdfAttachmentBase64) {
-      attachments.push({
-        filename: `SPRG-Agreement-${trackingId}.pdf`,
-        content: pdfAttachmentBase64,
-        type: 'application/pdf',
-        disposition: 'attachment',
-      });
-    }
+  ${auditLog && auditLog.length > 0 ? `
+  <div class="audit">
+    <p class="audit-title">Audit Log</p>
+    <table>${auditLog.map(e => `
+      <tr><td>${e.time}</td><td>${e.event}</td></tr>`).join('')}
+    </table>
+  </div>` : ''}
+
+  <div class="ftr">
+    <p>Generated automatically when claimant signed the SPRG service agreement online.</p>
+    <p>Tracking: ${trackingId} | Signed: ${signedAt}</p>
+  </div>
+</div></body></html>`;
+
+    // Confirmation email to client
+    const clientHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<style>
+  body{font-family:Georgia,serif;color:#15172b;background:#faf6ee;margin:0;padding:0}
+  .wrap{max-width:600px;margin:0 auto;padding:40px 24px}
+  .hdr{border-bottom:2px solid #15172b;padding-bottom:24px;margin-bottom:32px}
+  .hdr h1{font-size:22px;margin:0 0 4px}
+  .hdr p{margin:0;color:#5a5d75;font-size:14px}
+  p{font-size:15px;line-height:1.7;color:#2a2d4a}
+  .trk{background:#f3ecdc;border-left:3px solid #a07f3d;padding:12px 16px;margin:24px 0;font-size:14px}
+  .notice{margin:24px 0;padding:16px 20px;background:#f3ecdc;border-left:3px solid #a07f3d}
+  .notice-title{font-family:monospace;font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:#a07f3d;margin:0 0 10px}
+  ul{font-size:14px;line-height:1.9;color:#2a2d4a;margin:0;padding-left:18px}
+  .ftr{font-size:11px;color:#999;border-top:1px solid #d8cdb3;padding-top:16px;margin-top:32px}
+</style></head><body>
+<div class="wrap">
+  <div class="hdr"><h1>Surplus Property Research Group</h1><p>Texas Foreclosure Surplus Recovery</p></div>
+  <p>Hi ${claimantName},</p>
+  <p>We have received your signed Texas Surplus Property Research Service Agreement.</p>
+  <div class="trk"><strong style="display:block;margin-bottom:4px;">Your Tracking #: ${trackingId}</strong>Signed: ${signedDate}</div>
+  <p>To access your educational claims guide, open the link we sent you and click "Claims Guide" in the navigation.</p>
+  <div class="notice">
+    <p class="notice-title">Important: When You Receive Your Disbursement</p>
+    <p style="font-size:14px;line-height:1.6;color:#2a2d4a;margin:0 0 8px;">Per Section 1 of your Agreement, notify SPRG in writing within <strong>3 business days</strong> of receiving your disbursement. Reply to this email with:</p>
+    <ul>
+      <li>Date of disbursement</li>
+      <li>Gross amount received ($)</li>
+      <li>Method of payment (check, ACH, or other)</li>
+    </ul>
+  </div>
+  <p>— Surplus Property Research Group</p>
+  <div class="ftr"><p>Tracking: ${trackingId}</p></div>
+</div></body></html>`;
 
     // Send to SPRG
     const sprgRes = await fetch('https://api.resend.com/emails', {
@@ -239,12 +130,11 @@ export default async function handler(req) {
         from: 'onboarding@resend.dev',
         to: SPRG_EMAIL,
         subject: `[SIGNED] ${trackingId} — ${claimantName}`,
-        html: sprgEmailHtml,
-        attachments,
+        html: sprgHtml,
       }),
     });
 
-    // Send to client
+    // Send confirmation to client
     if (clientEmail) {
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -253,8 +143,7 @@ export default async function handler(req) {
           from: 'onboarding@resend.dev',
           to: clientEmail,
           subject: `Your SPRG Agreement Has Been Received — ${trackingId}`,
-          html: clientEmailHtml,
-          attachments,
+          html: clientHtml,
         }),
       });
     }

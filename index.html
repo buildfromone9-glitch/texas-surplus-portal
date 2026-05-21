@@ -9,8 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
   /* ============================================================
      DESIGN TOKENS
@@ -2444,53 +2443,13 @@ function setupSignSubmit() {
       console.error('No agreementId on App.state.client — DB update skipped. client:', JSON.stringify(App.state.client));
     }
 
-    // GENERATE PDF — wrapped so failure never blocks email
-    let agreementPdfUrl = null;
-    const trackingId = App.state.client?.trackingId || 'unknown';
-
-    try {
-      console.log('[SPRG] Generating PDF...');
-      const pdfBase64 = await generateSignedPDF();
-      console.log('[SPRG] PDF generated:', pdfBase64 ? Math.round(pdfBase64.length / 1024) + 'KB' : 'FAILED');
-
-      if (pdfBase64 && agreementId) {
-        const pdfBytes = Uint8Array.from(atob(pdfBase64), c => c.charCodeAt(0));
-        const filename = `${trackingId}_${Date.now()}.pdf`;
-
-        const { error: uploadError } = await supabaseClient
-          .storage
-          .from('agreements')
-          .upload(filename, pdfBytes, { contentType: 'application/pdf', upsert: true });
-
-        if (uploadError) {
-          console.error('[SPRG] PDF upload error:', uploadError.message, uploadError);
-        } else {
-          const { data: urlData } = supabaseClient.storage.from('agreements').getPublicUrl(filename);
-          agreementPdfUrl = urlData?.publicUrl || null;
-          console.log('[SPRG] PDF URL:', agreementPdfUrl);
-
-          if (agreementPdfUrl) {
-            const { error: updateError } = await supabaseClient
-              .from('agreements')
-              .update({ agreements_full: agreementPdfUrl })
-              .eq('id', agreementId);
-            if (updateError) console.error('[SPRG] agreements_full error:', updateError.message);
-            else console.log('[SPRG] agreements_full saved ✓');
-          }
-        }
-      }
-    } catch (pdfErr) {
-      console.error('[SPRG] PDF block failed (non-fatal):', pdfErr.message);
-    }
-
-    // SEND EMAIL — always runs regardless of PDF outcome
-    console.log('[SPRG] Sending email, pdfUrl:', agreementPdfUrl);
+    // SEND EMAIL — clean and simple, no PDF generation needed
+    const agreementPageUrl = `${window.location.origin}${window.location.pathname}#/agreement?id=${agreementId}`;
     try {
       const res = await fetch('/api/send-agreement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          signature: App.state.signature,
           typedName,
           signedAt: App.state.signedAt,
           trackingId: App.state.client?.trackingId || '',
@@ -2503,7 +2462,7 @@ function setupSignSubmit() {
           ipLocation: App.state.ipLocation || 'unavailable',
           auditLog: App.state.auditLog,
           agreementId,
-          agreementPdfUrl,
+          agreementPageUrl,
         }),
       });
       const result = await res.json();
@@ -2761,47 +2720,7 @@ function copyToClipboard(text, btn) {
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => App.init());
 
-async function generateSignedPDF() {
-  try {
-    const { jsPDF } = window.jspdf;
-    const element = document.getElementById('app');
-    if (!element) return null;
 
-    // Capture full page at high quality
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#faf6ee',
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      windowWidth: document.documentElement.scrollWidth,
-      windowHeight: document.documentElement.scrollHeight,
-    });
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.92);
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'letter' });
-
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-    const imgW = canvas.width;
-    const imgH = canvas.height;
-    const ratio = pageW / imgW;
-    const scaledH = imgH * ratio;
-
-    let yOffset = 0;
-    while (yOffset < scaledH) {
-      if (yOffset > 0) pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, scaledH);
-      yOffset += pageH;
-    }
-
-    return pdf.output('datauristring').split(',')[1]; // return base64 only
-  } catch (err) {
-    console.error('[SPRG] PDF generation failed:', err);
-    return null;
-  }
-}
  async function loadAgreement() {
   const hash = window.location.hash;
   const queryString = hash.includes('?') ? hash.split('?')[1] : '';
