@@ -2484,11 +2484,20 @@ function updateSubmitState() {
   const typed   = document.getElementById('typed-name');
   const confirm = document.getElementById('confirm-box');
   const email   = document.getElementById('sign-email');
-  const ready   = pad?.classList.contains('signed')
+  // CRITICAL: never allow signing without a real agreementId loaded from Supabase
+  const hasAgreementId = !!(App.state.client?.id);
+  const ready   = hasAgreementId
+               && pad?.classList.contains('signed')
                && typed?.value.trim().length >= 3
                && confirm?.checked
                && email?.value.trim().length > 0;
   submit.disabled = !ready;
+  // Show a warning if no agreement ID (blank page accessed directly)
+  const errEl = document.getElementById('sign-error');
+  if (errEl && !hasAgreementId) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'This agreement link is invalid. Please use the personalized link sent to you by SPRG.';
+  }
 }
 
 /* ============================================================
