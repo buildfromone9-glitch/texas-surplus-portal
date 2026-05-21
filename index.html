@@ -2452,6 +2452,7 @@ function setupSignSubmit() {
           ipAddress: App.state.ipAddress || 'unavailable',
           ipLocation: App.state.ipLocation || 'unavailable',
           auditLog: App.state.auditLog,
+          agreementId: App.state.client?.id,
         }),
       });
     } catch (err) {
