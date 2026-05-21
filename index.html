@@ -1165,7 +1165,7 @@ const App = {
     console.log(`[AUDIT] ${timestamp} — ${event}`);
   },
 
-  init() {
+  async init() {
     this.loadClient();
     this.loadSignedState();
     
@@ -1182,8 +1182,8 @@ const App = {
         this.state.ipLocation = 'unavailable';
       });
 
-    // Trigger the Supabase data loader
-    loadAgreement(); 
+    // Trigger the Supabase data loader (MUST await so client data loads before render)
+    await loadAgreement(); 
     
     window.addEventListener('hashchange', () => this.render());
     this.render();
