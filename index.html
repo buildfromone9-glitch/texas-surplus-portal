@@ -2451,7 +2451,6 @@ function setupSignSubmit() {
 
     // UPLOAD PDF directly to Supabase Storage from the browser (avoids Vercel 4.5MB body limit)
     let agreementPdfUrl = null;
-    const agreementId = App.state.client?.id;
     const trackingId = App.state.client?.trackingId || 'unknown';
 
     if (pdfBase64 && agreementId) {
