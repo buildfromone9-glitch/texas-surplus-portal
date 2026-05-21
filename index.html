@@ -2584,6 +2584,42 @@ function bindHandlers(route) {
       });
     }
 
+    // Send invite email button handler
+    document.getElementById('send-invite-btn')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const statusEl = document.getElementById('send-invite-status');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      statusEl.style.display = 'inline';
+      statusEl.style.color = 'var(--ink-mute)';
+      statusEl.textContent = '';
+
+      try {
+        const res = await fetch('/api/send-invite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            claimantEmail: btn.dataset.email,
+            claimantName: btn.dataset.name,
+            trackingId: btn.dataset.tracking,
+            agreementUrl: btn.dataset.url,
+          }),
+        });
+        if (res.ok) {
+          btn.textContent = 'Sent ✓';
+          statusEl.style.color = 'var(--moss)';
+          statusEl.textContent = `Email delivered to ${btn.dataset.email}`;
+        } else {
+          throw new Error('Send failed');
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Email to Client';
+        statusEl.style.color = 'var(--rust)';
+        statusEl.textContent = 'Failed to send. Try again.';
+      }
+    });
+
     // Logout button handler
     const logoutBtn = document.getElementById('admin-logout-btn');
     if (logoutBtn) {
@@ -2636,7 +2672,8 @@ function bindHandlers(route) {
         </div>
         <div class="admin__actions">
           <button class="btn btn--small" onclick="copyToClipboard('${fullUrl.replace(/'/g, "\\'")}', this)">Copy URL</button>
-          <a class="btn btn--small btn--gold" href="mailto:?subject=${encodeURIComponent('Your Texas Surplus Property Research Packet — Tracking ' + payload.tracking_id)}&body=${encodeURIComponent('Hello ' + payload.claimant_name + ',\n\nYour personalized SPRG service packet is ready for review. Please use the link below to view your service agreement and, after signing, access the educational claims guide.\n\n' + fullUrl + '\n\nThe link is unique to your case. If you have questions before signing, reply to this email or call us.\n\n— Surplus Property Research Group')}">Email to Client</a>
+          <button class="btn btn--small btn--gold" id="send-invite-btn" data-email="${esc(payload.claimant_email)}" data-name="${esc(payload.claimant_name)}" data-tracking="${esc(payload.tracking_id)}" data-url="${esc(fullUrl)}">Email to Client</button>
+          <span id="send-invite-status" style="font-size:0.85rem; margin-left:0.75rem; display:none;"></span>
           <a class="btn btn--small btn--ghost" href="${fullUrl}" target="_blank">Preview as Client</a>
         </div>
         <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--ink-mute); line-height:1.5;">Send this URL to the client by email or text. When they open it, they'll see a personalized welcome on the landing page and a fully filled-in agreement ready for signature. After signing, they automatically gain access to the full educational claims guide.</p>
