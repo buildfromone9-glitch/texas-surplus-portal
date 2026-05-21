@@ -2463,9 +2463,7 @@ function setupSignSubmit() {
 
     // SEND EMAIL — clean and simple, no PDF generation needed
     const accessToken = App.state.client?.accessToken;
-    const agreementPageUrl = accessToken
-      ? `${window.location.origin}${window.location.pathname}#/agreement?token=${accessToken}`
-      : `${window.location.origin}${window.location.pathname}#/agreement?id=${agreementId}`;
+    const agreementPageUrl = `${window.location.origin}${window.location.pathname}#/agreement?token=${accessToken}`;
     try {
       const res = await fetch('/api/send-agreement', {
         method: 'POST',
@@ -2803,20 +2801,15 @@ function generateAccessToken() {
   const hash = window.location.hash;
   const queryString = hash.includes('?') ? hash.split('?')[1] : '';
   const params = new URLSearchParams(queryString);
-
-  // Support both token (new) and id (legacy) lookups
   const token = params.get('token');
-  const legacyId = params.get('id');
 
-  if (!token && !legacyId) return;
+  if (!token) return;
 
-  console.log('[SPRG] Loading agreement by', token ? 'token' : 'id');
-
-  const query = token
-    ? supabaseClient.from('agreements').select('*').eq('access_token', token).single()
-    : supabaseClient.from('agreements').select('*').eq('id', legacyId).single();
-
-  const { data, error } = await query;
+  const { data, error } = await supabaseClient
+    .from('agreements')
+    .select('*')
+    .eq('access_token', token)
+    .single();
 
   if (error) {
     console.error("[SPRG] Supabase load error:", error.code, error.message, error.details, error.hint);
