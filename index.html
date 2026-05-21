@@ -2639,10 +2639,10 @@ function bindHandlers(route) {
           <button class="btn btn--small btn--gold" id="send-invite-btn">Email to Client</button>
           <span id="send-invite-status" style="font-size:0.85rem; margin-left:0.75rem; display:none;"></span>
           <a class="btn btn--small btn--ghost" href="${fullUrl}" target="_blank">Preview as Client</a>
+          <button class="btn btn--small" id="reset-form-btn" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Reset Form</button>
         </div>
         <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--ink-mute); line-height:1.5;">Send this URL to the client by email or text. When they open it, they'll see a personalized welcome on the landing page and a fully filled-in agreement ready for signature. After signing, they automatically gain access to the full educational claims guide.</p>
       `;
-      form.reset();
       result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       // Store invite data in closure (avoids HTML encoding issues with data attributes)
@@ -2652,6 +2652,14 @@ function bindHandlers(route) {
         trackingId: payload.tracking_id,
         agreementUrl: fullUrl,
       };
+
+      // Wire up Reset Form button
+      document.getElementById('reset-form-btn')?.addEventListener('click', () => {
+        form.reset();
+        result.style.display = 'none';
+        result.innerHTML = '';
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
 
       // Wire up Email to Client button AFTER it's rendered in the DOM
       document.getElementById('send-invite-btn')?.addEventListener('click', async (e) => {
