@@ -1167,7 +1167,6 @@ const App = {
 
   async init() {
     this.loadClient();
-    this.loadSignedState();
     
     // Fetch IP address and location via HTTPS
     fetch('https://ipinfo.io/json')
@@ -1183,8 +1182,11 @@ const App = {
       });
 
     // Trigger the Supabase data loader (MUST await so client data loads before render)
-    await loadAgreement(); 
-    
+    await loadAgreement();
+
+    // Load signed state AFTER agreement loads so we key by real agreementId
+    this.loadSignedState();
+
     window.addEventListener('hashchange', () => this.render());
     this.render();
   },
@@ -1204,12 +1206,16 @@ const App = {
 
   loadSignedState() {
     try {
+      // Key by agreementId — never load state for 'guest' (unsigned/blank pages)
+      const agreementId = String(this.state.client?.id || '');
+      if (!agreementId) {
+        localStorage.removeItem(STORE_KEY); // clear any stale guest entry
+        return;
+      }
       const raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        // Only load if it's for this same client (by trackingId)
-        const currentTrk = this.state.client?.trackingId || 'guest';
-        if (parsed.trackingId === currentTrk) {
+        if (parsed.agreementId === agreementId) {
           this.state.signature = parsed.signature;
           this.state.typedName = parsed.typedName;
           this.state.signedAt = parsed.signedAt;
@@ -1222,8 +1228,10 @@ const App = {
 
   saveSignedState() {
     try {
+      const agreementId = String(this.state.client?.id || '');
+      if (!agreementId) return; // never save for guest/blank pages
       localStorage.setItem(STORE_KEY, JSON.stringify({
-        trackingId: this.state.client?.trackingId || 'guest',
+        agreementId,
         signature: this.state.signature,
         typedName: this.state.typedName,
         signedAt: this.state.signedAt,
