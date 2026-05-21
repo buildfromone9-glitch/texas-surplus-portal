@@ -99,18 +99,28 @@ export default async function handler(req) {
       ipAddress,
       ipLocation,
       auditLog,
-      pdfBase64,
+      agreementPdfUrl,
       agreementId,
     } = body;
 
     // Upload signature image to Supabase Storage
     const signatureUrl = await uploadSignatureToSupabase(signature, trackingId);
 
-    // Upload full agreement PDF to Supabase Storage and save URL to agreements_full column
-    let agreementPdfUrl = null;
-    if (pdfBase64 && agreementId) {
-      agreementPdfUrl = await uploadAgreementPDF(pdfBase64, trackingId);
-      if (agreementPdfUrl) await saveAgreementURL(agreementId, agreementPdfUrl);
+    // Fetch the PDF from Supabase Storage URL and convert to base64 for email attachment
+    let pdfAttachmentBase64 = null;
+    if (agreementPdfUrl) {
+      try {
+        const pdfRes = await fetch(agreementPdfUrl);
+        if (pdfRes.ok) {
+          const pdfBuf = await pdfRes.arrayBuffer();
+          pdfAttachmentBase64 = Buffer.from(pdfBuf).toString('base64');
+          console.log('PDF fetched for attachment:', Math.round(pdfBuf.byteLength / 1024), 'KB');
+        } else {
+          console.error('Failed to fetch PDF from URL:', pdfRes.status);
+        }
+      } catch (err) {
+        console.error('PDF fetch error:', err.message);
+      }
     }
 
     const signedDate = new Date(signedAt).toLocaleString('en-US', {
@@ -210,12 +220,12 @@ export default async function handler(req) {
         <div class="footer"><p>Tracking: ${trackingId}</p></div>
       </div></body></html>`;
 
-    // Build attachments — use client-generated PDF
+    // Build attachments from fetched PDF
     const attachments = [];
-    if (pdfBase64) {
+    if (pdfAttachmentBase64) {
       attachments.push({
         filename: `SPRG-Agreement-${trackingId}.pdf`,
-        content: pdfBase64,
+        content: pdfAttachmentBase64,
         type: 'application/pdf',
         disposition: 'attachment',
       });
