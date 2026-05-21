@@ -2722,6 +2722,8 @@ document.addEventListener('DOMContentLoaded', () => App.init());
 
   if (!agreementId) return;
 
+  console.log('[SPRG] Loading agreement ID:', agreementId);
+
   const { data, error } = await supabaseClient
     .from("agreements")
     .select("*")
@@ -2729,9 +2731,24 @@ document.addEventListener('DOMContentLoaded', () => App.init());
     .single();
 
   if (error) {
-    console.error("Supabase Error:", error.message);
+    console.error("[SPRG] Supabase load error:", error.code, error.message, error.details, error.hint);
+    // Show visible error on the page so it's easy to debug
+    const app = document.getElementById('app');
+    if (app) {
+      app.innerHTML += `<div style="position:fixed;bottom:0;left:0;right:0;background:#8b3a2a;color:white;padding:12px 20px;font-family:monospace;font-size:13px;z-index:9999;">
+        ⚠️ Agreement load failed (ID: ${agreementId}): ${error.message} [${error.code}]
+        <br>Open DevTools Console for full details.
+      </div>`;
+    }
     return;
   }
+
+  if (!data) {
+    console.error('[SPRG] No data returned for agreement ID:', agreementId);
+    return;
+  }
+
+  console.log('[SPRG] Agreement loaded successfully:', data.tracking_id);
 
   // BULLETPROOF MAPPING
   // This takes the exact column names from your Supabase screenshot
