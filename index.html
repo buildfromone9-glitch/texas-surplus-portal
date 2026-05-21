@@ -2444,47 +2444,47 @@ function setupSignSubmit() {
       console.error('No agreementId on App.state.client — DB update skipped. client:', JSON.stringify(App.state.client));
     }
 
-    // GENERATE PDF from current page (client-side)
-    console.log('[SPRG] Generating signed agreement PDF...');
-    const pdfBase64 = await generateSignedPDF();
-    console.log('[SPRG] PDF generated:', pdfBase64 ? 'yes (' + Math.round(pdfBase64.length / 1024) + 'KB)' : 'failed');
-
-    // UPLOAD PDF directly to Supabase Storage from the browser (avoids Vercel 4.5MB body limit)
+    // GENERATE PDF — wrapped so failure never blocks email
     let agreementPdfUrl = null;
     const trackingId = App.state.client?.trackingId || 'unknown';
 
-    if (pdfBase64 && agreementId) {
-      try {
+    try {
+      console.log('[SPRG] Generating PDF...');
+      const pdfBase64 = await generateSignedPDF();
+      console.log('[SPRG] PDF generated:', pdfBase64 ? Math.round(pdfBase64.length / 1024) + 'KB' : 'FAILED');
+
+      if (pdfBase64 && agreementId) {
         const pdfBytes = Uint8Array.from(atob(pdfBase64), c => c.charCodeAt(0));
         const filename = `${trackingId}_${Date.now()}.pdf`;
-        const { data: uploadData, error: uploadError } = await supabaseClient
+
+        const { error: uploadError } = await supabaseClient
           .storage
           .from('agreements')
           .upload(filename, pdfBytes, { contentType: 'application/pdf', upsert: true });
 
         if (uploadError) {
-          console.error('[SPRG] PDF upload error:', uploadError.message);
+          console.error('[SPRG] PDF upload error:', uploadError.message, uploadError);
         } else {
           const { data: urlData } = supabaseClient.storage.from('agreements').getPublicUrl(filename);
           agreementPdfUrl = urlData?.publicUrl || null;
-          console.log('[SPRG] PDF uploaded:', agreementPdfUrl);
+          console.log('[SPRG] PDF URL:', agreementPdfUrl);
 
-          // Save URL to agreements_full column
           if (agreementPdfUrl) {
             const { error: updateError } = await supabaseClient
               .from('agreements')
               .update({ agreements_full: agreementPdfUrl })
               .eq('id', agreementId);
-            if (updateError) console.error('[SPRG] agreements_full save error:', updateError.message);
-            else console.log('[SPRG] agreements_full saved');
+            if (updateError) console.error('[SPRG] agreements_full error:', updateError.message);
+            else console.log('[SPRG] agreements_full saved ✓');
           }
         }
-      } catch (err) {
-        console.error('[SPRG] PDF upload failed:', err.message);
       }
+    } catch (pdfErr) {
+      console.error('[SPRG] PDF block failed (non-fatal):', pdfErr.message);
     }
 
-    // SEND EMAIL — send URL only (not the full PDF bytes) to stay under Vercel body limit
+    // SEND EMAIL — always runs regardless of PDF outcome
+    console.log('[SPRG] Sending email, pdfUrl:', agreementPdfUrl);
     try {
       const res = await fetch('/api/send-agreement', {
         method: 'POST',
@@ -2508,7 +2508,7 @@ function setupSignSubmit() {
       });
       const result = await res.json();
       if (!res.ok) console.error('[SPRG] Email API error:', result);
-      else console.log('[SPRG] Email sent successfully');
+      else console.log('[SPRG] Email sent ✓');
     } catch (err) {
       console.error('[SPRG] Email send failed:', err.message);
     }
