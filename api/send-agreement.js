@@ -181,6 +181,16 @@ export default async function handler(req) {
               Signed: ${signedDate}
             </div>
             <p>To access your educational claims guide at any time, simply open the link we sent you and click "Claims Guide" in the navigation.</p>
+            <div style="margin:24px 0;padding:16px 20px;background:#f3ecdc;border-left:3px solid #a07f3d;">
+              <p style="font-family:monospace;font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:#a07f3d;margin:0 0 10px;">Important: When You Receive Your Disbursement</p>
+              <p style="font-size:14px;line-height:1.6;color:#2a2d4a;margin:0 0 8px;">Per Section 1 of your Agreement, you must notify SPRG in writing within <strong>3 business days</strong> of receiving your disbursement from the Texas Comptroller. Reply to this email with the following:</p>
+              <ul style="font-size:14px;line-height:1.9;color:#2a2d4a;margin:0;padding-left:18px;">
+                <li>Date of disbursement</li>
+                <li>Gross amount received ($)</li>
+                <li>Method of payment (check, ACH, or other)</li>
+              </ul>
+              <p style="font-size:13px;color:#5a5d75;margin:10px 0 0;">SPRG will then issue a written invoice for the 10% contingency service fee, due within <strong>10 business days</strong> of your receipt of the disbursement.</p>
+            </div>
             <p>If you have any questions, reply to this email.</p>
             <p>— Surplus Property Research Group</p>
           </div>

@@ -2080,6 +2080,83 @@ function renderAdmin() {
       </form>
 
       <div id="admin-result" style="display:none;"></div>
+
+      <!-- ── SEND INVOICE ── -->
+      <div style="margin-top:4rem;border-top:2px solid var(--rule);padding-top:3rem;">
+        <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:1rem;">SPRG Internal · Not for Client Use</div>
+        <h2 class="admin__title" style="font-size:1.6rem;">Send Invoice</h2>
+        <p class="admin__sub">Issue the 10% contingency fee invoice after receiving the claimant's disbursement notice.</p>
+      </div>
+      <form id="invoice-form" class="form" style="border:1px solid var(--rule);padding:2rem;background:var(--cream);margin-top:1.5rem;">
+        <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
+          <div class="field" style="margin:0;flex:1;">
+            <label for="inv-agreement-id">Agreement ID (auto-fill claimant)</label>
+            <input type="number" id="inv-agreement-id" placeholder="e.g., 17" />
+          </div>
+          <button type="button" id="inv-lookup-btn" class="btn btn--small btn--ghost" style="white-space:nowrap;">Load Agreement</button>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="inv-name">Claimant Name</label><input type="text" id="inv-name" required placeholder="Full legal name" /></div>
+          <div class="field"><label for="inv-email">Claimant Email</label><input type="email" id="inv-email" required placeholder="Email address" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="inv-tracking">Tracking #</label><input type="text" id="inv-tracking" required placeholder="TRK-2026-XXXX" /></div>
+          <div class="field"><label for="inv-property">Property / Claim ID</label><input type="text" id="inv-property" required placeholder="e.g., A0123456789" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="inv-notice-date">Date Claimant Notified SPRG</label><input type="text" id="inv-notice-date" required placeholder="e.g., May 20, 2026" /></div>
+          <div class="field"><label for="inv-disbursement-date">Date Disbursement Received</label><input type="text" id="inv-disbursement-date" required placeholder="e.g., May 18, 2026" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="inv-gross">Gross Amount Received ($)</label><input type="number" id="inv-gross" required step="0.01" placeholder="e.g., 24000.00" /></div>
+          <div class="field"><label for="inv-fee">Service Fee 10% — auto-calculated</label><input type="number" id="inv-fee" required step="0.01" placeholder="Auto-filled" readonly style="background:var(--paper-deep);" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="inv-number">Invoice Number</label><input type="text" id="inv-number" required placeholder="INV-2026-XXXX" /></div>
+          <div class="field"><label for="inv-date">Invoice Date</label><input type="text" id="inv-date" required placeholder="Today's date" /></div>
+        </div>
+        <div class="field"><label for="inv-due-date">Payment Due Date (10 business days from disbursement)</label><input type="text" id="inv-due-date" required placeholder="Auto-calculated from disbursement date" /></div>
+        <div class="form__submit"><button type="submit" class="btn">Send Invoice <span class="btn__arrow">→</span></button></div>
+      </form>
+      <div id="invoice-result" style="display:none;margin-top:1rem;"></div>
+
+      <!-- ── SEND DEMAND LETTER ── -->
+      <div style="margin-top:4rem;border-top:2px solid var(--rust);padding-top:3rem;">
+        <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--rust);margin-bottom:1rem;">SPRG Internal · Not for Client Use</div>
+        <h2 class="admin__title" style="font-size:1.6rem;">Send Demand Letter</h2>
+        <p class="admin__sub">Send a formal Notice-and-Cure demand if payment is not received within the required period. A certified mail copy must also be sent manually.</p>
+      </div>
+      <form id="demand-form" class="form" style="border:1px solid var(--rust);padding:2rem;background:var(--cream);margin-top:1.5rem;">
+        <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
+          <div class="field" style="margin:0;flex:1;">
+            <label for="dem-agreement-id">Agreement ID (auto-fill claimant)</label>
+            <input type="number" id="dem-agreement-id" placeholder="e.g., 17" />
+          </div>
+          <button type="button" id="dem-lookup-btn" class="btn btn--small btn--ghost" style="white-space:nowrap;">Load Agreement</button>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="dem-name">Claimant Name</label><input type="text" id="dem-name" required placeholder="Full legal name" /></div>
+          <div class="field"><label for="dem-email">Claimant Email</label><input type="email" id="dem-email" required placeholder="Email address" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="dem-tracking">Tracking #</label><input type="text" id="dem-tracking" required placeholder="TRK-2026-XXXX" /></div>
+          <div class="field"><label for="dem-property">Property / Claim ID</label><input type="text" id="dem-property" required placeholder="e.g., A0123456789" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="dem-invoice-number">Invoice Number</label><input type="text" id="dem-invoice-number" required placeholder="INV-2026-XXXX" /></div>
+          <div class="field"><label for="dem-invoice-date">Invoice Date</label><input type="text" id="dem-invoice-date" required placeholder="e.g., May 20, 2026" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="dem-fee">Fee Amount Due ($)</label><input type="number" id="dem-fee" required step="0.01" placeholder="e.g., 2400.00" /></div>
+          <div class="field"><label for="dem-due-date">Original Payment Due Date</label><input type="text" id="dem-due-date" required placeholder="e.g., May 30, 2026" /></div>
+        </div>
+        <div class="field--row">
+          <div class="field"><label for="dem-days-past">Days Past Due</label><input type="number" id="dem-days-past" required placeholder="e.g., 5" /></div>
+          <div class="field"><label for="dem-certified">Certified Mail Tracking # (optional)</label><input type="text" id="dem-certified" placeholder="USPS tracking number" /></div>
+        </div>
+        <div class="form__submit"><button type="submit" class="btn" style="background:var(--rust);">Send Demand Letter <span class="btn__arrow">→</span></button></div>
+      </form>
+      <div id="demand-result" style="display:none;margin-top:1rem;"></div>
     </main>
   `;
 }
@@ -2472,6 +2549,124 @@ function bindHandlers(route) {
       `;
       form.reset();
       result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ── Invoice form setup ──
+    const invDate = document.getElementById('inv-date');
+    const invNum  = document.getElementById('inv-number');
+    const todayFmt = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    if (invDate && !invDate.value) invDate.value = todayFmt;
+    if (invNum  && !invNum.value)  invNum.value  = 'INV-' + new Date().getFullYear() + '-' + String(Math.floor(1000 + Math.random() * 9000));
+
+    function addBizDays(dateStr, n) {
+      const d = new Date(dateStr);
+      if (isNaN(d)) return '';
+      let count = 0;
+      while (count < n) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0 && d.getDay() !== 6) count++; }
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+
+    document.getElementById('inv-gross')?.addEventListener('input', function () {
+      const fee = document.getElementById('inv-fee');
+      if (fee) fee.value = this.value ? (parseFloat(this.value) * 0.10).toFixed(2) : '';
+    });
+
+    document.getElementById('inv-disbursement-date')?.addEventListener('blur', function () {
+      const due = document.getElementById('inv-due-date');
+      if (due && this.value && !due.value) due.value = addBizDays(this.value, 10);
+    });
+
+    document.getElementById('inv-lookup-btn')?.addEventListener('click', async () => {
+      const id = document.getElementById('inv-agreement-id')?.value.trim();
+      if (!id) return alert('Enter an Agreement ID first.');
+      const { data, error } = await supabaseClient.from('agreements').select('*').eq('id', id).single();
+      if (error || !data) return alert('Agreement not found: ' + (error?.message || 'no record'));
+      document.getElementById('inv-name').value     = data.claimant_name  || '';
+      document.getElementById('inv-email').value    = data.claimant_email || '';
+      document.getElementById('inv-tracking').value = data.tracking_id    || '';
+      document.getElementById('inv-property').value = data.property_id    || '';
+    });
+
+    document.getElementById('invoice-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      const gross = parseFloat(document.getElementById('inv-gross').value) || 0;
+      const payload = {
+        claimantName:      document.getElementById('inv-name').value.trim(),
+        clientEmail:       document.getElementById('inv-email').value.trim(),
+        trackingId:        document.getElementById('inv-tracking').value.trim(),
+        propertyId:        document.getElementById('inv-property').value.trim(),
+        dateOfNotice:      document.getElementById('inv-notice-date').value.trim(),
+        disbursementDate:  document.getElementById('inv-disbursement-date').value.trim(),
+        grossAmount:       gross,
+        invoiceNumber:     document.getElementById('inv-number').value.trim(),
+        invoiceDate:       document.getElementById('inv-date').value.trim(),
+        feeAmount:         (gross * 0.10).toFixed(2),
+        paymentDueDate:    document.getElementById('inv-due-date').value.trim(),
+      };
+      try {
+        const res = await fetch('/api/send-invoice', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const invResult = document.getElementById('invoice-result');
+        invResult.style.display = 'block';
+        if (res.ok) {
+          invResult.innerHTML = `<div style="background:#f0f7f0;border-left:3px solid #3d5c44;padding:12px 16px;font-size:14px;color:#3d5c44;">✓ Invoice ${esc(payload.invoiceNumber)} sent to ${esc(payload.clientEmail)}</div>`;
+          e.target.reset();
+          if (invDate) invDate.value = todayFmt;
+        } else {
+          const d = await res.json();
+          invResult.innerHTML = `<div style="background:#fff0f0;border-left:3px solid #8b3a2a;padding:12px 16px;font-size:14px;color:#8b3a2a;">Error: ${esc(d.error || 'Unknown error')}</div>`;
+        }
+      } catch (err) { alert('Send failed: ' + err.message); }
+      btn.disabled = false; btn.innerHTML = 'Send Invoice <span class="btn__arrow">→</span>';
+    });
+
+    // ── Demand letter form setup ──
+    document.getElementById('dem-lookup-btn')?.addEventListener('click', async () => {
+      const id = document.getElementById('dem-agreement-id')?.value.trim();
+      if (!id) return alert('Enter an Agreement ID first.');
+      const { data, error } = await supabaseClient.from('agreements').select('*').eq('id', id).single();
+      if (error || !data) return alert('Agreement not found: ' + (error?.message || 'no record'));
+      document.getElementById('dem-name').value     = data.claimant_name  || '';
+      document.getElementById('dem-email').value    = data.claimant_email || '';
+      document.getElementById('dem-tracking').value = data.tracking_id    || '';
+      document.getElementById('dem-property').value = data.property_id    || '';
+    });
+
+    document.getElementById('demand-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      const now       = new Date();
+      const periodEnd = new Date(now); periodEnd.setDate(periodEnd.getDate() + 15);
+      const fmt       = d => d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      const payload = {
+        claimantName:         document.getElementById('dem-name').value.trim(),
+        clientEmail:          document.getElementById('dem-email').value.trim(),
+        trackingId:           document.getElementById('dem-tracking').value.trim(),
+        propertyId:           document.getElementById('dem-property').value.trim(),
+        invoiceNumber:        document.getElementById('dem-invoice-number').value.trim(),
+        invoiceDate:          document.getElementById('dem-invoice-date').value.trim(),
+        feeAmount:            parseFloat(document.getElementById('dem-fee').value) || 0,
+        originalDueDate:      document.getElementById('dem-due-date').value.trim(),
+        daysPastDue:          document.getElementById('dem-days-past').value.trim(),
+        certifiedMailTracking: document.getElementById('dem-certified').value.trim(),
+        noticeSentDate:       fmt(now),
+        noticePeriodEnd:      fmt(periodEnd),
+      };
+      try {
+        const res = await fetch('/api/send-demand', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const demResult = document.getElementById('demand-result');
+        demResult.style.display = 'block';
+        if (res.ok) {
+          demResult.innerHTML = `<div style="background:#fff5f3;border-left:3px solid #8b3a2a;padding:12px 16px;font-size:14px;color:#8b3a2a;">✓ Demand letter sent to ${esc(payload.clientEmail)} — notice period ends ${esc(payload.noticePeriodEnd)}</div>`;
+          e.target.reset();
+        } else {
+          const d = await res.json();
+          demResult.innerHTML = `<div style="background:#fff0f0;border-left:3px solid #8b3a2a;padding:12px 16px;font-size:14px;color:#8b3a2a;">Error: ${esc(d.error || 'Unknown error')}</div>`;
+        }
+      } catch (err) { alert('Send failed: ' + err.message); }
+      btn.disabled = false; btn.innerHTML = 'Send Demand Letter <span class="btn__arrow">→</span>';
     });
   }
 }
