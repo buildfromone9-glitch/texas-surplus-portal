@@ -2636,7 +2636,7 @@ function bindHandlers(route) {
         </div>
         <div class="admin__actions">
           <button class="btn btn--small" onclick="copyToClipboard('${fullUrl.replace(/'/g, "\\'")}', this)">Copy URL</button>
-          <button class="btn btn--small btn--gold" id="send-invite-btn" data-email="${esc(payload.claimant_email)}" data-name="${esc(payload.claimant_name)}" data-tracking="${esc(payload.tracking_id)}" data-url="${esc(fullUrl)}">Email to Client</button>
+          <button class="btn btn--small btn--gold" id="send-invite-btn">Email to Client</button>
           <span id="send-invite-status" style="font-size:0.85rem; margin-left:0.75rem; display:none;"></span>
           <a class="btn btn--small btn--ghost" href="${fullUrl}" target="_blank">Preview as Client</a>
         </div>
@@ -2644,6 +2644,14 @@ function bindHandlers(route) {
       `;
       form.reset();
       result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Store invite data in closure (avoids HTML encoding issues with data attributes)
+      const inviteData = {
+        claimantEmail: payload.claimant_email,
+        claimantName: payload.claimant_name,
+        trackingId: payload.tracking_id,
+        agreementUrl: fullUrl,
+      };
 
       // Wire up Email to Client button AFTER it's rendered in the DOM
       document.getElementById('send-invite-btn')?.addEventListener('click', async (e) => {
@@ -2658,27 +2666,23 @@ function bindHandlers(route) {
           const res = await fetch('/api/send-invite', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              claimantEmail: btn.dataset.email,
-              claimantName: btn.dataset.name,
-              trackingId: btn.dataset.tracking,
-              agreementUrl: btn.dataset.url,
-            }),
+            body: JSON.stringify(inviteData),
           });
+          const result = await res.json();
           if (res.ok) {
             btn.textContent = 'Sent ✓';
             statusEl.style.color = 'var(--moss)';
-            statusEl.textContent = `Delivered to ${btn.dataset.email}`;
+            statusEl.textContent = `Delivered to ${inviteData.claimantEmail}`;
           } else {
-            const err = await res.json();
-            throw new Error(JSON.stringify(err));
+            console.error('Resend error:', result);
+            throw new Error(result?.error?.message || JSON.stringify(result));
           }
         } catch (err) {
           console.error('Send invite failed:', err);
           btn.disabled = false;
           btn.textContent = 'Email to Client';
           statusEl.style.color = 'var(--rust)';
-          statusEl.textContent = 'Failed to send. Try again.';
+          statusEl.textContent = `Failed: ${err.message}`;
         }
       });
     });
