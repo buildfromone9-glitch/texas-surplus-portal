@@ -1156,6 +1156,7 @@ const App = {
     auditLog: [],
     ipAddress: null,
     ipLocation: null,
+    adminUser: null,
   },
 
   logAudit(event) {
@@ -1187,6 +1188,16 @@ const App = {
 
     // Load signed state AFTER agreement loads so we key by real agreementId
     this.loadSignedState();
+
+    // Check for existing Supabase auth session
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session?.user) this.state.adminUser = session.user;
+
+    // Listen for auth state changes
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      this.state.adminUser = session?.user || null;
+      this.render();
+    });
 
     window.addEventListener('hashchange', () => this.render());
     this.render();
@@ -2021,30 +2032,36 @@ function renderGuide() {
    VIEW: ADMIN (link generator)
    ============================================================ */
 function renderAdmin() {
-  // Password protection
-  const ADMIN_KEY = 'sprg_admin_auth';
-  const CORRECT_PASSWORD = 'Vincent@21!';
-
-  // Check if already authenticated this session
-  if (sessionStorage.getItem(ADMIN_KEY) !== 'true') {
-    const entered = prompt('Enter admin password:');
-    if (entered !== CORRECT_PASSWORD) {
-      return `
-        <main style="display:flex; align-items:center; justify-content:center; min-height:60vh;">
-          <div style="text-align:center; padding:3rem;">
-            <h2 style="font-family:var(--serif); color:var(--rust);">Access Denied</h2>
-            <p style="color:var(--ink-mute);">Incorrect password. <a href="#/">Return to home</a></p>
+  // Supabase Auth — show login form if not authenticated
+  if (!App.state.adminUser) {
+    return `
+      <main style="display:flex; align-items:center; justify-content:center; min-height:70vh;">
+        <div style="width:100%; max-width:420px; padding:2.5rem; background:var(--cream); border:1px solid var(--rule);">
+          <div style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:1.5rem;">SPRG Internal</div>
+          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0 0 0.5rem;">Admin Login</h2>
+          <p style="color:var(--ink-mute); font-size:0.9rem; margin:0 0 2rem;">Sign in with your SPRG credentials.</p>
+          <div style="margin-bottom:1.25rem;">
+            <label style="display:block; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Email</label>
+            <input id="admin-login-email" type="email" value="buildfromone9@gmail.com" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:0.95rem; box-sizing:border-box;" />
           </div>
-        </main>
-      `;
-    }
-    sessionStorage.setItem(ADMIN_KEY, 'true');
+          <div style="margin-bottom:1.75rem;">
+            <label style="display:block; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Password</label>
+            <input id="admin-login-password" type="password" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:0.95rem; box-sizing:border-box;" />
+          </div>
+          <button id="admin-login-btn" class="btn" style="width:100%;">Sign In →</button>
+          <p id="admin-login-error" style="color:var(--rust); font-size:0.85rem; margin-top:1rem; display:none;"></p>
+        </div>
+      </main>
+    `;
   }
 
   return `
     <main class="admin">
       <div class="admin__head">
-        <div style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:1rem;">SPRG Internal · Not for Client Use</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <div style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep);">SPRG Internal · Not for Client Use</div>
+          <button id="admin-logout-btn" style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; background:none; border:1px solid var(--rule); padding:0.4rem 0.9rem; cursor:pointer; color:var(--ink-mute);">Sign Out</button>
+        </div>
         <h1 class="admin__title">Generate a Client Packet Link</h1>
         <p class="admin__sub">Fill in the customizable fields below. The tool will generate a URL you can email or text to the client. Opening the URL will personalize the landing page and pre-fill their agreement.</p>
       </div>
@@ -2538,6 +2555,43 @@ function bindHandlers(route) {
   }
 
   if (route === 'admin') {
+    // Login form handler
+    const loginBtn = document.getElementById('admin-login-btn');
+    if (loginBtn) {
+      loginBtn.addEventListener('click', async () => {
+        const email = document.getElementById('admin-login-email').value.trim();
+        const password = document.getElementById('admin-login-password').value;
+        const errEl = document.getElementById('admin-login-error');
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing in…';
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) {
+          errEl.style.display = 'block';
+          errEl.textContent = 'Invalid email or password. Please try again.';
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Sign In →';
+        } else {
+          App.state.adminUser = data.user;
+          App.render();
+        }
+      });
+
+      // Allow Enter key to submit
+      document.getElementById('admin-login-password')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') loginBtn.click();
+      });
+    }
+
+    // Logout button handler
+    const logoutBtn = document.getElementById('admin-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        await supabaseClient.auth.signOut();
+        App.state.adminUser = null;
+        App.render();
+      });
+    }
+
     const form = document.getElementById('admin-form');
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
