@@ -1,7 +1,8 @@
 export const config = { runtime: 'edge' };
 
 const RESEND_KEY = 're_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi';
-const SPRG_EMAIL = 'buildfromone9@gmail.com';
+const SPRG_EMAIL = 'claims@sprggroup.com';
+const SPRG_NOTIFY = 'buildfromone9@gmail.com';
 
 export default async function handler(req) {
   if (req.method !== 'POST') {
@@ -127,8 +128,8 @@ export default async function handler(req) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev',
-        to: SPRG_EMAIL,
+        from: 'Surplus Property Research Group <noreply@sprggroup.com>',
+        to: SPRG_NOTIFY,
         subject: `[SIGNED] ${trackingId} — ${claimantName}`,
         html: sprgHtml,
       }),
@@ -140,7 +141,7 @@ export default async function handler(req) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'onboarding@resend.dev',
+          from: 'Surplus Property Research Group <noreply@sprggroup.com>',
           to: clientEmail,
           subject: `Your SPRG Agreement Has Been Received — ${trackingId}`,
           html: clientHtml,

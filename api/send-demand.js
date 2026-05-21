@@ -1,7 +1,8 @@
 export const config = { runtime: 'edge' };
 
 const RESEND_KEY = 're_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi';
-const SPRG_EMAIL = 'buildfromone9@gmail.com';
+const SPRG_EMAIL = 'claims@sprggroup.com';
+const SPRG_NOTIFY = 'buildfromone9@gmail.com';
 
 function usd(n) {
   return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -75,7 +76,7 @@ export default async function handler(req) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Surplus Property Research Group <onboarding@resend.dev>',
+        from: 'Surplus Property Research Group <noreply@sprggroup.com>',
         to,
         reply_to: SPRG_EMAIL,
         subject,
@@ -84,7 +85,7 @@ export default async function handler(req) {
     });
 
     await send(clientEmail, `DEMAND FOR PAYMENT — Notice of Default — Invoice ${invoiceNumber}`);
-    await send(SPRG_EMAIL, `[COPY] Demand letter sent to ${claimantName} — Invoice ${invoiceNumber}`);
+    await send(SPRG_NOTIFY, `[COPY] Demand letter sent to ${claimantName} — Invoice ${invoiceNumber}`);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200, headers: { 'Content-Type': 'application/json' },
