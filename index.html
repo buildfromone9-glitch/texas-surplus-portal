@@ -1170,11 +1170,11 @@ const App = {
     this.loadSignedState();
     
     // Fetch IP address and location via HTTPS
-    fetch('https://freeipapi.com/api/json')
+    fetch('https://ipinfo.io/json')
       .then(r => r.json())
       .then(d => {
-        this.state.ipAddress = d.ipAddress || 'unavailable';
-        const parts = [d.cityName, d.regionName, d.countryName].filter(Boolean);
+        this.state.ipAddress = d.ip || 'unavailable';
+        const parts = [d.city, d.region, d.country].filter(Boolean);
         this.state.ipLocation = parts.join(', ') || 'unavailable';
       })
       .catch(() => {
