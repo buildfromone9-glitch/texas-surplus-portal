@@ -8,7 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   /* ============================================================
      DESIGN TOKENS
@@ -2442,9 +2444,14 @@ function setupSignSubmit() {
       console.error('No agreementId on App.state.client — DB update skipped. client:', JSON.stringify(App.state.client));
     }
 
+    // GENERATE PDF from current page (client-side, no puppeteer needed)
+    console.log('[SPRG] Generating signed agreement PDF...');
+    const pdfBase64 = await generateSignedPDF();
+    console.log('[SPRG] PDF generated:', pdfBase64 ? 'yes (' + Math.round(pdfBase64.length / 1024) + 'KB)' : 'failed');
+
     // SEND EMAIL — awaited so failures are visible in console
     try {
-      await fetch('/api/send-agreement', {
+      const res = await fetch('/api/send-agreement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2461,10 +2468,14 @@ function setupSignSubmit() {
           ipLocation: App.state.ipLocation || 'unavailable',
           auditLog: App.state.auditLog,
           agreementId: App.state.client?.id,
+          pdfBase64,
         }),
       });
+      const result = await res.json();
+      if (!res.ok) console.error('[SPRG] Email API error:', result);
+      else console.log('[SPRG] Email sent successfully');
     } catch (err) {
-      console.error('Email send failed:', err.message);
+      console.error('[SPRG] Email send failed:', err.message);
     }
 
     window.location.hash = '#/guide';
@@ -2714,6 +2725,48 @@ function copyToClipboard(text, btn) {
    GO
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => App.init());
+
+async function generateSignedPDF() {
+  try {
+    const { jsPDF } = window.jspdf;
+    const element = document.getElementById('app');
+    if (!element) return null;
+
+    // Capture full page at high quality
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#faf6ee',
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight,
+    });
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'letter' });
+
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = canvas.width;
+    const imgH = canvas.height;
+    const ratio = pageW / imgW;
+    const scaledH = imgH * ratio;
+
+    let yOffset = 0;
+    while (yOffset < scaledH) {
+      if (yOffset > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, scaledH);
+      yOffset += pageH;
+    }
+
+    return pdf.output('datauristring').split(',')[1]; // return base64 only
+  } catch (err) {
+    console.error('[SPRG] PDF generation failed:', err);
+    return null;
+  }
+}
  async function loadAgreement() {
   const hash = window.location.hash;
   const queryString = hash.includes('?') ? hash.split('?')[1] : '';
