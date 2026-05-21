@@ -2835,6 +2835,14 @@ document.addEventListener('DOMContentLoaded', () => App.init());
     dateIssued: data.created_at ? new Date(data.created_at).toLocaleDateString() : ''
   };
 
+  // If already signed, load signature state from Supabase
+  // so it displays correctly in any browser/incognito tab
+  if (data.signed && data.signature_data) {
+    App.state.signature = data.signature_data;
+    App.state.typedName = data.signer_name || '';
+    App.state.signedAt = data.signed_at || new Date().toISOString();
+  }
+
   App.render();
 }
 </script>
