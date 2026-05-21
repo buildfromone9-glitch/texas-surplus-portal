@@ -129,6 +129,7 @@ export default async function handler(req) {
       headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: 'Surplus Property Research Group <noreply@sprggroup.com>',
+        reply_to: 'claims@sprggroup.com',
         to: SPRG_NOTIFY,
         subject: `[SIGNED] ${trackingId} — ${claimantName}`,
         html: sprgHtml,
@@ -142,6 +143,7 @@ export default async function handler(req) {
         headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           from: 'Surplus Property Research Group <noreply@sprggroup.com>',
+          reply_to: 'claims@sprggroup.com',
           to: clientEmail,
           subject: `Your SPRG Agreement Has Been Received — ${trackingId}`,
           html: clientHtml,

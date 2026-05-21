@@ -86,7 +86,7 @@ export default async function handler(req) {
       body: JSON.stringify({
         from: 'Surplus Property Research Group <noreply@sprggroup.com>',
         to: claimantEmail,
-        reply_to: SPRG_EMAIL,
+        reply_to: 'claims@sprggroup.com',
         subject: `Your Texas Surplus Property Research Packet — Tracking ${trackingId}`,
         html,
       }),

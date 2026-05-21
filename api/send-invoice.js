@@ -65,7 +65,7 @@ export default async function handler(req) {
       body: JSON.stringify({
         from: 'Surplus Property Research Group <noreply@sprggroup.com>',
         to,
-        reply_to: SPRG_EMAIL,
+        reply_to: 'claims@sprggroup.com',
         subject,
         html,
       }),
