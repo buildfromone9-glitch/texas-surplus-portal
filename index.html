@@ -1276,7 +1276,13 @@ const App = {
     const app = document.getElementById('app');
     let html = renderHeader(route);
     switch (route) {
-      case 'agreement': html += renderAgreement(); break;
+      case 'agreement': {
+        const _hash = window.location.hash;
+        const _qs = _hash.includes('?') ? _hash.split('?')[1] : '';
+        const _token = new URLSearchParams(_qs).get('token');
+        html += _token ? renderAgreement() : renderUnauthorized();
+        break;
+      }
       case 'guide':     html += renderGuide(); break;
       case 'admin':     html += renderAdmin(); break;
       case 'landing':
@@ -1305,7 +1311,7 @@ function renderHeader(route) {
         </a>
         <nav class="nav-links">
           <a href="#/" class="${route === 'landing' ? 'active' : ''}">Overview</a>
-          <a href="#/agreement" class="${route === 'agreement' ? 'active' : ''}">Agreement</a>
+
           <a href="#/guide" class="${route === 'guide' ? 'active' : ''}">Claims Guide</a>
         </nav>
       </div>
@@ -1462,6 +1468,19 @@ function renderLanding() {
 /* ============================================================
    VIEW: AGREEMENT
    ============================================================ */
+function renderUnauthorized() {
+  return `
+    <main style="display:flex;align-items:center;justify-content:center;min-height:60vh;">
+      <div style="text-align:center;padding:3rem;max-width:480px;">
+        <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Access Restricted</div>
+        <h2 style="font-family:var(--serif);font-size:2rem;margin:0 0 1rem;">Invalid or Missing Link</h2>
+        <p style="color:var(--ink-mute);line-height:1.7;margin:0 0 2rem;">This page requires a personalized link provided by SPRG. If you believe you should have access, please contact us or submit a free search request.</p>
+        <a href="#search-form" class="btn">Submit a Free Search Request <span class="btn__arrow">→</span></a>
+      </div>
+    </main>
+  `;
+}
+
 function renderAgreement() {
   const c = App.state.client || {};
   const signed = App.hasSigned();
@@ -1683,9 +1702,9 @@ function renderGuide() {
     return `
       <div class="locked">
         <div class="locked__icon">✦</div>
-        <h2>Sign the Agreement to Unlock</h2>
-        <p>The full educational claims guide is included with your service packet. To access it, please review and sign the service agreement first.</p>
-        <a href="#/agreement" class="btn">Open the Agreement <span class="btn__arrow">→</span></a>
+        <h2>This Guide is for SPRG Clients</h2>
+        <p>The educational claims guide is provided exclusively to clients with an active SPRG service agreement. To get started, submit a free search request and we'll reach out if we find matching funds.</p>
+        <a href="#search-form" class="btn">Submit a Free Search Request <span class="btn__arrow">→</span></a>
       </div>
     `;
   }
