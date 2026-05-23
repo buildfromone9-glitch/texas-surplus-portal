@@ -1159,6 +1159,7 @@ const App = {
     ipAddress: null,
     ipLocation: null,
     adminUser: null,
+    adminDraft: {},
   },
 
   logAudit(event) {
@@ -2601,6 +2602,22 @@ function bindHandlers(route) {
     }
 
     const form = document.getElementById('admin-form');
+
+    // Restore any saved draft values
+    const draft = App.state.adminDraft;
+    if (draft) {
+      ['a-name','a-email','a-pid','a-owner','a-value','a-research-date'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && draft[id]) el.value = draft[id];
+      });
+    }
+
+    // Save form values to state on every input so they survive tab switches
+    ['a-name','a-email','a-pid','a-owner','a-value','a-research-date'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', (e) => {
+        App.state.adminDraft[id] = e.target.value;
+      });
+    });
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const payload = {
@@ -2665,6 +2682,7 @@ function bindHandlers(route) {
       // Wire up Reset Form button
       document.getElementById('reset-form-btn')?.addEventListener('click', () => {
         form.reset();
+        App.state.adminDraft = {};
         result.style.display = 'none';
         result.innerHTML = '';
         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
