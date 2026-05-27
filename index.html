@@ -1276,6 +1276,7 @@ const App = {
     const app = document.getElementById('app');
     let html = renderHeader(route);
     switch (route) {
+      case 'privacy': html += renderPrivacy(); break;
       case 'agreement': {
         const _hash = window.location.hash;
         const _qs = _hash.includes('?') ? _hash.split('?')[1] : '';
@@ -1322,6 +1323,87 @@ function renderHeader(route) {
 /* ============================================================
    PARTIAL: FOOTER
    ============================================================ */
+function renderPrivacy() {
+  return `
+    <main class="doc-wrap" style="max-width:760px;margin:0 auto;padding:4rem 2rem;">
+      <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Legal</div>
+      <h1 style="font-family:var(--serif);font-size:2.4rem;margin:0 0 0.5rem;">Privacy Policy</h1>
+      <p style="color:var(--ink-mute);font-size:0.85rem;margin:0 0 3rem;">Surplus Property Research Group · sprggroup.com · Effective May 2026</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">1. Who We Are</h2>
+      <p>Surplus Property Research Group ("SPRG," "we," "us") is an educational public-records research service based in Texas. We help individuals locate unclaimed mortgage foreclosure surplus funds held by the Texas Comptroller of Public Accounts. We are not a law firm and we do not provide legal advice.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">2. Information We Collect</h2>
+      <p>We collect only the information necessary to provide our services:</p>
+      <ul style="line-height:2;padding-left:1.5rem;color:var(--ink-soft);">
+        <li><strong>Contact information</strong> — name, email address, phone number (if provided)</li>
+        <li><strong>Property information</strong> — Texas Comptroller property ID, reported owner name, estimated value</li>
+        <li><strong>Signature data</strong> — drawn signature image and typed name collected at the time of signing</li>
+        <li><strong>Technical data</strong> — IP address, approximate geographic location, and browser session information collected at signing for audit and verification purposes</li>
+        <li><strong>Communications</strong> — emails and messages you send to us</li>
+      </ul>
+      <p>We do not collect Social Security numbers, government-issued ID numbers, bank account numbers, or payment card information.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">3. How We Use Your Information</h2>
+      <p>We use the information we collect solely to:</p>
+      <ul style="line-height:2;padding-left:1.5rem;color:var(--ink-soft);">
+        <li>Deliver the research services described in your service agreement</li>
+        <li>Generate and maintain your signed service agreement</li>
+        <li>Communicate with you about your case (tracking number, disbursement notifications, invoices)</li>
+        <li>Maintain records required by Texas law and our contractual obligations</li>
+        <li>Detect and prevent fraud or unauthorized access</li>
+      </ul>
+      <p>We do not use your information for advertising, marketing to third parties, or any purpose unrelated to your service agreement.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">4. How We Share Your Information</h2>
+      <p>We do not sell, rent, or trade your personal information. We may share it only in the following limited circumstances:</p>
+      <ul style="line-height:2;padding-left:1.5rem;color:var(--ink-soft);">
+        <li><strong>Service providers</strong> — we use Supabase (database), Resend (email delivery), and Vercel (hosting). Each processes data only as necessary to provide their service.</li>
+        <li><strong>Legal requirements</strong> — if required by law, court order, or to protect our legal rights.</li>
+        <li><strong>Business transfer</strong> — in the event of a merger or acquisition, your information may transfer to the successor entity subject to this policy.</li>
+      </ul>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">5. Data Retention</h2>
+      <p>We retain your personal information for as long as your service agreement is active, and for a minimum of five (5) years after the conclusion of your case to satisfy recordkeeping obligations and to resolve any disputes. Signature records and audit logs are retained as part of your executed agreement.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">6. Data Security</h2>
+      <p>We maintain commercially reasonable administrative, technical, and physical safeguards to protect your information. Your agreement data is stored in an encrypted database with access controls. Signing links use unguessable random tokens rather than sequential identifiers. No method of transmission or storage is 100% secure, and we cannot guarantee absolute security.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">7. Your Rights</h2>
+      <p>You have the right to:</p>
+      <ul style="line-height:2;padding-left:1.5rem;color:var(--ink-soft);">
+        <li>Request a copy of the personal information we hold about you</li>
+        <li>Request correction of inaccurate information</li>
+        <li>Request deletion of your information, subject to our legal retention obligations</li>
+        <li>Withdraw consent to future communications (this does not affect obligations under a signed agreement)</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at <a href="mailto:claims@sprggroup.com" style="color:var(--gold);">claims@sprggroup.com</a>.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">8. Cookies and Tracking</h2>
+      <p>This site does not use advertising cookies or third-party tracking. We use browser localStorage solely to preserve your session state while you navigate the site. We do not use analytics services that track you across other websites.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">9. Children's Privacy</h2>
+      <p>Our services are not directed to individuals under the age of 18. We do not knowingly collect personal information from minors. If you believe a minor has submitted information to us, contact us immediately at <a href="mailto:claims@sprggroup.com" style="color:var(--gold);">claims@sprggroup.com</a>.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">10. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. Material changes will be posted on this page with an updated effective date. Continued use of our services after changes constitutes acceptance of the revised policy.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">11. Contact Us</h2>
+      <p>For questions about this Privacy Policy or your personal information:</p>
+      <ul style="line-height:2;padding-left:1.5rem;color:var(--ink-soft);">
+        <li><strong>Email:</strong> <a href="mailto:claims@sprggroup.com" style="color:var(--gold);">claims@sprggroup.com</a></li>
+        <li><strong>Phone:</strong> (832) 303-9913</li>
+        <li><strong>Website:</strong> sprggroup.com</li>
+      </ul>
+
+      <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--rule);font-size:0.8rem;color:var(--ink-mute);">
+        <p>This Privacy Policy was last updated in May 2026. Surplus Property Research Group operates under Texas law. This policy does not constitute legal advice.</p>
+        <p style="margin-top:0.5rem;"><a href="#/" style="color:var(--gold-soft);">← Back to Home</a></p>
+      </div>
+    </main>
+  `;
+}
+
 function renderFooter() {
   return `
     <footer class="site-footer no-print">
@@ -1349,6 +1431,7 @@ function renderFooter() {
       </div>
       <div class="site-footer__legal">
         This site is an educational resource prepared by Surplus Property Research Group. <strong>It is not legal advice and does not create an attorney-client relationship.</strong> Information is current as of the date of preparation; State procedures and document requirements may change without notice. Always follow the on-screen instructions on the official Comptroller portal. For case-specific legal questions, consult a licensed Texas attorney.
+        <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
       </div>
     </footer>
   `;
