@@ -3296,14 +3296,100 @@ function bindHandlers(route) {
 
                 <!-- Contract Signature Framework -->
                 <div id="contract-sign-container" style="border-top:1px solid var(--rule); padding-top:1.5rem; margin-top:1.5rem;">
-                  <h4 style="font-family:var(--serif); font-size:1.2rem; margin-bottom:0.75rem; color:var(--ink);">Work Service Agreement</h4>
-                  <div style="height:150px; overflow-y:scroll; border:1px solid var(--rule); padding:1rem; background:var(--cream); font-size:0.8rem; line-height:1.4; color:var(--ink-soft); margin-bottom:1.5rem;">
-                    <p><strong>1. Parties &amp; Scope:</strong> This Work Service Agreement is between the Customer (${esc(data.full_name)}) and Vorvo Services ("Vorvo"). Customer engages Vorvo to coordinate and dispatch an independent local provider (${esc(data.assigned_provider_name || 'Matched Provider')}) to complete the requested service: ${esc(data.service_category)} at the location: ${esc(data.location_address)}.</p>
-                    <p><strong>2. Price &amp; Payment:</strong> Customer agrees to pay the total quote amount of ${formatMoney(data.quote_amount)} upon satisfactory completion of the requested direct labor. No upfront fees are required.</p>
-                    <p><strong>3. Liability Disclaimer:</strong> Vorvo Services acts solely as a coordination layer and matching network. All direct labor is performed by independent local third-party contractors. Customer agrees that Vorvo is not liable for any direct, indirect, incidental, or consequential damages, property damage, or bodily injury arising from or related to the services performed by the independent provider.</p>
-                    <p><strong>4. Authorization:</strong> By signing below, Customer authorizes Vorvo Services to dispatch the matched provider to complete the work as scheduled.</p>
+                  <h4 style="font-family:var(--serif); font-size:1.2rem; margin-bottom:0.75rem; color:var(--ink);">Customer Service Agreement &amp; Payment Plan</h4>
+                  
+                  <div style="height:300px; overflow-y:scroll; border:1px solid var(--rule); padding:1.5rem; background:var(--cream); font-size:0.82rem; line-height:1.5; color:var(--ink-soft); margin-bottom:1.5rem; border-radius:3px;">
+                    <div style="text-align:center; margin-bottom:1.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:1rem;">
+                      <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:0.25rem; color:var(--gold); text-transform:uppercase;">Vorvo Services</h3>
+                      <h4 style="font-family:var(--sans); font-size:0.9rem; margin-bottom:0.5rem; color:var(--ink); letter-spacing:0.05em; text-transform:uppercase;">Customer Service Agreement &amp; Payment Plan</h4>
+                      <p style="font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft); margin:0;">Agreement Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                      <p style="font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft); margin:0;">Job Reference #: ${esc(data.tracking_id)}</p>
+                    </div>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 1. PARTIES TO THIS AGREEMENT</h4>
+                    <p>This Customer Service Agreement (the "Agreement") is entered into as of the date written above by and among the following three (3) parties:</p>
+                    <p><strong>1.1 The Finder (Marketplace Platform):</strong><br>
+                    Vorvo Services ("the Company" / "the Finder"), online marketplace and dispatch platform connecting customers with independent service providers. Role: Marketplace facilitator, referral source, and payment processor on behalf of Provider. The Finder is NOT a party to the service itself and does NOT perform, supervise, or guarantee the work.</p>
+                    
+                    <p><strong>1.2 The Contractor (Service Provider):</strong><br>
+                    <strong>Business/Individual Name:</strong> ${esc(data.assigned_provider_name || 'Matched Provider')}<br>
+                    <strong>Contact / Notices:</strong> ${esc(data.assigned_provider_phone || 'Contact via Vorvo Services')}<br>
+                    <strong>Role:</strong> Independent contractor responsible for performing all services described in Section 2. The Contractor sets its own methods, hours, and pricing and is solely liable for the quality and safety of its work.</p>
+                    
+                    <p><strong>1.3 The Customer (Client):</strong><br>
+                    <strong>Full Legal Name:</strong> ${esc(data.full_name)}<br>
+                    <strong>Service Address:</strong> ${esc(data.location_address)}<br>
+                    <strong>Phone:</strong> ${esc(data.phone)}<br>
+                    <strong>Email:</strong> ${esc(data.email)}<br>
+                    <strong>Role:</strong> The party requesting and receiving services and obligated to make all payments described in Section 4.</p>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 2. SCOPE OF WORK</h4>
+                    <p><strong>2.1 Description of Services:</strong><br>
+                    The Contractor agrees to perform the following services for the Customer:<br>
+                    <strong>[x] ${esc(data.service_category.toUpperCase())} SERVICES</strong></p>
+                    
+                    <p><strong>2.2 Detailed Work Description:</strong><br>
+                    ${esc(data.job_details || 'As requested in the initial quote submission.')}</p>
+                    
+                    <p><strong>2.3 Location of Services:</strong><br>
+                    Services will be performed at: ${esc(data.location_address)}</p>
+                    
+                    <p><strong>2.4 Materials &amp; Equipment:</strong><br>
+                    Contractor shall supply all tools, materials, and equipment necessary to complete the work unless otherwise agreed in writing.</p>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 3. TIMELINE &amp; SCHEDULE</h4>
+                    <p><strong>3.1 Project Dates:</strong><br>
+                    <strong>Estimated Start Date:</strong> As scheduled with matched provider<br>
+                    <strong>Work Hours:</strong> To be coordinated between Customer and Contractor</p>
+                    <p><strong>3.2 Delays &amp; Extensions:</strong><br>
+                    Time is of the essence in this Agreement. Any delays caused by the Customer (e.g., failure to provide access, failure to make timely payment) shall extend the completion date by a corresponding number of days.</p>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 4. PAYMENT PLAN &amp; FINANCIAL OBLIGATIONS</h4>
+                    <p><strong>4.1 Total Contract Price:</strong><br>
+                    <strong>TOTAL CONTRACT PRICE:</strong> ${formatMoney(data.quote_amount)}</p>
+                    
+                    <p><strong>4.2 Payment Schedule:</strong><br>
+                    The Customer agrees to pay the Total Contract Price of <strong>${formatMoney(data.quote_amount)}</strong> upon final completion and acceptance of the work. No upfront deposit is required unless specified by the provider.</p>
+                    
+                    <p><strong>4.3 Accepted Payment Methods:</strong><br>
+                    The Customer may remit payment by any of the following methods: (a) Credit or debit card processed securely through the Vorvo Services platform; (b) ACH bank transfer through the Vorvo Services platform; or (c) Check made payable directly to the matched Contractor and delivered upon completion.</p>
+                    <p><strong>Prohibited Payment Redirection:</strong> The Customer shall not redirect payment outside the agreed process in order to circumvent applicable platform fees. Any such redirection shall be deemed a material breach of this Agreement.</p>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 5. CUSTOMER REPRESENTATIONS &amp; ACKNOWLEDGMENTS</h4>
+                    <p>By signing this Agreement, the Customer represents and acknowledges the following:</p>
+                    <ul>
+                      <li><strong>Independent Contractor Status:</strong> The Contractor is an independent business, not an employee or agent of Vorvo Services. The Company serves solely as a marketplace facilitator and is not responsible for the performance, quality, or outcome of the work.</li>
+                      <li><strong>Credential Verification:</strong> While Vorvo Services requires Providers to represent that they hold required licenses and insurance, the Company does not independently verify such credentials. The Customer is encouraged to independently verify the Contractor's qualifications.</li>
+                      <li><strong>Access &amp; Cooperation:</strong> The Customer shall provide the Contractor with timely access to the service location.</li>
+                      <li><strong>Property Conditions:</strong> The Customer represents that the service location is safe for the Contractor to work in and that the Customer has the legal right to authorize work.</li>
+                    </ul>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 6. LIABILITY &amp; INDEMNIFICATION</h4>
+                    <p><strong>6.1 Contractor Liability:</strong> The Contractor is solely responsible for the quality, safety, and outcome of the work performed. The Contractor shall indemnify and hold harmless the Customer and the Finder from any claims arising out of the Contractor's negligence.</p>
+                    <p><strong>6.2 Company (Finder) Liability:</strong> The Company's liability is limited to the accuracy of the information it passes to the Parties. The Company is not liable for property damage, personal injury, or other losses arising from the work.</p>
+                    <p><strong>6.3 Limitation of Consequential Damages:</strong> UNDER NO CIRCUMSTANCES SHALL ANY PARTY BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES arising out of or related to this Agreement.</p>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 7. TERMINATION</h4>
+                    <p>The Customer may cancel this Agreement prior to the commencement of work. If cancellation occurs after work has commenced, the Customer shall pay for all work performed through the date of termination on a pro-rata basis.</p>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 8. COMMUNICATIONS &amp; NOTICES</h4>
+                    <p>All notices required or permitted under this Agreement shall be in writing and may be delivered via the Vorvo Services platform, email, or text message.</p>
+
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 9. DISPUTE RESOLUTION</h4>
+                    <p><strong>9.1 Good-Faith Negotiation:</strong> The Parties agree to attempt in good faith to resolve any dispute by direct negotiation for a period of at least fifteen (15) calendar days.</p>
+                    <p><strong>9.2 Mediation:</strong> If the Dispute cannot be resolved through negotiation, the Parties agree to submit to non-binding mediation.</p>
+                    <p><strong>9.3 Governing Law &amp; Venue:</strong> This Agreement shall be governed by and construed in accordance with the laws of the State of Texas. Any legal action shall be brought exclusively in the state or federal courts located in Texas.</p>
                   </div>
                   
+                  <div class="field" style="margin-bottom:1.5rem;">
+                    <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Select Payment Method</label>
+                    <select id="contract-payment-method" style="width:100%; padding:0.65rem; border:1px solid var(--rule); background:var(--paper); font-size:0.9rem; color:var(--ink); border-radius:3px;">
+                      <option value="Credit/Debit Card">Credit or Debit Card (processed securely via Vorvo platform)</option>
+                      <option value="ACH Bank Transfer">ACH Bank Transfer (processed securely via Vorvo platform)</option>
+                      <option value="Check upon Completion">Check (made payable directly to Contractor upon completion)</option>
+                    </select>
+                  </div>
+
                   <div class="field" style="margin-bottom:1rem;">
                     <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Type Full Legal Name</label>
                     <input type="text" id="contract-typed-name" placeholder="e.g., ${esc(data.full_name)}" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); font-size:0.9rem;" />
@@ -3332,7 +3418,7 @@ function bindHandlers(route) {
                   const rect = canvas.getBoundingClientRect();
                   canvas.width = rect.width;
                   canvas.height = rect.height;
-                  ctx.strokeStyle = '#15172b';
+                  ctx.strokeStyle = '#FFCC00';
                   ctx.lineWidth = 2.5;
                   ctx.lineCap = 'round';
                 };
@@ -3381,6 +3467,7 @@ function bindHandlers(route) {
                 document.getElementById('btn-contract-submit')?.addEventListener('click', async (ev) => {
                   const submitBtn = ev.currentTarget;
                   const typedName = document.getElementById('contract-typed-name').value.trim();
+                  const paymentMethod = document.getElementById('contract-payment-method').value;
                   
                   if (!typedName) return alert('Please type your full legal name to sign.');
                   if (!hasInk) return alert('Please draw your signature to accept the agreement.');
@@ -3397,7 +3484,8 @@ function bindHandlers(route) {
                         status: 'scheduled',
                         contract_signer_name: typedName,
                         contract_signature_data: signatureData,
-                        contract_signed_at: new Date().toISOString()
+                        contract_signed_at: new Date().toISOString(),
+                        payment_method: paymentMethod
                       })
                       .eq('id', data.id);
                       
@@ -3411,6 +3499,7 @@ function bindHandlers(route) {
                     formspreeData.append('quoteAmount', formatMoney(data.quote_amount));
                     formspreeData.append('service', data.service_category);
                     formspreeData.append('location', data.location_address);
+                    formspreeData.append('paymentMethod', paymentMethod);
                     
                     fetch('https://formspree.io/f/xqejewzo', {
                       method: 'POST',
@@ -3616,6 +3705,17 @@ function bindHandlers(route) {
                   <div class="field" style="margin:0; grid-column: span 2;">
                     <label style="font-size:0.75rem;">Internal Coordination Notes</label>
                     <input type="text" class="eq-notes" value="${q.internal_notes || ''}" placeholder="e.g., Payout to Careful Movers: $120. Profit margin: 20%." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div style="grid-column: span 2; padding: 1rem; background: var(--paper); border: 1px solid var(--rule-soft); margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.5; color: var(--ink-soft); border-radius:3px;">
+                    <strong>Client Contract &amp; Payment Status:</strong><br>
+                    • <strong>Payment Method:</strong> ${q.payment_method ? `<span style="color:var(--gold); font-weight:bold;">${esc(q.payment_method)}</span>` : '<span style="color:var(--rust);">Not Selected Yet</span>'}<br>
+                    • <strong>Contract Signed:</strong> ${q.contract_signed_at ? `<span style="color:var(--moss); font-weight:bold;">Signed by ${esc(q.contract_signer_name)} on ${new Date(q.contract_signed_at).toLocaleString()}</span>` : '<span style="color:var(--rust);">Awaiting Signature</span>'}
+                    ${q.contract_signature_data ? `
+                      <div style="margin-top:0.75rem;">
+                        <strong>Signature:</strong><br>
+                        <img src="${q.contract_signature_data}" style="border:1px solid var(--rule-soft); background:#fff; height:50px; display:block; margin-top:0.25rem;" />
+                      </div>
+                    ` : ''}
                   </div>
                   <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 2; margin-top:0.5rem;">
                     <button type="button" class="btn btn--small btn--ghost btn-cancel-edit" data-id="${q.id}" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Cancel</button>

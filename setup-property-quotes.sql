@@ -20,8 +20,16 @@ CREATE TABLE IF NOT EXISTS public.property_quotes (
     image_urls text[] DEFAULT '{}'::text[],
     contract_signer_name text,
     contract_signature_data text,
-    contract_signed_at timestamp with time zone
+    contract_signed_at timestamp with time zone,
+    payment_method text
 );
+
+-- 1b. Ensure columns exist if table was already created
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS image_urls text[] DEFAULT '{}'::text[];
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS contract_signer_name text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS contract_signature_data text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS contract_signed_at timestamp with time zone;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS payment_method text;
 
 -- 2. Enable Row Level Security (RLS)
 ALTER TABLE public.property_quotes ENABLE ROW LEVEL SECURITY;
