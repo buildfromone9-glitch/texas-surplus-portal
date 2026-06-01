@@ -1781,7 +1781,16 @@ function renderVorvoLanding() {
 
           <div class="field">
             <label for="v-details">Describe the Job</label>
-            <textarea id="v-details" name="jobDetails" required placeholder="e.g., items to move, driveway size, preferred timing, access notes, or link to photos..." style="width:100%; min-height:120px; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-family:var(--sans); font-size:0.95rem; box-sizing:border-box; line-height:1.5; resize:vertical;"></textarea>
+            <textarea id="v-details" name="jobDetails" required placeholder="e.g., items to move, driveway size, preferred timing, access notes, or other details..." style="width:100%; min-height:120px; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-family:var(--sans); font-size:0.95rem; box-sizing:border-box; line-height:1.5; resize:vertical;"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Upload Job Site Photos (Optional)</label>
+            <div id="v-dropzone" style="border: 2px dashed var(--rule); padding: 2rem; text-align: center; background: var(--paper); cursor: pointer; transition: border-color 0.2s; position: relative;">
+              <span id="v-dropzone-text" style="color: var(--ink-soft); font-size: 0.95rem; font-family: var(--sans);">Drag &amp; drop photos here or click to browse</span>
+              <input type="file" id="v-photos" accept="image/*" multiple style="display: none;" />
+              <div id="v-preview-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.75rem; margin-top: 1rem; justify-content: center;"></div>
+            </div>
           </div>
 
           <div class="form__submit">
@@ -1797,11 +1806,8 @@ function renderVorvoLanding() {
           <p style="font-size:0.95rem; color:var(--ink-soft); margin-bottom:0.5rem;">
             Call or Text: <strong>(832) 735-0603</strong>
           </p>
-          <p style="font-size:0.95rem; color:var(--ink-soft); margin-bottom:0.5rem;">
-            Email: <strong>buildfromone9@gmail.com</strong>
-          </p>
           <p style="font-size:0.95rem; color:var(--ink-soft);">
-            Google Form: <a href="https://forms.gle/X1p5ysjo2LaDzdZh9" target="_blank" rel="noopener" style="font-weight:bold; color:var(--ink);">Request via Google Forms</a>
+            Email: <strong>buildfromone9@gmail.com</strong>
           </p>
         </div>
 
@@ -3060,6 +3066,74 @@ function bindHandlers(route) {
 
   if (route === 'vorvo') {
     const form = document.getElementById('vorvo-quote-form');
+    const dropzone = document.getElementById('v-dropzone');
+    const fileInput = document.getElementById('v-photos');
+    const previewContainer = document.getElementById('v-preview-container');
+    const dropzoneText = document.getElementById('v-dropzone-text');
+    
+    let selectedFiles = [];
+    
+    const handleFiles = (files) => {
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        selectedFiles.push(file);
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const div = document.createElement('div');
+          div.style.position = 'relative';
+          div.style.width = '80px';
+          div.style.height = '80px';
+          div.style.border = '1px solid var(--rule)';
+          div.style.borderRadius = '3px';
+          div.style.overflow = 'hidden';
+          
+          div.innerHTML = `
+            <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;" />
+            <button type="button" class="btn-remove-photo" style="position:absolute; top:2px; right:2px; background:rgba(21,23,43,0.8); color:white; border:none; border-radius:50%; width:16px; height:16px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;">×</button>
+          `;
+          
+          div.querySelector('.btn-remove-photo').addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            selectedFiles = selectedFiles.filter(f => f !== file);
+            div.remove();
+            if (selectedFiles.length === 0) {
+              dropzoneText.textContent = 'Drag & drop photos here or click to browse';
+            }
+          });
+          
+          previewContainer.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      }
+      dropzoneText.textContent = `${selectedFiles.length} photo(s) selected`;
+    };
+    
+    dropzone?.addEventListener('click', () => fileInput.click());
+    
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = 'var(--gold)';
+    });
+    
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.style.borderColor = 'var(--rule)';
+    });
+    
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = 'var(--rule)';
+      if (e.dataTransfer.files) {
+        handleFiles(e.dataTransfer.files);
+      }
+    });
+    
+    fileInput?.addEventListener('change', (e) => {
+      if (e.target.files) {
+        handleFiles(e.target.files);
+      }
+    });
+
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
@@ -3067,7 +3141,36 @@ function bindHandlers(route) {
       const submitBtn = form.querySelector('button[type="submit"]');
       
       submitBtn.disabled = true;
-      submitBtn.innerHTML = 'Submitting... <span class="btn__arrow">→</span>';
+      submitBtn.innerHTML = 'Uploading photos & submitting... <span class="btn__arrow">→</span>';
+      
+      const imageUrls = [];
+      
+      // Upload files to Supabase Storage
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `quote-photos/${fileName}`;
+        
+        try {
+          const { data: uploadData, error: uploadError } = await supabaseClient
+            .storage
+            .from('job-images')
+            .upload(filePath, file);
+            
+          if (uploadError) throw uploadError;
+          
+          // Get public URL
+          const { data: { publicUrl } } = supabaseClient
+            .storage
+            .from('job-images')
+            .getPublicUrl(filePath);
+            
+          imageUrls.push(publicUrl);
+        } catch (err) {
+          console.error('Error uploading file:', file.name, err);
+        }
+      }
       
       const payload = {
         full_name: data.get('fullName'),
@@ -3075,7 +3178,8 @@ function bindHandlers(route) {
         phone: data.get('phone'),
         service_category: data.get('serviceCategory'),
         location_address: data.get('location'),
-        job_details: data.get('jobDetails')
+        job_details: data.get('jobDetails'),
+        image_urls: imageUrls
       };
       
       let trackingId = 'Pending';
@@ -3095,6 +3199,10 @@ function bindHandlers(route) {
         console.error('Supabase connection error:', err);
       }
       
+      if (imageUrls.length > 0) {
+        data.append('imageUrls', imageUrls.join(', '));
+      }
+      
       fetch(form.action, {
         method: 'POST',
         body: data,
@@ -3104,6 +3212,9 @@ function bindHandlers(route) {
       successEl.innerHTML = `<strong>Quote request received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your quote request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>We will coordinate with local providers and contact you within 24 hours with a transparent estimate. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
       successEl.style.display = 'block';
       form.reset();
+      selectedFiles = [];
+      previewContainer.innerHTML = '';
+      dropzoneText.textContent = 'Drag & drop photos here or click to browse';
       submitBtn.disabled = false;
       submitBtn.innerHTML = 'Submit Quote Request <span class="btn__arrow">→</span>';
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3166,20 +3277,172 @@ function bindHandlers(route) {
               'cancelled': { label: 'Cancelled', color: 'var(--rust)' }
             };
             const status = statusMap[data.status] || { label: data.status, color: 'var(--ink-mute)' };
-            resultEl.innerHTML = `
-              <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);">Property Service Status</h3>
-              <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5;">
-                <div><strong>Customer Name:</strong><br>${esc(data.full_name)}</div>
-                <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>
-                <div><strong>Service Category:</strong><br><span style="text-transform:capitalize;">${esc(data.service_category)}</span></div>
-                <div><strong>Quote Amount:</strong><br>${data.quote_amount ? formatMoney(data.quote_amount) : 'Pending Estimate'}</div>
-                <div style="margin-top:0.5rem; padding:1rem; background:rgba(21,23,43,0.03); border-left:3px solid ${status.color};">
-                  <strong>Current Status:</strong><br>
-                  <span style="color:${status.color}; font-weight:bold;">${status.label}</span>
-                  ${data.assigned_provider_name ? `<br><small style="color:var(--ink-mute); display:block; margin-top:0.25rem;">Assigned Provider: ${esc(data.assigned_provider_name)}</small>` : ''}
+            
+            if (data.status === 'quoted') {
+              resultEl.innerHTML = `
+                <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);">Property Service Status</h3>
+                <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5; margin-bottom:1.5rem;">
+                  <div><strong>Customer Name:</strong><br>${esc(data.full_name)}</div>
+                  <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>
+                  <div><strong>Service Category:</strong><br><span style="text-transform:capitalize;">${esc(data.service_category)}</span></div>
+                  <div><strong>Quote Amount:</strong><br>${formatMoney(data.quote_amount)}</div>
+                  <div style="margin-top:0.5rem; padding:1rem; background:rgba(160,127,61,0.08); border-left:3px solid var(--gold);">
+                    <strong>Current Status:</strong><br>
+                    <span style="color:var(--gold); font-weight:bold;">Quote Prepared</span>
+                    <br><small style="color:var(--ink-mute); display:block; margin-top:0.25rem;">Assigned Provider: ${esc(data.assigned_provider_name)}</small>
+                  </div>
                 </div>
-              </div>
-            `;
+
+                <!-- Contract Signature Framework -->
+                <div id="contract-sign-container" style="border-top:1px solid var(--rule); padding-top:1.5rem; margin-top:1.5rem;">
+                  <h4 style="font-family:var(--serif); font-size:1.2rem; margin-bottom:0.75rem; color:var(--ink);">Work Service Agreement</h4>
+                  <div style="height:150px; overflow-y:scroll; border:1px solid var(--rule); padding:1rem; background:var(--cream); font-size:0.8rem; line-height:1.4; color:var(--ink-soft); margin-bottom:1.5rem;">
+                    <p><strong>1. Parties &amp; Scope:</strong> This Work Service Agreement is between the Customer (${esc(data.full_name)}) and Vorvo Services ("Vorvo"). Customer engages Vorvo to coordinate and dispatch an independent local provider (${esc(data.assigned_provider_name || 'Matched Provider')}) to complete the requested service: ${esc(data.service_category)} at the location: ${esc(data.location_address)}.</p>
+                    <p><strong>2. Price &amp; Payment:</strong> Customer agrees to pay the total quote amount of ${formatMoney(data.quote_amount)} upon satisfactory completion of the requested direct labor. No upfront fees are required.</p>
+                    <p><strong>3. Liability Disclaimer:</strong> Vorvo Services acts solely as a coordination layer and matching network. All direct labor is performed by independent local third-party contractors. Customer agrees that Vorvo is not liable for any direct, indirect, incidental, or consequential damages, property damage, or bodily injury arising from or related to the services performed by the independent provider.</p>
+                    <p><strong>4. Authorization:</strong> By signing below, Customer authorizes Vorvo Services to dispatch the matched provider to complete the work as scheduled.</p>
+                  </div>
+                  
+                  <div class="field" style="margin-bottom:1rem;">
+                    <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Type Full Legal Name</label>
+                    <input type="text" id="contract-typed-name" placeholder="e.g., ${esc(data.full_name)}" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); font-size:0.9rem;" />
+                  </div>
+
+                  <div class="field" style="margin-bottom:1.5rem;">
+                    <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Draw Your Signature</label>
+                    <div style="position:relative; border:1px solid var(--rule); background:var(--paper); cursor:crosshair; height:100px;">
+                      <canvas id="contract-canvas" style="display:block; width:100%; height:100%; touch-action:none;"></canvas>
+                      <button type="button" id="btn-contract-clear" style="position:absolute; bottom:5px; right:5px; font-family:var(--mono); font-size:0.6rem; background:none; border:1px solid var(--rule); padding:0.25rem 0.5rem; cursor:pointer; color:var(--ink-mute);">Clear</button>
+                    </div>
+                  </div>
+
+                  <button id="btn-contract-submit" class="btn btn--gold" style="width:100%; justify-content:center;">Accept Quote &amp; Sign Contract →</button>
+                </div>
+              `;
+              
+              // Now initialize the signature pad canvas logic!
+              const canvas = document.getElementById('contract-canvas');
+              if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let drawing = false;
+                let hasInk = false;
+                
+                const resizeCanvas = () => {
+                  const rect = canvas.getBoundingClientRect();
+                  canvas.width = rect.width;
+                  canvas.height = rect.height;
+                  ctx.strokeStyle = '#15172b';
+                  ctx.lineWidth = 2.5;
+                  ctx.lineCap = 'round';
+                };
+                resizeCanvas();
+                
+                const getPos = (e) => {
+                  const rect = canvas.getBoundingClientRect();
+                  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                  return { x: clientX - rect.left, y: clientY - rect.top };
+                };
+                
+                const startDraw = (e) => {
+                  drawing = true;
+                  const pos = getPos(e);
+                  ctx.beginPath();
+                  ctx.moveTo(pos.x, pos.y);
+                  e.preventDefault();
+                };
+                
+                const draw = (e) => {
+                  if (!drawing) return;
+                  const pos = getPos(e);
+                  ctx.lineTo(pos.x, pos.y);
+                  ctx.stroke();
+                  hasInk = true;
+                  e.preventDefault();
+                };
+                
+                const stopDraw = () => { drawing = false; };
+                
+                canvas.addEventListener('mousedown', startDraw);
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', stopDraw);
+                canvas.addEventListener('mouseleave', stopDraw);
+                
+                canvas.addEventListener('touchstart', startDraw);
+                canvas.addEventListener('touchmove', draw);
+                canvas.addEventListener('touchend', stopDraw);
+                
+                document.getElementById('btn-contract-clear')?.addEventListener('click', () => {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  hasInk = false;
+                });
+                
+                document.getElementById('btn-contract-submit')?.addEventListener('click', async (ev) => {
+                  const submitBtn = ev.currentTarget;
+                  const typedName = document.getElementById('contract-typed-name').value.trim();
+                  
+                  if (!typedName) return alert('Please type your full legal name to sign.');
+                  if (!hasInk) return alert('Please draw your signature to accept the agreement.');
+                  
+                  submitBtn.disabled = true;
+                  submitBtn.textContent = 'Processing Signature...';
+                  
+                  const signatureData = canvas.toDataURL('image/png');
+                  
+                  try {
+                    const { error: updateErr } = await supabaseClient
+                      .from('property_quotes')
+                      .update({
+                        status: 'scheduled',
+                        contract_signer_name: typedName,
+                        contract_signature_data: signatureData,
+                        contract_signed_at: new Date().toISOString()
+                      })
+                      .eq('id', data.id);
+                      
+                    if (updateErr) throw updateErr;
+                    
+                    // Submit to Formspree for immediate notification
+                    const formspreeData = new FormData();
+                    formspreeData.append('subject', `Work Service Agreement Signed - ${data.tracking_id}`);
+                    formspreeData.append('trackingId', data.tracking_id);
+                    formspreeData.append('signerName', typedName);
+                    formspreeData.append('quoteAmount', formatMoney(data.quote_amount));
+                    formspreeData.append('service', data.service_category);
+                    formspreeData.append('location', data.location_address);
+                    
+                    fetch('https://formspree.io/f/xqejewzo', {
+                      method: 'POST',
+                      body: formspreeData,
+                      headers: { 'Accept': 'application/json' }
+                    }).catch(err => console.warn('Formspree notification error:', err));
+                    
+                    alert('Agreement Signed successfully! Your job is now scheduled.');
+                    doLookup(); // Refresh the status view
+                  } catch (err) {
+                    console.error('Contract signing error:', err);
+                    alert('Failed to sign agreement: ' + err.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Accept Quote & Sign Contract →';
+                  }
+                });
+              }
+            } else {
+              resultEl.innerHTML = `
+                <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);">Property Service Status</h3>
+                <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5;">
+                  <div><strong>Customer Name:</strong><br>${esc(data.full_name)}</div>
+                  <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>
+                  <div><strong>Service Category:</strong><br><span style="text-transform:capitalize;">${esc(data.service_category)}</span></div>
+                  <div><strong>Quote Amount:</strong><br>${data.quote_amount ? formatMoney(data.quote_amount) : 'Pending Estimate'}</div>
+                  <div style="margin-top:0.5rem; padding:1rem; background:rgba(21,23,43,0.03); border-left:3px solid ${status.color};">
+                    <strong>Current Status:</strong><br>
+                    <span style="color:${status.color}; font-weight:bold;">${status.label}</span>
+                    ${data.assigned_provider_name ? `<br><small style="color:var(--ink-mute); display:block; margin-top:0.25rem;">Assigned Provider: ${esc(data.assigned_provider_name)}</small>` : ''}
+                  </div>
+                </div>
+              `;
+            }
           }
         } else {
           resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus Solutions) or "VRV-PRP-" (Property Services).</div>`;

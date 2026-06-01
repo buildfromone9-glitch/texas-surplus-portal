@@ -16,7 +16,11 @@ CREATE TABLE IF NOT EXISTS public.property_quotes (
     quote_amount numeric(10,2),
     assigned_provider_name text,
     assigned_provider_phone text,
-    internal_notes text
+    internal_notes text,
+    image_urls text[] DEFAULT '{}'::text[],
+    contract_signer_name text,
+    contract_signature_data text,
+    contract_signed_at timestamp with time zone
 );
 
 -- 2. Enable Row Level Security (RLS)
@@ -61,3 +65,17 @@ CREATE TRIGGER trigger_set_property_tracking_id
 BEFORE INSERT ON public.property_quotes
 FOR EACH ROW
 EXECUTE FUNCTION set_property_tracking_id();
+
+-- 7. Create Storage Bucket for Job Images (if storage schema exists)
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('job-images', 'job-images', true) 
+ON CONFLICT (id) DO NOTHING;
+
+-- Enable public select/insert on storage objects for job-images bucket
+CREATE POLICY "Allow public read of job images" 
+ON storage.objects FOR SELECT 
+USING (bucket_id = 'job-images');
+
+CREATE POLICY "Allow public upload of job images" 
+ON storage.objects FOR INSERT 
+WITH CHECK (bucket_id = 'job-images');
