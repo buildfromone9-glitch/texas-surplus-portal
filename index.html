@@ -1294,6 +1294,7 @@ const App = {
       case 'admin':     html += renderAdmin(); break;
       case 'surplus':   html += renderLanding(); break;
       case 'vorvo':     html += renderVorvoLanding(); break;
+      case 'track':     html += renderTrack(); break;
       case 'portal':
       default:          html += renderPortal(); break;
     }
@@ -1322,6 +1323,7 @@ function renderHeader(route) {
           <nav class="nav-links" style="display:flex;">
             <a href="#/" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
             <a href="#/vorvo" class="active">Services</a>
+            <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
             <a href="#vorvo-form" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
           </nav>
         </div>
@@ -1341,6 +1343,7 @@ function renderHeader(route) {
           <nav class="nav-links" style="display:flex;">
             <a href="#/surplus">Surplus Recovery</a>
             <a href="#/vorvo">Property Services</a>
+            <a href="#/track">Track Status</a>
           </nav>
         </div>
       </header>
@@ -1361,6 +1364,7 @@ function renderHeader(route) {
             <a href="#/" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
             <a href="#/surplus" class="${route === 'surplus' ? 'active' : ''}">Overview</a>
             <a href="#/guide" class="${route === 'guide' ? 'active' : ''}">Claims Guide</a>
+            <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
           </nav>
         </div>
       </header>
@@ -1545,6 +1549,32 @@ function renderFooter(route) {
       </footer>
     `;
   }
+}
+
+/* ============================================================
+   VIEW: TRACKING STATUS
+   ============================================================ */
+function renderTrack() {
+  return `
+    <section class="section" style="padding:5rem 1.5rem; min-height:65vh; display:flex; align-items:center; justify-content:center;">
+      <div class="form" style="max-width: 500px; margin: 0 auto; border:1px solid var(--rule); padding:3rem; background:var(--cream);">
+        <div style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:1rem; text-align:center;">Vorvo Services</div>
+        <h2 class="form__title" style="text-align:center; font-size:2rem; margin-bottom:1rem;">Track Your Project</h2>
+        <p class="form__intro" style="text-align:center; margin-bottom:2rem;">Enter your Vorvo Tracking ID below to check the real-time status of your property services request or asset recovery claim.</p>
+        
+        <div class="field" style="margin-bottom:1.5rem;">
+          <label for="track-id-input" style="display:block; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Tracking ID</label>
+          <input type="text" id="track-id-input" placeholder="e.g., VRV-PRP-5001 or VRV-AST-1002" required style="text-transform: uppercase; width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:1rem; box-sizing:border-box;" />
+        </div>
+        
+        <div class="form__submit">
+          <button id="btn-track-lookup" class="btn btn--gold" style="width: 100%; justify-content: center;">Lookup Status <span class="btn__arrow">→</span></button>
+        </div>
+        
+        <div id="tracking-result" style="display: none; margin-top: 2rem; padding: 1.5rem; background: var(--paper); border: 1px solid var(--rule); border-radius:3px;"></div>
+      </div>
+    </section>
+  `;
 }
 
 /* ============================================================
@@ -2520,122 +2550,142 @@ function renderAdmin() {
           <div style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep);">Vorvo Internal · Not for Client Use</div>
           <button id="admin-logout-btn" style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; background:none; border:1px solid var(--rule); padding:0.4rem 0.9rem; cursor:pointer; color:var(--ink-mute);">Sign Out</button>
         </div>
-        <h1 class="admin__title">Generate a Client Packet Link</h1>
-        <p class="admin__sub">Fill in the customizable fields below. The tool will generate a URL you can email or text to the client. Opening the URL will personalize the landing page and pre-fill their agreement.</p>
+        <h1 class="admin__title">Vorvo Command Center</h1>
+        <p class="admin__sub">Manage both Asset Solutions (Surplus Recovery) and Property Services divisions.</p>
+        
+        <!-- Tab Switcher -->
+        <div class="admin-tabs" style="display:flex; gap:1rem; margin-top:2rem; border-bottom:1px solid var(--rule); padding-bottom:1px;">
+          <button id="tab-btn-assets" class="admin-tab-btn active" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid var(--gold); cursor:pointer; color:var(--ink); font-size:0.95rem;">Asset Solutions</button>
+          <button id="tab-btn-property" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Property Services</button>
+        </div>
       </div>
 
-      <form id="admin-form" class="form" style="border:1px solid var(--rule); padding:2rem; background:var(--cream);">
-        <div class="field">
-          <label for="a-name">Claimant Full Legal Name</label>
-          <input type="text" id="a-name" required placeholder="e.g., Maria Lopez" />
+      <!-- Tab 1: Asset Solutions (Surplus) -->
+      <div id="tab-content-assets" class="admin-tab-content">
+        <div style="margin-top:2rem;">
+          <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Generate a Client Packet Link</h2>
+          <p class="admin__sub" style="margin-bottom:1.5rem;">Fill in the customizable fields below. The tool will generate a URL you can email or text to the client. Opening the URL will personalize the landing page and pre-fill their agreement.</p>
         </div>
-        <div class="field">
-          <label for="a-email">Claimant Email</label>
-          <input type="email" id="a-email" required placeholder="e.g., maria@email.com" />
-        </div>
-        <!-- Tracking ID is auto-generated by Supabase trigger -->
-        <div class="field">
-          <label for="a-pid">Texas Comptroller Property ID</label>
-          <input type="text" id="a-pid" required placeholder="e.g., A0123456789" />
-        </div>
-        <div class="field">
-          <label for="a-owner">Reported Owner Name on File</label>
-          <input type="text" id="a-owner" required placeholder="As shown in Comptroller database" />
-        </div>
-        <div class="field--row">
+
+        <form id="admin-form" class="form" style="border:1px solid var(--rule); padding:2rem; background:var(--cream);">
           <div class="field">
-            <label for="a-value">Estimated Reported Value (USD)</label>
-            <input type="number" id="a-value" step="0.01" required placeholder="e.g., 24000.00" />
+            <label for="a-name">Claimant Full Legal Name</label>
+            <input type="text" id="a-name" required placeholder="e.g., Maria Lopez" />
           </div>
           <div class="field">
-            <label for="a-research-date">Date Researched by Vorvo</label>
-            <input type="text" id="a-research-date" placeholder="MM/DD/YYYY" />
+            <label for="a-email">Claimant Email</label>
+            <input type="email" id="a-email" required placeholder="e.g., maria@email.com" />
           </div>
-        </div>
-       </div>
-        <div class="form__submit">
-          <button type="submit" class="btn">Generate Personalized Link <span class="btn__arrow">→</span></button>
-        </div>
-      </form>
+          <!-- Tracking ID is auto-generated by Supabase trigger -->
+          <div class="field">
+            <label for="a-pid">Texas Comptroller Property ID</label>
+            <input type="text" id="a-pid" required placeholder="e.g., A0123456789" />
+          </div>
+          <div class="field">
+            <label for="a-owner">Reported Owner Name on File</label>
+            <input type="text" id="a-owner" required placeholder="As shown in Comptroller database" />
+          </div>
+          <div class="field--row">
+            <div class="field">
+              <label for="a-value">Estimated Reported Value (USD)</label>
+              <input type="number" id="a-value" step="0.01" required placeholder="e.g., 24000.00" />
+            </div>
+            <div class="field">
+              <label for="a-research-date">Date Researched by Vorvo</label>
+              <input type="text" id="a-research-date" placeholder="MM/DD/YYYY" />
+            </div>
+          </div>
+          <div class="form__submit">
+            <button type="submit" class="btn">Generate Personalized Link <span class="btn__arrow">→</span></button>
+          </div>
+        </form>
 
-      <div id="admin-result" style="display:none;"></div>
+        <div id="admin-result" style="display:none;"></div>
 
-      <!-- ── SEND INVOICE ── -->
-      <div style="margin-top:4rem;border-top:2px solid var(--rule);padding-top:3rem;">
-        <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:1rem;">Vorvo Internal · Not for Client Use</div>
-        <h2 class="admin__title" style="font-size:1.6rem;">Send Invoice</h2>
-        <p class="admin__sub">Issue the 10% contingency fee invoice after receiving the claimant's disbursement notice.</p>
+        <!-- ── SEND INVOICE ── -->
+        <div style="margin-top:4rem;border-top:2px solid var(--rule);padding-top:3rem;">
+          <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:1rem;">Vorvo Internal · Not for Client Use</div>
+          <h2 class="admin__title" style="font-size:1.6rem;">Send Invoice</h2>
+          <p class="admin__sub">Issue the 10% contingency fee invoice after receiving the claimant's disbursement notice.</p>
+        </div>
+        <form id="invoice-form" class="form" style="border:1px solid var(--rule);padding:2rem;background:var(--cream);margin-top:1.5rem;">
+          <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
+            <div class="field" style="margin:0;flex:1;">
+              <label for="inv-agreement-id">Agreement ID (auto-fill claimant)</label>
+              <input type="number" id="inv-agreement-id" placeholder="e.g., 17" />
+            </div>
+            <button type="button" id="inv-lookup-btn" class="btn btn--small btn--ghost" style="white-space:nowrap;">Load Agreement</button>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="inv-name">Claimant Name</label><input type="text" id="inv-name" required placeholder="Full legal name" /></div>
+            <div class="field"><label for="inv-email">Claimant Email</label><input type="email" id="inv-email" required placeholder="Email address" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="inv-tracking">Tracking #</label><input type="text" id="inv-tracking" required placeholder="TRK-2026-XXXX" /></div>
+            <div class="field"><label for="inv-property">Property / Claim ID</label><input type="text" id="inv-property" required placeholder="e.g., A0123456789" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="inv-notice-date">Date Claimant Notified Vorvo</label><input type="text" id="inv-notice-date" required placeholder="e.g., May 20, 2026" /></div>
+            <div class="field"><label for="inv-disbursement-date">Date Disbursement Received</label><input type="text" id="inv-disbursement-date" required placeholder="e.g., May 18, 2026" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="inv-gross">Gross Amount Received ($)</label><input type="number" id="inv-gross" required step="0.01" placeholder="e.g., 24000.00" /></div>
+            <div class="field"><label for="inv-fee">Service Fee 10% — auto-calculated</label><input type="number" id="inv-fee" required step="0.01" placeholder="Auto-filled" readonly style="background:var(--paper-deep);" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="inv-number">Invoice Number</label><input type="text" id="inv-number" required placeholder="INV-2026-XXXX" /></div>
+            <div class="field"><label for="inv-date">Invoice Date</label><input type="text" id="inv-date" required placeholder="Today's date" /></div>
+          </div>
+          <div class="field"><label for="inv-due-date">Payment Due Date (10 business days from disbursement)</label><input type="text" id="inv-due-date" required placeholder="Auto-calculated from disbursement date" /></div>
+          <div class="form__submit"><button type="submit" class="btn">Send Invoice <span class="btn__arrow">→</span></button></div>
+        </form>
+        <div id="invoice-result" style="display:none;margin-top:1rem;"></div>
+
+        <!-- ── SEND DEMAND LETTER ── -->
+        <div style="margin-top:4rem;border-top:2px solid var(--rust);padding-top:3rem;">
+          <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--rust);margin-bottom:1rem;">Vorvo Internal · Not for Client Use</div>
+          <h2 class="admin__title" style="font-size:1.6rem;">Send Demand Letter</h2>
+          <p class="admin__sub">Send a formal Notice-and-Cure demand if payment is not received within the required period. A certified mail copy must also be sent manually.</p>
+        </div>
+        <form id="demand-form" class="form" style="border:1px solid var(--rust);padding:2rem;background:var(--cream);margin-top:1.5rem;">
+          <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
+            <div class="field" style="margin:0;flex:1;">
+              <label for="dem-agreement-id">Agreement ID (auto-fill claimant)</label>
+              <input type="number" id="dem-agreement-id" placeholder="e.g., 17" />
+            </div>
+            <button type="button" id="dem-lookup-btn" class="btn btn--small btn--ghost" style="white-space:nowrap;">Load Agreement</button>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="dem-name">Claimant Name</label><input type="text" id="dem-name" required placeholder="Full legal name" /></div>
+            <div class="field"><label for="dem-email">Claimant Email</label><input type="email" id="dem-email" required placeholder="Email address" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="dem-tracking">Tracking #</label><input type="text" id="dem-tracking" required placeholder="TRK-2026-XXXX" /></div>
+            <div class="field"><label for="dem-property">Property / Claim ID</label><input type="text" id="dem-property" required placeholder="e.g., A0123456789" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="dem-invoice-number">Invoice Number</label><input type="text" id="dem-invoice-number" required placeholder="INV-2026-XXXX" /></div>
+            <div class="field"><label for="dem-invoice-date">Invoice Date</label><input type="text" id="dem-invoice-date" required placeholder="e.g., May 20, 2026" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="dem-fee">Fee Amount Due ($)</label><input type="number" id="dem-fee" required step="0.01" placeholder="e.g., 2400.00" /></div>
+            <div class="field"><label for="dem-due-date">Original Payment Due Date</label><input type="text" id="dem-due-date" required placeholder="e.g., May 30, 2026" /></div>
+          </div>
+          <div class="field--row">
+            <div class="field"><label for="dem-days-past">Days Past Due</label><input type="number" id="dem-days-past" required placeholder="e.g., 5" /></div>
+            <div class="field"><label for="dem-certified">Certified Mail Tracking # (optional)</label><input type="text" id="dem-certified" placeholder="USPS tracking number" /></div>
+          </div>
+          <div class="form__submit"><button type="submit" class="btn" style="background:var(--rust);">Send Demand Letter <span class="btn__arrow">→</span></button></div>
+        </form>
+        <div id="demand-result" style="display:none;margin-top:1rem;"></div>
       </div>
-      <form id="invoice-form" class="form" style="border:1px solid var(--rule);padding:2rem;background:var(--cream);margin-top:1.5rem;">
-        <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
-          <div class="field" style="margin:0;flex:1;">
-            <label for="inv-agreement-id">Agreement ID (auto-fill claimant)</label>
-            <input type="number" id="inv-agreement-id" placeholder="e.g., 17" />
-          </div>
-          <button type="button" id="inv-lookup-btn" class="btn btn--small btn--ghost" style="white-space:nowrap;">Load Agreement</button>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="inv-name">Claimant Name</label><input type="text" id="inv-name" required placeholder="Full legal name" /></div>
-          <div class="field"><label for="inv-email">Claimant Email</label><input type="email" id="inv-email" required placeholder="Email address" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="inv-tracking">Tracking #</label><input type="text" id="inv-tracking" required placeholder="TRK-2026-XXXX" /></div>
-          <div class="field"><label for="inv-property">Property / Claim ID</label><input type="text" id="inv-property" required placeholder="e.g., A0123456789" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="inv-notice-date">Date Claimant Notified Vorvo</label><input type="text" id="inv-notice-date" required placeholder="e.g., May 20, 2026" /></div>
-          <div class="field"><label for="inv-disbursement-date">Date Disbursement Received</label><input type="text" id="inv-disbursement-date" required placeholder="e.g., May 18, 2026" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="inv-gross">Gross Amount Received ($)</label><input type="number" id="inv-gross" required step="0.01" placeholder="e.g., 24000.00" /></div>
-          <div class="field"><label for="inv-fee">Service Fee 10% — auto-calculated</label><input type="number" id="inv-fee" required step="0.01" placeholder="Auto-filled" readonly style="background:var(--paper-deep);" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="inv-number">Invoice Number</label><input type="text" id="inv-number" required placeholder="INV-2026-XXXX" /></div>
-          <div class="field"><label for="inv-date">Invoice Date</label><input type="text" id="inv-date" required placeholder="Today's date" /></div>
-        </div>
-        <div class="field"><label for="inv-due-date">Payment Due Date (10 business days from disbursement)</label><input type="text" id="inv-due-date" required placeholder="Auto-calculated from disbursement date" /></div>
-        <div class="form__submit"><button type="submit" class="btn">Send Invoice <span class="btn__arrow">→</span></button></div>
-      </form>
-      <div id="invoice-result" style="display:none;margin-top:1rem;"></div>
 
-      <!-- ── SEND DEMAND LETTER ── -->
-      <div style="margin-top:4rem;border-top:2px solid var(--rust);padding-top:3rem;">
-        <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--rust);margin-bottom:1rem;">Vorvo Internal · Not for Client Use</div>
-        <h2 class="admin__title" style="font-size:1.6rem;">Send Demand Letter</h2>
-        <p class="admin__sub">Send a formal Notice-and-Cure demand if payment is not received within the required period. A certified mail copy must also be sent manually.</p>
+      <!-- Tab 2: Property Services (Contracting) -->
+      <div id="tab-content-property" class="admin-tab-content" style="display:none; margin-top:2rem;">
+        <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Property Service Quote Requests</h2>
+        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming property services quotes, assign providers, update pricing, and set job statuses.</p>
+        <div id="property-quotes-list" style="margin-bottom:2rem;">Loading requests...</div>
       </div>
-      <form id="demand-form" class="form" style="border:1px solid var(--rust);padding:2rem;background:var(--cream);margin-top:1.5rem;">
-        <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
-          <div class="field" style="margin:0;flex:1;">
-            <label for="dem-agreement-id">Agreement ID (auto-fill claimant)</label>
-            <input type="number" id="dem-agreement-id" placeholder="e.g., 17" />
-          </div>
-          <button type="button" id="dem-lookup-btn" class="btn btn--small btn--ghost" style="white-space:nowrap;">Load Agreement</button>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="dem-name">Claimant Name</label><input type="text" id="dem-name" required placeholder="Full legal name" /></div>
-          <div class="field"><label for="dem-email">Claimant Email</label><input type="email" id="dem-email" required placeholder="Email address" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="dem-tracking">Tracking #</label><input type="text" id="dem-tracking" required placeholder="TRK-2026-XXXX" /></div>
-          <div class="field"><label for="dem-property">Property / Claim ID</label><input type="text" id="dem-property" required placeholder="e.g., A0123456789" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="dem-invoice-number">Invoice Number</label><input type="text" id="dem-invoice-number" required placeholder="INV-2026-XXXX" /></div>
-          <div class="field"><label for="dem-invoice-date">Invoice Date</label><input type="text" id="dem-invoice-date" required placeholder="e.g., May 20, 2026" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="dem-fee">Fee Amount Due ($)</label><input type="number" id="dem-fee" required step="0.01" placeholder="e.g., 2400.00" /></div>
-          <div class="field"><label for="dem-due-date">Original Payment Due Date</label><input type="text" id="dem-due-date" required placeholder="e.g., May 30, 2026" /></div>
-        </div>
-        <div class="field--row">
-          <div class="field"><label for="dem-days-past">Days Past Due</label><input type="number" id="dem-days-past" required placeholder="e.g., 5" /></div>
-          <div class="field"><label for="dem-certified">Certified Mail Tracking # (optional)</label><input type="text" id="dem-certified" placeholder="USPS tracking number" /></div>
-        </div>
-        <div class="form__submit"><button type="submit" class="btn" style="background:var(--rust);">Send Demand Letter <span class="btn__arrow">→</span></button></div>
-      </form>
-      <div id="demand-result" style="display:none;margin-top:1rem;"></div>
     </main>
   `;
 }
@@ -3010,12 +3060,40 @@ function bindHandlers(route) {
 
   if (route === 'vorvo') {
     const form = document.getElementById('vorvo-quote-form');
-    form?.addEventListener('submit', (e) => {
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
       const successEl = document.getElementById('vorvo-success');
-      successEl.innerHTML = `<strong>Quote request received!</strong> Thank you, ${esc(data.get('fullName'))}. We will coordinate with local providers and contact you at ${esc(data.get('email'))} or ${esc(data.get('phone'))} within 24 hours with a transparent quote.`;
-      successEl.style.display = 'block';
+      const submitBtn = form.querySelector('button[type="submit"]');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Submitting... <span class="btn__arrow">→</span>';
+      
+      const payload = {
+        full_name: data.get('fullName'),
+        email: data.get('email'),
+        phone: data.get('phone'),
+        service_category: data.get('serviceCategory'),
+        location_address: data.get('location'),
+        job_details: data.get('jobDetails')
+      };
+      
+      let trackingId = 'Pending';
+      try {
+        const { data: insertedData, error } = await supabaseClient
+          .from('property_quotes')
+          .insert([payload])
+          .select();
+          
+        if (!error && insertedData && insertedData.length > 0) {
+          trackingId = insertedData[0].tracking_id;
+          data.append('trackingId', trackingId);
+        } else if (error) {
+          console.error('Supabase quote insert error:', error);
+        }
+      } catch (err) {
+        console.error('Supabase connection error:', err);
+      }
       
       fetch(form.action, {
         method: 'POST',
@@ -3023,8 +3101,98 @@ function bindHandlers(route) {
         headers: { 'Accept': 'application/json' }
       }).catch(err => console.warn('Formspree submission error:', err));
 
+      successEl.innerHTML = `<strong>Quote request received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your quote request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>We will coordinate with local providers and contact you within 24 hours with a transparent estimate. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
+      successEl.style.display = 'block';
       form.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit Quote Request <span class="btn__arrow">→</span>';
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+
+  if (route === 'track') {
+    const btn = document.getElementById('btn-track-lookup');
+    const input = document.getElementById('track-id-input');
+    const resultEl = document.getElementById('tracking-result');
+    
+    const doLookup = async () => {
+      const trackingId = input.value.trim().toUpperCase();
+      if (!trackingId) return alert('Please enter a Tracking ID.');
+      resultEl.innerHTML = '<div style="text-align:center; padding:1rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Searching our database...</div>';
+      resultEl.style.display = 'block';
+      
+      try {
+        if (trackingId.startsWith('VRV-AST-') || trackingId.startsWith('TRK-')) {
+          const { data, error } = await supabaseClient
+            .from('agreements')
+            .select('*')
+            .eq('tracking_id', trackingId)
+            .single();
+            
+          if (error || !data) {
+            resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>No record found</strong><br>We couldn't find an asset recovery claim matching ID "${esc(trackingId)}". Please check the spelling or contact support.</div>`;
+          } else {
+            const statusLabel = data.signed ? 'Signed & Pending Filing' : 'Awaiting Signature';
+            const statusColor = data.signed ? 'var(--moss)' : 'var(--gold)';
+            resultEl.innerHTML = `
+              <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);">Asset Recovery Status</h3>
+              <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5;">
+                <div><strong>Client Name:</strong><br>${esc(data.claimant_name)}</div>
+                <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>
+                <div><strong>Property/Claim ID:</strong><br>${esc(data.property_id)}</div>
+                <div><strong>Estimated Value:</strong><br>${formatMoney(data.estimated_value)}</div>
+                <div style="margin-top:0.5rem; padding:1rem; background:rgba(21,23,43,0.03); border-left:3px solid ${statusColor};">
+                  <strong>Current Status:</strong><br>
+                  <span style="color:${statusColor}; font-weight:bold;">${statusLabel}</span>
+                </div>
+              </div>
+            `;
+          }
+        } else if (trackingId.startsWith('VRV-PRP-')) {
+          const { data, error } = await supabaseClient
+            .from('property_quotes')
+            .select('*')
+            .eq('tracking_id', trackingId)
+            .single();
+            
+          if (error || !data) {
+            resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>No record found</strong><br>We couldn't find a property service request matching ID "${esc(trackingId)}". Please check the spelling or contact support.</div>`;
+          } else {
+            const statusMap = {
+              'new': { label: 'Awaiting Provider Match', color: 'var(--gold)' },
+              'quoted': { label: 'Quote Prepared', color: 'var(--gold-soft)' },
+              'scheduled': { label: 'Job Scheduled', color: 'var(--moss)' },
+              'completed': { label: 'Completed ✓', color: 'var(--moss)' },
+              'cancelled': { label: 'Cancelled', color: 'var(--rust)' }
+            };
+            const status = statusMap[data.status] || { label: data.status, color: 'var(--ink-mute)' };
+            resultEl.innerHTML = `
+              <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);">Property Service Status</h3>
+              <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5;">
+                <div><strong>Customer Name:</strong><br>${esc(data.full_name)}</div>
+                <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>
+                <div><strong>Service Category:</strong><br><span style="text-transform:capitalize;">${esc(data.service_category)}</span></div>
+                <div><strong>Quote Amount:</strong><br>${data.quote_amount ? formatMoney(data.quote_amount) : 'Pending Estimate'}</div>
+                <div style="margin-top:0.5rem; padding:1rem; background:rgba(21,23,43,0.03); border-left:3px solid ${status.color};">
+                  <strong>Current Status:</strong><br>
+                  <span style="color:${status.color}; font-weight:bold;">${status.label}</span>
+                  ${data.assigned_provider_name ? `<br><small style="color:var(--ink-mute); display:block; margin-top:0.25rem;">Assigned Provider: ${esc(data.assigned_provider_name)}</small>` : ''}
+                </div>
+              </div>
+            `;
+          }
+        } else {
+          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus Solutions) or "VRV-PRP-" (Property Services).</div>`;
+        }
+      } catch (err) {
+        console.error('Tracking lookup error:', err);
+        resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>System Error</strong><br>An error occurred while communicating with the database. Please try again later.</div>`;
+      }
+    };
+    
+    btn?.addEventListener('click', doLookup);
+    input?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') doLookup();
     });
   }
 
@@ -3064,6 +3232,205 @@ function bindHandlers(route) {
         App.state.adminUser = null;
         App.render();
       });
+    }
+
+    // Tab switching logic
+    const tabAssetsBtn = document.getElementById('tab-btn-assets');
+    const tabPropertyBtn = document.getElementById('tab-btn-property');
+    const tabAssetsContent = document.getElementById('tab-content-assets');
+    const tabPropertyContent = document.getElementById('tab-content-property');
+    
+    tabAssetsBtn?.addEventListener('click', () => {
+      tabAssetsBtn.classList.add('active');
+      tabAssetsBtn.style.borderBottomColor = 'var(--gold)';
+      tabAssetsBtn.style.color = 'var(--ink)';
+      
+      tabPropertyBtn.classList.remove('active');
+      tabPropertyBtn.style.borderBottomColor = 'transparent';
+      tabPropertyBtn.style.color = 'var(--ink-mute)';
+      
+      tabAssetsContent.style.display = 'block';
+      tabPropertyContent.style.display = 'none';
+    });
+    
+    tabPropertyBtn?.addEventListener('click', async () => {
+      tabPropertyBtn.classList.add('active');
+      tabPropertyBtn.style.borderBottomColor = 'var(--gold)';
+      tabPropertyBtn.style.color = 'var(--ink)';
+      
+      tabAssetsBtn.classList.remove('active');
+      tabAssetsBtn.style.borderBottomColor = 'transparent';
+      tabAssetsBtn.style.color = 'var(--ink-mute)';
+      
+      tabPropertyContent.style.display = 'block';
+      tabAssetsContent.style.display = 'none';
+      
+      await loadPropertyQuotes();
+    });
+
+    async function loadPropertyQuotes() {
+      const container = document.getElementById('property-quotes-list');
+      if (!container) return;
+      container.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading requests from database...</div>';
+      
+      try {
+        const { data, error } = await supabaseClient
+          .from('property_quotes')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="color:var(--ink-mute); font-style:italic; padding:1rem; text-align:center;">No quote requests found in the database.</p>';
+          return;
+        }
+        
+        let html = `
+          <table class="agreement-table admin-table" style="width:100%; font-size:0.9rem; border-collapse:collapse; margin-top:1rem;">
+            <thead>
+              <tr style="background:var(--ink); color:var(--paper); text-align:left;">
+                <th style="padding:0.75rem;">Tracking ID</th>
+                <th style="padding:0.75rem;">Customer</th>
+                <th style="padding:0.75rem;">Service</th>
+                <th style="padding:0.75rem;">Location</th>
+                <th style="padding:0.75rem;">Status</th>
+                <th style="padding:0.75rem;">Quote</th>
+                <th style="padding:0.75rem; text-align:center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        data.forEach(q => {
+          const statusColors = {
+            'new': 'var(--gold-deep)',
+            'quoted': 'var(--gold-soft)',
+            'scheduled': 'var(--moss)',
+            'completed': 'var(--moss)',
+            'cancelled': 'var(--rust)'
+          };
+          const color = statusColors[q.status] || 'var(--ink-mute)';
+          
+          html += `
+            <tr style="border-bottom:1px solid var(--rule-soft);">
+              <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
+              <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
+              <td style="padding:0.75rem; text-transform:capitalize;">${esc(q.service_category)}</td>
+              <td style="padding:0.75rem; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${esc(q.location_address)}">${esc(q.location_address)}</td>
+              <td style="padding:0.75rem;"><span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${esc(q.status)}</span></td>
+              <td style="padding:0.75rem;">${q.quote_amount ? formatMoney(q.quote_amount) : '<em>Pending</em>'}</td>
+              <td style="padding:0.75rem; text-align:center;">
+                <button class="btn btn--small btn--ghost btn-edit-quote" data-id="${q.id}" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Manage</button>
+              </td>
+            </tr>
+            <tr id="edit-row-${q.id}" class="edit-quote-row" style="display:none; background:var(--paper-deep); border-bottom:2px solid var(--rule);">
+              <td colspan="7" style="padding:1.5rem;">
+                <form class="edit-quote-form" data-id="${q.id}" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; align-items:flex-end;">
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Job Status</label>
+                    <select class="eq-status" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);">
+                      <option value="new" ${q.status === 'new' ? 'selected' : ''}>Awaiting Provider Match (NEW)</option>
+                      <option value="quoted" ${q.status === 'quoted' ? 'selected' : ''}>Quote Prepared (QUOTED)</option>
+                      <option value="scheduled" ${q.status === 'scheduled' ? 'selected' : ''}>Job Scheduled (SCHEDULED)</option>
+                      <option value="completed" ${q.status === 'completed' ? 'selected' : ''}>Completed (COMPLETED)</option>
+                      <option value="cancelled" ${q.status === 'cancelled' ? 'selected' : ''}>Cancelled (CANCELLED)</option>
+                    </select>
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Quote Amount ($)</label>
+                    <input type="number" class="eq-amount" step="0.01" value="${q.quote_amount || ''}" placeholder="e.g., 150.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Assigned Provider Name</label>
+                    <input type="text" class="eq-provider-name" value="${q.assigned_provider_name || ''}" placeholder="e.g., Careful Movers" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Assigned Provider Phone</label>
+                    <input type="text" class="eq-provider-phone" value="${q.assigned_provider_phone || ''}" placeholder="e.g., 713-292-1233" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div class="field" style="margin:0; grid-column: span 2;">
+                    <label style="font-size:0.75rem;">Internal Coordination Notes</label>
+                    <input type="text" class="eq-notes" value="${q.internal_notes || ''}" placeholder="e.g., Payout to Careful Movers: $120. Profit margin: 20%." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 2; margin-top:0.5rem;">
+                    <button type="button" class="btn btn--small btn--ghost btn-cancel-edit" data-id="${q.id}" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Cancel</button>
+                    <button type="submit" class="btn btn--small btn--gold">Save Changes</button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+        
+        // Bind inline edit handlers
+        container.querySelectorAll('.btn-edit-quote').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            const editRow = document.getElementById(`edit-row-${id}`);
+            if (editRow) {
+              // Hide all other open edit rows first
+              container.querySelectorAll('.edit-quote-row').forEach(row => {
+                if (row.id !== `edit-row-${id}`) row.style.display = 'none';
+              });
+              editRow.style.display = editRow.style.display === 'none' ? 'table-row' : 'none';
+            }
+          });
+        });
+        
+        container.querySelectorAll('.btn-cancel-edit').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            const editRow = document.getElementById(`edit-row-${id}`);
+            if (editRow) editRow.style.display = 'none';
+          });
+        });
+        
+        container.querySelectorAll('.edit-quote-form').forEach(form => {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = e.currentTarget.getAttribute('data-id');
+            const submitBtn = e.currentTarget.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            const status = e.currentTarget.querySelector('.eq-status').value;
+            const quoteAmount = parseFloat(e.currentTarget.querySelector('.eq-amount').value) || null;
+            const assignedProviderName = e.currentTarget.querySelector('.eq-provider-name').value.trim() || null;
+            const assignedProviderPhone = e.currentTarget.querySelector('.eq-provider-phone').value.trim() || null;
+            const internalNotes = e.currentTarget.querySelector('.eq-notes').value.trim() || null;
+            
+            try {
+              const { error } = await supabaseClient
+                .from('property_quotes')
+                .update({
+                  status,
+                  quote_amount: quoteAmount,
+                  assigned_provider_name: assignedProviderName,
+                  assigned_provider_phone: assignedProviderPhone,
+                  internal_notes: internalNotes
+                })
+                .eq('id', id);
+                
+              if (error) throw error;
+              alert('Changes saved successfully!');
+              await loadPropertyQuotes();
+            } catch (err) {
+              console.error('Error updating quote:', err);
+              alert('Failed to save changes: ' + err.message);
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Save Changes';
+            }
+          });
+        });
+        
+      } catch (err) {
+        console.error('Error loading property quotes:', err);
+        container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load requests</strong><br>${esc(err.message)}</div>`;
+      }
     }
 
     const form = document.getElementById('admin-form');
