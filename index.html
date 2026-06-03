@@ -1325,7 +1325,7 @@ function renderHeader(route) {
             <a href="#/" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
             <a href="#/vorvo" class="active">Services</a>
             <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
-            <a href="#vorvo-form" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
+            <a href="javascript:void(0)" onclick="document.getElementById('vorvo-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
           </nav>
         </div>
       </header>
@@ -1650,7 +1650,7 @@ function renderVorvoLanding() {
         <h1 class="hero__title">Local Workers. Same Week. <em>Done Right.</em></h1>
         <p class="hero__lede">Vorvo is your nationwide coordination layer. We collect your service request, organize the details, check coverage with trusted local providers across the country, and help you get a clear, transparent quote — with zero hassle.</p>
         <div class="hero__cta-row">
-          <a href="#vorvo-form" class="btn">Request a Quote <span class="btn__arrow">→</span></a>
+          <a href="javascript:void(0)" onclick="document.getElementById('vorvo-form')?.scrollIntoView({behavior: 'smooth'})" class="btn">Request a Quote <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
         </div>
       </div>
@@ -1832,7 +1832,8 @@ function renderLanding() {
   ` : '';
 
   const ctaText = c ? 'Review Your Agreement' : 'Request a Free Surplus Search';
-  const ctaHref = c ? '#/agreement' : '#search-form';
+  const ctaHref = c ? '#/agreement' : 'javascript:void(0)';
+  const ctaOnClick = c ? '' : `onclick="document.getElementById('search-form')?.scrollIntoView({behavior: 'smooth'}); return false;"`;
 
   return `
     <section class="hero">
@@ -1842,7 +1843,7 @@ function renderLanding() {
         <h1 class="hero__title">Did your Texas home sell at foreclosure for <em>more</em> than you owed?</h1>
         <p class="hero__lede">If your property was sold at a mortgage or bank foreclosure auction in Texas, the sale price may have exceeded what you owed. Any leftover money — the surplus — belongs to you. After a waiting period, unclaimed surplus is transferred to the Texas Comptroller, where it waits for the rightful owner to claim it.</p>
         <div class="hero__cta-row">
-          <a href="${ctaHref}" class="btn">${ctaText} <span class="btn__arrow">→</span></a>
+          <a href="${ctaHref}" ${ctaOnClick} class="btn">${ctaText} <span class="btn__arrow">→</span></a>
           <a href="#/guide" class="btn btn--ghost">Read the Claims Guide</a>
         </div>
       </div>
@@ -1938,7 +1939,7 @@ function renderUnauthorized() {
         <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Access Restricted</div>
         <h2 style="font-family:var(--serif);font-size:2rem;margin:0 0 1rem;">Invalid or Missing Link</h2>
         <p style="color:var(--ink-mute);line-height:1.7;margin:0 0 2rem;">This page requires a personalized link provided by Vorvo. If you believe you should have access, please contact us or submit a free search request.</p>
-        <a href="#search-form" class="btn">Submit a Free Search Request <span class="btn__arrow">→</span></a>
+        <a href="#/surplus?scroll=search-form" class="btn">Submit a Free Search Request <span class="btn__arrow">→</span></a>
       </div>
     </main>
   `;
@@ -2167,7 +2168,7 @@ function renderGuide() {
         <div class="locked__icon">✦</div>
         <h2>This Guide is for Vorvo Clients</h2>
         <p>The educational claims guide is provided exclusively to clients with an active Vorvo service agreement. To get started, submit a free search request and we'll reach out if we find matching funds.</p>
-        <a href="#search-form" class="btn">Submit a Free Search Request <span class="btn__arrow">→</span></a>
+        <a href="#/surplus?scroll=search-form" class="btn">Submit a Free Search Request <span class="btn__arrow">→</span></a>
       </div>
     `;
   }
@@ -2190,16 +2191,16 @@ function renderGuide() {
       <div class="toc">
         <h3>Inside This Packet</h3>
         <ol>
-          <li><a href="#s1">Welcome &amp; How to Use This Packet</a></li>
-          <li><a href="#s2">Your Rights — Read This First</a></li>
-          <li><a href="#s3">Background: What Surplus Funds Are</a></li>
-          <li><a href="#s4">The Recovery Process — Nine Steps</a></li>
-          <li><a href="#s5">Required Documents Checklist</a></li>
-          <li><a href="#s6">Special Situation — Claiming as an Heir</a></li>
-          <li><a href="#s7">Common Pitfalls &amp; What Slows Claims Down</a></li>
-          <li><a href="#s8">What to Expect — Timeline</a></li>
-          <li><a href="#s9">Your Obligations Under the Service Agreement</a></li>
-          <li><a href="#s10">Frequently Asked Questions</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s1')?.scrollIntoView({behavior: 'smooth'})">Welcome &amp; How to Use This Packet</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s2')?.scrollIntoView({behavior: 'smooth'})">Your Rights — Read This First</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s3')?.scrollIntoView({behavior: 'smooth'})">Background: What Surplus Funds Are</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s4')?.scrollIntoView({behavior: 'smooth'})">The Recovery Process — Nine Steps</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s5')?.scrollIntoView({behavior: 'smooth'})">Required Documents Checklist</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s6')?.scrollIntoView({behavior: 'smooth'})">Special Situation — Claiming as an Heir</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s7')?.scrollIntoView({behavior: 'smooth'})">Common Pitfalls &amp; What Slows Claims Down</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s8')?.scrollIntoView({behavior: 'smooth'})">What to Expect — Timeline</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s9')?.scrollIntoView({behavior: 'smooth'})">Your Obligations Under the Service Agreement</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('s10')?.scrollIntoView({behavior: 'smooth'})">Frequently Asked Questions</a></li>
         </ol>
       </div>
 
@@ -3032,6 +3033,17 @@ function updateSubmitState() {
    FORM & ADMIN HANDLERS
    ============================================================ */
 function bindHandlers(route) {
+  // Handle cross-page smooth scrolling via ?scroll= element ID query parameter
+  const hash = window.location.hash;
+  const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+  const params = new URLSearchParams(queryString);
+  const scrollToId = params.get('scroll');
+  if (scrollToId) {
+    setTimeout(() => {
+      document.getElementById(scrollToId)?.scrollIntoView({ behavior: 'smooth' });
+    }, 150);
+  }
+
   if (route === 'agreement' && !App.hasSigned()) {
     if (App.state.auditLog.length === 0) {
       App.logAudit('Agreement page opened');
