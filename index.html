@@ -5063,6 +5063,35 @@ function setupWholesaleSignSubmit() {
           body: formspreeData,
           headers: { 'Accept': 'application/json' }
         }).catch(err => console.warn('Formspree notification error:', err));
+
+        // SEND EMAIL — clean and simple, no PDF generation needed
+        const accessToken = App.state.client?.accessToken;
+        const agreementPageUrl = `${window.location.origin}${window.location.pathname}#/wholesale-agreement?token=${accessToken}`;
+        try {
+          const res = await fetch('/api/send-wholesale-agreement', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              typedName,
+              signedAt: App.state.signedAt,
+              trackingId: App.state.client?.trackingId || '',
+              sellerName: App.state.client?.claimantName || typedName,
+              propertyAddress: App.state.client?.propertyAddress || '',
+              offerAmount: App.state.client?.offerAmount || null,
+              depositAmount: App.state.client?.depositAmount || null,
+              contractTerms: App.state.client?.contractTerms || '',
+              clientEmail,
+              ipAddress: App.state.ipAddress || 'unavailable',
+              ipLocation: App.state.ipLocation || 'unavailable',
+              agreementPageUrl,
+            }),
+          });
+          const result = await res.json();
+          if (!res.ok) console.error('[Vorvo] Email API error:', result);
+          else console.log('[Vorvo] Email sent ✓');
+        } catch (err) {
+          console.error('[Vorvo] Email send failed:', err.message);
+        }
         
         alert('Agreement Signed successfully! Your property is now under contract.');
         await loadWholesaleAgreement();
