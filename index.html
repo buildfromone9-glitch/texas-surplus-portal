@@ -1149,6 +1149,66 @@ const supabaseKey = "sb_publishable_l165SNZrHJ4XqQh46bqS9g_d9L-EsJX";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const STORE_KEY = 'vorvo_signed_v1';
 
+const SITE_CONFIG = {
+  brandName: "Vorvo Services",
+  brandSubtitle: "Property & Asset Solutions",
+  categories: {
+    assets: {
+      title: "Asset & Wholesale Solutions",
+      subtitle: "Surplus Fund Recovery & Wholesale Real Estate",
+      description: "We audit public records and coordinate wholesale transactions to help property owners recover assets and maximize value.",
+      services: [
+        {
+          id: "surplus",
+          title: "Surplus Fund Recovery",
+          description: "Did your home sell at foreclosure for more than you owed? Any leftover money belongs to you. We locate unclaimed surplus funds held by the State and provide a step-by-step roadmap to claim them.",
+          link: "#/surplus",
+          ctaText: "Enter Surplus Portal →",
+          bullets: [
+            "Free foreclosure surplus search",
+            "Public-records audit & verification",
+            "Comprehensive self-filing claims kit",
+            "No upfront fees — 10% contingency"
+          ]
+        },
+        {
+          id: "wholesale",
+          title: "Wholesale Property Solutions",
+          description: "Looking to sell your property quickly for cash or find off-market real estate opportunities? We connect property sellers with wholesale buyers and investors nationwide.",
+          link: "#/wholesale",
+          ctaText: "Enter Wholesale Portal →",
+          bullets: [
+            "Hassle-free cash offers",
+            "No repairs or cleaning needed",
+            "Fast, transparent closings",
+            "Off-market investor catalog"
+          ]
+        }
+      ]
+    },
+    labor: {
+      title: "Labor & Contractor Services",
+      subtitle: "Nationwide Labor Coordination",
+      description: "Need moving help, junk removal, pressure washing, or yard work? Vorvo is the nationwide coordination layer.",
+      services: [
+        {
+          id: "labor",
+          title: "Labor Coordination",
+          description: "Need moving help, junk removal, pressure washing, or yard work? We collect your request, organize details, check trusted provider availability in your area, and help you get clear quotes.",
+          link: "#/vorvo",
+          ctaText: "Enter Labor Portal →",
+          bullets: [
+            "Moving help & furniture pickup",
+            "Junk removal & hauling",
+            "Pressure washing (driveways, patios, fences)",
+            "Yard work, mowing & cleanups"
+          ]
+        }
+      ]
+    }
+  }
+};
+
 const App = {
   state: {
     client: null,
@@ -1295,6 +1355,7 @@ const App = {
       case 'admin':     html += renderAdmin(); break;
       case 'surplus':   html += renderLanding(); break;
       case 'vorvo':     html += renderVorvoLanding(); break;
+      case 'wholesale': html += renderWholesaleLanding(); break;
       case 'track':     html += renderTrack(); break;
       case 'portal':
       default:          html += renderPortal(); break;
@@ -1318,14 +1379,34 @@ function renderHeader(route) {
             <div class="brand__mark">V</div>
             <div class="brand__name">
               Vorvo Services
-              <small>National Property Solutions</small>
+              <small>Labor &amp; Contractor Services</small>
             </div>
           </a>
           <nav class="nav-links" style="display:flex;">
             <a href="#/" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
-            <a href="#/vorvo" class="active">Services</a>
+            <a href="#/vorvo" class="active">Labor Services</a>
             <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
             <a href="javascript:void(0)" onclick="document.getElementById('vorvo-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
+          </nav>
+        </div>
+      </header>
+    `;
+  } else if (route === 'wholesale') {
+    return `
+      <header class="site-header no-print">
+        <div class="site-header__inner">
+          <a href="#/wholesale" class="brand">
+            <div class="brand__mark">V</div>
+            <div class="brand__name">
+              Vorvo Services
+              <small>Wholesale Property Solutions</small>
+            </div>
+          </a>
+          <nav class="nav-links" style="display:flex;">
+            <a href="#/" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
+            <a href="#/wholesale" class="active">Wholesale</a>
+            <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
+            <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Get Cash Offer</a>
           </nav>
         </div>
       </header>
@@ -1343,7 +1424,8 @@ function renderHeader(route) {
           </a>
           <nav class="nav-links" style="display:flex;">
             <a href="#/surplus">Surplus Recovery</a>
-            <a href="#/vorvo">Property Services</a>
+            <a href="#/wholesale">Wholesale Property</a>
+            <a href="#/vorvo">Labor Services</a>
             <a href="#/track">Track Status</a>
           </nav>
         </div>
@@ -1471,7 +1553,6 @@ function renderFooter(route) {
             <ul>
               <li>Call/Text: <a href="tel:8327350603" style="color:inherit;">(832) 735-0603</a></li>
               <li>Email: <a href="mailto:buildfromone9@gmail.com" style="color:inherit;">buildfromone9@gmail.com</a></li>
-              <li>Google Form: <a href="https://forms.gle/X1p5ysjo2LaDzdZh9" target="_blank" rel="noopener" style="color:inherit;">Request Quote</a></li>
             </ul>
           </div>
           <div>
@@ -1490,6 +1571,37 @@ function renderFooter(route) {
         </div>
       </footer>
     `;
+  } else if (route === 'wholesale') {
+    return `
+      <footer class="site-footer no-print" style="background:var(--ink); color:var(--cream);">
+        <div class="site-footer__inner">
+          <div>
+            <h4 style="color:var(--gold-soft);">Vorvo Services</h4>
+            <p style="color:var(--paper-edge);">Vorvo Wholesale Property Solutions connects property owners looking for fast cash sales with a national network of verified off-market real estate buyers and investors.</p>
+          </div>
+          <div>
+            <h4 style="color:var(--gold-soft);">Contact Vorvo</h4>
+            <ul>
+              <li>Call/Text: <a href="tel:8327350603" style="color:inherit;">(832) 735-0603</a></li>
+              <li>Email: <a href="mailto:buildfromone9@gmail.com" style="color:inherit;">buildfromone9@gmail.com</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="color:var(--gold-soft);">Wholesale Benefits</h4>
+            <ul>
+              <li>As-Is Cash Offers</li>
+              <li>No Agent Commissions</li>
+              <li>Zero Listing Fees</li>
+              <li>Close in 7-14 Days</li>
+            </ul>
+          </div>
+        </div>
+        <div class="site-footer__legal" style="border-top:1px solid var(--ink-soft); color:var(--ink-mute);">
+          This site is an informational resource prepared by Vorvo Services. <strong>We are a real estate wholesale coordination layer, not a licensed brokerage or legal advisory firm.</strong>
+          <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
+        </div>
+      </footer>
+    `;
   } else if (route === 'portal') {
     return `
       <footer class="site-footer no-print">
@@ -1502,7 +1614,8 @@ function renderFooter(route) {
             <h4>Our Affiliated Services</h4>
             <ul>
               <li><a href="#/surplus" style="color:inherit;">Surplus Property Recovery</a></li>
-              <li><a href="#/vorvo" style="color:inherit;">Vorvo Property Services</a></li>
+              <li><a href="#/wholesale" style="color:inherit;">Wholesale Property Solutions</a></li>
+              <li><a href="#/vorvo" style="color:inherit;">Vorvo Labor Services</a></li>
             </ul>
           </div>
           <div>
@@ -1597,40 +1710,60 @@ function renderPortal() {
       <div class="container-wide">
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:2.5rem; margin-bottom:4rem;">
           
-          <!-- Card 1: Surplus Property Recovery -->
-          <div class="step-card" style="display:flex; flex-direction:column; justify-content:space-between; padding:2.5rem; background:var(--cream); border:1px solid var(--rule); transition:transform 200ms, box-shadow 200ms; height:100%;">
-            <div>
-              <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:1rem;">Service 01</div>
-              <h2 style="font-family:var(--serif); font-size:2rem; margin-bottom:1rem;">Surplus Property Recovery</h2>
-              <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
-                Did your home sell at foreclosure for more than you owed? Any leftover money belongs to you. We locate unclaimed surplus funds held by the State and provide a step-by-step roadmap to claim them.
-              </p>
-              <ul style="padding-left:1.25rem; color:var(--ink-mute); line-height:1.8; font-size:0.9rem; margin-bottom:2rem;">
-                <li>Free foreclosure surplus search</li>
-                <li>Public-records audit &amp; verification</li>
-                <li>Comprehensive self-filing claims kit</li>
-                <li>No upfront fees — 10% contingency</li>
-              </ul>
+          <!-- Category 1: Asset & Wholesale Solutions -->
+          <div class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category A — Asset &amp; Wholesale Solutions</div>
+            <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Asset Solutions</h2>
+            <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
+              Specialized public-records research, financial recovery, and strategic property wholesale coordination.
+            </p>
+            
+            <div style="display:grid; grid-template-columns:1fr; gap:1.5rem; margin-top:1rem;">
+              <!-- Sub-service: Surplus Property Recovery -->
+              <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:1.5rem; border-radius:3px;">
+                <h3 style="font-family:var(--serif); font-size:1.3rem; margin-bottom:0.5rem; color:var(--gold);">01. Surplus Fund Recovery</h3>
+                <p style="color:var(--ink-soft); font-size:0.9rem; margin-bottom:1rem;">
+                  Recover unclaimed mortgage foreclosure surplus funds from the State. 10% contingency fee — no upfront costs.
+                </p>
+                <a href="#/surplus" class="btn btn--small btn--gold" style="width:100%; justify-content:center;">Enter Surplus Portal →</a>
+              </div>
+              
+              <!-- Sub-service: Wholesale Property Solutions -->
+              <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:1.5rem; border-radius:3px;">
+                <h3 style="font-family:var(--serif); font-size:1.3rem; margin-bottom:0.5rem; color:var(--gold);">02. Wholesale Property Solutions</h3>
+                <p style="color:var(--ink-soft); font-size:0.9rem; margin-bottom:1rem;">
+                  Sell your property fast for cash or access off-market investor deals. No repairs, no cleaning, closed in days.
+                </p>
+                <a href="#/wholesale" class="btn btn--small btn--gold" style="width:100%; justify-content:center;">Enter Wholesale Portal →</a>
+              </div>
             </div>
-            <a href="#/surplus" class="btn" style="width:100%; justify-content:center;">Enter Surplus Portal →</a>
           </div>
 
-          <!-- Card 2: Vorvo Services -->
-          <div class="step-card" style="display:flex; flex-direction:column; justify-content:space-between; padding:2.5rem; background:var(--cream); border:1px solid var(--rule); transition:transform 200ms, box-shadow 200ms; height:100%;">
-            <div>
-              <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:1rem;">Service 02</div>
-              <h2 style="font-family:var(--serif); font-size:2rem; margin-bottom:1rem;">Property Services</h2>
-              <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
-                Need moving help, junk removal, pressure washing, or yard work? Vorvo is the nationwide coordination layer. We collect your request, organize details, check trusted provider availability in your area, and help you get clear quotes.
-              </p>
-              <ul style="padding-left:1.25rem; color:var(--ink-mute); line-height:1.8; font-size:0.9rem; margin-bottom:2rem;">
-                <li>Moving help &amp; furniture pickup</li>
-                <li>Junk removal &amp; hauling</li>
-                <li>Pressure washing (driveways, patios, fences)</li>
-                <li>Yard work, mowing &amp; cleanups</li>
-              </ul>
+          <!-- Category 2: Labor & Contractor Services -->
+          <div class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category B — Labor &amp; Contractor Services</div>
+            <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Labor Services</h2>
+            <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
+              Nationwide contractor coordination layer matching vetted local providers for quick, dependable property labor.
+            </p>
+            
+            <div style="display:grid; grid-template-columns:1fr; gap:1.5rem; margin-top:1rem; height:100%; justify-content:space-between;">
+              <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:1.5rem; border-radius:3px; display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+                <div>
+                  <h3 style="font-family:var(--serif); font-size:1.3rem; margin-bottom:0.5rem; color:var(--gold);">03. Labor Coordination</h3>
+                  <p style="color:var(--ink-soft); font-size:0.9rem; margin-bottom:1rem;">
+                    Fast, reliable local labor coordinated same-week. Moving help, junk removal, pressure washing, and yard cleanups.
+                  </p>
+                  <ul style="padding-left:1.25rem; color:var(--ink-mute); line-height:1.8; font-size:0.85rem; margin-bottom:1.5rem;">
+                    <li>Moving help &amp; furniture pickup</li>
+                    <li>Junk removal &amp; hauling</li>
+                    <li>Pressure washing (driveways, patios, fences)</li>
+                    <li>Yard work, mowing &amp; cleanups</li>
+                  </ul>
+                </div>
+                <a href="#/vorvo" class="btn btn--small btn--gold" style="width:100%; justify-content:center; margin-top:auto;">Enter Labor Portal →</a>
+              </div>
             </div>
-            <a href="#/vorvo" class="btn btn--gold" style="width:100%; justify-content:center;">Enter Property Services →</a>
           </div>
 
         </div>
@@ -1813,6 +1946,100 @@ function renderVorvoLanding() {
           </p>
         </div>
 
+      </div>
+    </section>
+  `;
+}
+
+/* ============================================================
+   VIEW: WHOLESALE LANDING
+   ============================================================ */
+function renderWholesaleLanding() {
+  return `
+    <section class="hero">
+      <div class="hero__inner">
+        <div class="hero__eyebrow">Vorvo Wholesale Property Solutions</div>
+        <h1 class="hero__title">Sell Your Property Fast. <em>Cash Offer.</em> No Repairs.</h1>
+        <p class="hero__lede">Vorvo is your direct route to hassle-free property sales. Whether you're looking to liquidate quickly, sell an inherited estate, or offload a distressed property, we connect you directly with wholesale buyers and real estate investors nationwide.</p>
+        <div class="hero__cta-row">
+          <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn">Get Cash Offer <span class="btn__arrow">→</span></a>
+          <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container-wide">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:2.5rem; margin-bottom:4rem;">
+          <div class="step-card" style="padding:2rem; background:var(--cream); border:1px solid var(--rule); border-radius:3px;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">Benefit 01</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">As-Is Purchase</h3>
+            <p style="color:var(--ink-soft); font-size:0.95rem; line-height:1.6;">No cleaning, no staging, and absolutely no repairs required. We buy properties in any condition, saving you thousands in upfront costs.</p>
+          </div>
+          <div class="step-card" style="padding:2rem; background:var(--cream); border:1px solid var(--rule); border-radius:3px;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">Benefit 02</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">Zero Commission</h3>
+            <p style="color:var(--ink-soft); font-size:0.95rem; line-height:1.6;">Avoid traditional real estate agent commissions, hidden fees, and listing costs. The offer you receive is the amount you keep.</p>
+          </div>
+          <div class="step-card" style="padding:2rem; background:var(--cream); border:1px solid var(--rule); border-radius:3px;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">Benefit 03</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">Fast Closings</h3>
+            <p style="color:var(--ink-soft); font-size:0.95rem; line-height:1.6;">We match your property with verified cash buyers, allowing us to close transactions in as little as 7 to 14 days.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wholesale Lead Form -->
+    <section class="section section--alt" id="wholesale-form">
+      <div class="form" style="max-width: var(--content-w); margin: 0 auto;">
+        <h2 class="form__title">Request a Cash Offer</h2>
+        <p class="form__intro">Submit your property details below. Our team will analyze the public records, market comparables, and coordinate with our investor network to deliver an offer within 24 hours.</p>
+        
+        <form id="vorvo-wholesale-form" action="https://formspree.io/f/xqejewzo" method="POST">
+          <div class="field">
+            <label for="w-name">Your Full Name</label>
+            <input type="text" id="w-name" name="fullName" required />
+          </div>
+          
+          <div class="field--row">
+            <div class="field">
+              <label for="w-email">Email Address</label>
+              <input type="email" id="w-email" name="email" required />
+            </div>
+            <div class="field">
+              <label for="w-phone">Phone Number</label>
+              <input type="tel" id="w-phone" name="phone" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="w-location">Property Address</label>
+            <input type="text" id="w-location" name="location" required placeholder="Street, City, State, ZIP" />
+          </div>
+
+          <div class="field--row">
+            <div class="field">
+              <label for="w-asking">Desired Asking Price (Optional)</label>
+              <input type="number" id="w-asking" name="askingPrice" placeholder="e.g., 180000" />
+            </div>
+            <div class="field">
+              <label for="w-value">Estimated Market Value (Optional)</label>
+              <input type="number" id="w-value" name="estimatedValue" placeholder="e.g., 210000" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="w-details">Describe Property Condition &amp; Details</label>
+            <textarea id="w-details" name="propertyDetails" required placeholder="e.g., roof age, foundation condition, occupancy status, repairs needed, or other details..." style="width:100%; min-height:120px; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-family:var(--sans); font-size:0.95rem; box-sizing:border-box; line-height:1.5; resize:vertical;"></textarea>
+          </div>
+
+          <div class="form__submit">
+            <button type="submit" class="btn btn--gold">Submit Property Details <span class="btn__arrow">→</span></button>
+          </div>
+        </form>
+
+        <div id="wholesale-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:var(--cream); border-left:3px solid var(--moss); font-size:0.95rem; line-height:1.6;"></div>
       </div>
     </section>
   `;
@@ -2564,8 +2791,9 @@ function renderAdmin() {
         
         <!-- Tab Switcher -->
         <div class="admin-tabs" style="display:flex; gap:1rem; margin-top:2rem; border-bottom:1px solid var(--rule); padding-bottom:1px;">
-          <button id="tab-btn-assets" class="admin-tab-btn active" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid var(--gold); cursor:pointer; color:var(--ink); font-size:0.95rem;">Asset Solutions</button>
-          <button id="tab-btn-property" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Property Services</button>
+          <button id="tab-btn-assets" class="admin-tab-btn active" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid var(--gold); cursor:pointer; color:var(--ink); font-size:0.95rem;">Surplus Recovery</button>
+          <button id="tab-btn-wholesale" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Wholesale Property</button>
+          <button id="tab-btn-property" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Labor Services</button>
         </div>
       </div>
 
@@ -2689,10 +2917,17 @@ function renderAdmin() {
         <div id="demand-result" style="display:none;margin-top:1rem;"></div>
       </div>
 
-      <!-- Tab 2: Property Services (Contracting) -->
+      <!-- Tab 2: Wholesale Property -->
+      <div id="tab-content-wholesale" class="admin-tab-content" style="display:none; margin-top:2rem;">
+        <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Wholesale Property Leads</h2>
+        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming wholesale real estate leads, analyze comparables, and set offer statuses.</p>
+        <div id="wholesale-leads-list" style="margin-bottom:2rem;">Loading leads...</div>
+      </div>
+
+      <!-- Tab 3: Labor Services (Contracting) -->
       <div id="tab-content-property" class="admin-tab-content" style="display:none; margin-top:2rem;">
-        <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Property Service Quote Requests</h2>
-        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming property services quotes, assign providers, update pricing, and set job statuses.</p>
+        <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Labor Service Quote Requests</h2>
+        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming labor services quotes, assign providers, update pricing, and set job statuses.</p>
         <div id="property-quotes-list" style="margin-bottom:2rem;">Loading requests...</div>
       </div>
     </main>
@@ -3235,6 +3470,59 @@ function bindHandlers(route) {
     });
   }
 
+  if (route === 'wholesale') {
+    const form = document.getElementById('vorvo-wholesale-form');
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const successEl = document.getElementById('wholesale-success');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Analyzing & submitting... <span class="btn__arrow">→</span>';
+      
+      const payload = {
+        full_name: data.get('fullName'),
+        email: data.get('email'),
+        phone: data.get('phone'),
+        property_address: data.get('location'),
+        property_details: data.get('propertyDetails'),
+        asking_price: parseFloat(data.get('askingPrice')) || null,
+        estimated_value: parseFloat(data.get('estimatedValue')) || null
+      };
+      
+      let trackingId = 'Pending';
+      try {
+        const { data: insertedData, error } = await supabaseClient
+          .from('wholesale_leads')
+          .insert([payload])
+          .select();
+          
+        if (!error && insertedData && insertedData.length > 0) {
+          trackingId = insertedData[0].tracking_id;
+          data.append('trackingId', trackingId);
+        } else if (error) {
+          console.error('Supabase wholesale insert error:', error);
+        }
+      } catch (err) {
+        console.error('Supabase connection error:', err);
+      }
+      
+      fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      }).catch(err => console.warn('Formspree submission error:', err));
+
+      successEl.innerHTML = `<strong>Property details received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your wholesale request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>Our valuation team will analyze the property comparables and contact you within 24 hours. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
+      successEl.style.display = 'block';
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Submit Property Details <span class="btn__arrow">→</span>';
+      successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+
   if (route === 'track') {
     const btn = document.getElementById('btn-track-lookup');
     const input = document.getElementById('track-id-input');
@@ -3273,16 +3561,22 @@ function bindHandlers(route) {
               </div>
             `;
           }
-        } else if (trackingId.startsWith('VRV-PRP-')) {
+        } else if (trackingId.startsWith('VRV-WHL-')) {
           const { data, error } = await supabaseClient
-            .from('property_quotes')
+            .from('wholesale_leads')
             .select('*')
             .eq('tracking_id', trackingId)
             .single();
             
           if (error || !data) {
-            resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>No record found</strong><br>We couldn't find a property service request matching ID "${esc(trackingId)}". Please check the spelling or contact support.</div>`;
+            resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>No record found</strong><br>We couldn't find a wholesale property request matching ID "${esc(trackingId)}". Please check the spelling or contact support.</div>`;
           } else {
+            const statusMap = {
+              'new': { label: 'Analyzing Comparables', color: 'var(--gold)' },
+              'analyzing': { label: 'Offer Under Analysis', color: 'var(--gold-soft)' },
+              'offer_sent': { label: 'Offer Sent', color: 'var(--gold-soft)' },
+              'under_contract': { label: 'Under Contract', color: 'var(--moss)' },
+              'closed': { label: 'Transaction Closed ✓', color: 'var(--moss)' },\n              'cancelled': { label: 'Cancelled', color: 'var(--rust)' }\n            };\n            const status = statusMap[data.status] || { label: data.status, color: 'var(--ink-mute)' };\n            resultEl.innerHTML = `\n              <h3 style=\"font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);\">Wholesale Property Status</h3>\n              <div style=\"display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5;\">\n                <div><strong>Owner Name:</strong><br>${esc(data.full_name)}</div>\n                <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>\n                <div><strong>Property Address:</strong><br>${esc(data.property_address)}</div>\n                <div><strong>Asking Price:</strong><br>${data.asking_price ? formatMoney(data.asking_price) : 'Not specified'}</div>\n                <div style=\"margin-top:0.5rem; padding:1rem; background:rgba(21,23,43,0.03); border-left:3px solid ${status.color};\">\n                  <strong>Current Status:</strong><br>\n                  <span style=\"color:${status.color}; font-weight:bold;\">${status.label}</span>\n                </div>\n              </div>\n            `;\n          }\n        } else if (trackingId.startsWith('VRV-PRP-')) {\n          const { data, error } = await supabaseClient\n            .from('property_quotes')\n            .select('*')\n            .eq('tracking_id', trackingId)\n            .single();\n            \n          if (error || !data) {\n            resultEl.innerHTML = `<div style=\"color:var(--rust); line-height:1.5;\"><strong>No record found</strong><br>We couldn't find a property service request matching ID \"${esc(trackingId)}\". Please check the spelling or contact support.</div>`;\n          } else {
             const statusMap = {
               'new': { label: 'Awaiting Provider Match', color: 'var(--gold)' },
               'quoted': { label: 'Quote Prepared', color: 'var(--gold-soft)' },
@@ -3602,37 +3896,204 @@ function bindHandlers(route) {
 
     // Tab switching logic
     const tabAssetsBtn = document.getElementById('tab-btn-assets');
+    const tabWholesaleBtn = document.getElementById('tab-btn-wholesale');
     const tabPropertyBtn = document.getElementById('tab-btn-property');
+    
     const tabAssetsContent = document.getElementById('tab-content-assets');
+    const tabWholesaleContent = document.getElementById('tab-content-wholesale');
     const tabPropertyContent = document.getElementById('tab-content-property');
     
+    const switchTab = (activeBtn, activeContent) => {
+      [tabAssetsBtn, tabWholesaleBtn, tabPropertyBtn].forEach(btn => {
+        if (!btn) return;
+        btn.classList.remove('active');
+        btn.style.borderBottomColor = 'transparent';
+        btn.style.color = 'var(--ink-mute)';
+      });
+      [tabAssetsContent, tabWholesaleContent, tabPropertyContent].forEach(content => {
+        if (content) content.style.display = 'none';
+      });
+      
+      activeBtn.classList.add('active');
+      activeBtn.style.borderBottomColor = 'var(--gold)';
+      activeBtn.style.color = 'var(--ink)';
+      activeContent.style.display = 'block';
+    };
+    
     tabAssetsBtn?.addEventListener('click', () => {
-      tabAssetsBtn.classList.add('active');
-      tabAssetsBtn.style.borderBottomColor = 'var(--gold)';
-      tabAssetsBtn.style.color = 'var(--ink)';
-      
-      tabPropertyBtn.classList.remove('active');
-      tabPropertyBtn.style.borderBottomColor = 'transparent';
-      tabPropertyBtn.style.color = 'var(--ink-mute)';
-      
-      tabAssetsContent.style.display = 'block';
-      tabPropertyContent.style.display = 'none';
+      switchTab(tabAssetsBtn, tabAssetsContent);
+    });
+    
+    tabWholesaleBtn?.addEventListener('click', async () => {
+      switchTab(tabWholesaleBtn, tabWholesaleContent);
+      await loadWholesaleLeads();
     });
     
     tabPropertyBtn?.addEventListener('click', async () => {
-      tabPropertyBtn.classList.add('active');
-      tabPropertyBtn.style.borderBottomColor = 'var(--gold)';
-      tabPropertyBtn.style.color = 'var(--ink)';
-      
-      tabAssetsBtn.classList.remove('active');
-      tabAssetsBtn.style.borderBottomColor = 'transparent';
-      tabAssetsBtn.style.color = 'var(--ink-mute)';
-      
-      tabPropertyContent.style.display = 'block';
-      tabAssetsContent.style.display = 'none';
-      
+      switchTab(tabPropertyBtn, tabPropertyContent);
       await loadPropertyQuotes();
     });
+
+    async function loadWholesaleLeads() {
+      const container = document.getElementById('wholesale-leads-list');
+      if (!container) return;
+      container.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading wholesale leads from database...</div>';
+      
+      try {
+        const { data, error } = await supabaseClient
+          .from('wholesale_leads')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="color:var(--ink-mute); font-style:italic; padding:1rem; text-align:center;">No wholesale leads found in the database.</p>';
+          return;
+        }
+        
+        let html = `
+          <table class="agreement-table admin-table" style="width:100%; font-size:0.9rem; border-collapse:collapse; margin-top:1rem;">
+            <thead>
+              <tr style="background:var(--ink); color:var(--paper); text-align:left;">
+                <th style="padding:0.75rem;">Tracking ID</th>
+                <th style="padding:0.75rem;">Owner</th>
+                <th style="padding:0.75rem;">Property Address</th>
+                <th style="padding:0.75rem;">Asking Price</th>
+                <th style="padding:0.75rem;">Est. Value</th>
+                <th style="padding:0.75rem;">Status</th>
+                <th style="padding:0.75rem; text-align:center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        data.forEach(q => {
+          const statusColors = {
+            'new': 'var(--gold-deep)',
+            'analyzing': 'var(--gold-soft)',
+            'offer_sent': 'var(--gold-soft)',
+            'under_contract': 'var(--moss)',
+            'closed': 'var(--moss)',
+            'cancelled': 'var(--rust)'
+          };
+          const color = statusColors[q.status] || 'var(--ink-mute)';
+          
+          html += `
+            <tr style="border-bottom:1px solid var(--rule-soft);">
+              <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
+              <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
+              <td style="padding:0.75rem; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${esc(q.property_address)}">${esc(q.property_address)}</td>
+              <td style="padding:0.75rem;">${q.asking_price ? formatMoney(q.asking_price) : '<em>Not specified</em>'}</td>
+              <td style="padding:0.75rem;">${q.estimated_value ? formatMoney(q.estimated_value) : '<em>Pending</em>'}</td>
+              <td style="padding:0.75rem;"><span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${esc(q.status)}</span></td>
+              <td style="padding:0.75rem; text-align:center;">
+                <button class="btn btn--small btn--ghost btn-edit-wholesale" data-id="${q.id}" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Manage</button>
+              </td>
+            </tr>
+            <tr id="edit-wholesale-row-${q.id}" class="edit-wholesale-row" style="display:none; background:var(--paper-deep); border-bottom:2px solid var(--rule);">
+              <td colspan="7" style="padding:1.5rem;">
+                <form class="edit-wholesale-form" data-id="${q.id}" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; align-items:flex-end;">
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Lead Status</label>
+                    <select class="ew-status" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);">
+                      <option value="new" ${q.status === 'new' ? 'selected' : ''}>Analyzing Comparables (NEW)</option>
+                      <option value="analyzing" ${q.status === 'analyzing' ? 'selected' : ''}>Offer Under Analysis (ANALYZING)</option>
+                      <option value="offer_sent" ${q.status === 'offer_sent' ? 'selected' : ''}>Offer Sent (OFFER_SENT)</option>
+                      <option value="under_contract" ${q.status === 'under_contract' ? 'selected' : ''}>Under Contract (UNDER_CONTRACT)</option>
+                      <option value="closed" ${q.status === 'closed' ? 'selected' : ''}>Transaction Closed (CLOSED)</option>
+                      <option value="cancelled" ${q.status === 'cancelled' ? 'selected' : ''}>Cancelled (CANCELLED)</option>
+                    </select>
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Asking Price ($)</label>
+                    <input type="number" class="ew-asking" step="0.01" value="${q.asking_price || ''}" placeholder="e.g., 180000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Estimated Value ($)</label>
+                    <input type="number" class="ew-value" step="0.01" value="${q.estimated_value || ''}" placeholder="e.g., 210000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div class="field" style="margin:0; grid-column: span 2;">
+                    <label style="font-size:0.75rem;">Internal Notes</label>
+                    <input type="text" class="ew-notes" value="${q.internal_notes || ''}" placeholder="e.g., Investor match: John Doe. Target margin: 15%." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 2; margin-top:0.5rem;">
+                    <button type="button" class="btn btn--small btn--ghost btn-cancel-edit-wholesale" data-id="${q.id}" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Cancel</button>
+                    <button type="submit" class="btn btn--small btn--gold">Save Changes</button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+        
+        // Bind inline edit handlers
+        container.querySelectorAll('.btn-edit-wholesale').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            const editRow = document.getElementById(`edit-wholesale-row-${id}`);
+            if (editRow) {
+              // Hide all other open edit rows first
+              container.querySelectorAll('.edit-wholesale-row').forEach(row => {
+                if (row.id !== `edit-wholesale-row-${id}`) row.style.display = 'none';
+              });
+              editRow.style.display = editRow.style.display === 'none' ? 'table-row' : 'none';
+            }
+          });
+        });
+        
+        container.querySelectorAll('.btn-cancel-edit-wholesale').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            const editRow = document.getElementById(`edit-wholesale-row-${id}`);
+            if (editRow) editRow.style.display = 'none';
+          });
+        });
+        
+        container.querySelectorAll('.edit-wholesale-form').forEach(form => {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = e.currentTarget.getAttribute('data-id');
+            const submitBtn = e.currentTarget.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
+            const status = e.currentTarget.querySelector('.ew-status').value;
+            const askingPrice = parseFloat(e.currentTarget.querySelector('.ew-asking').value) || null;
+            const estimatedValue = parseFloat(e.currentTarget.querySelector('.ew-value').value) || null;
+            const internalNotes = e.currentTarget.querySelector('.ew-notes').value.trim() || null;
+            
+            try {
+              const { error } = await supabaseClient
+                .from('wholesale_leads')
+                .update({
+                  status,
+                  asking_price: askingPrice,
+                  estimated_value: estimatedValue,
+                  internal_notes: internalNotes
+                })
+                .eq('id', id);
+                
+              if (error) throw error;
+              alert('Changes saved successfully!');
+              await loadWholesaleLeads();
+            } catch (err) {
+              console.error('Error updating wholesale lead:', err);
+              alert('Failed to save changes: ' + err.message);
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Save Changes';
+            }
+          });
+        });
+        
+      } catch (err) {
+        console.error('Error loading wholesale leads:', err);
+        container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load requests</strong><br>${esc(err.message)}</div>`;
+      }
+    }
 
     async function loadPropertyQuotes() {
       const container = document.getElementById('property-quotes-list');
