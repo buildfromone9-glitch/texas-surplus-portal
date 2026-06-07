@@ -3576,7 +3576,34 @@ function bindHandlers(route) {
               'analyzing': { label: 'Offer Under Analysis', color: 'var(--gold-soft)' },
               'offer_sent': { label: 'Offer Sent', color: 'var(--gold-soft)' },
               'under_contract': { label: 'Under Contract', color: 'var(--moss)' },
-              'closed': { label: 'Transaction Closed ✓', color: 'var(--moss)' },\n              'cancelled': { label: 'Cancelled', color: 'var(--rust)' }\n            };\n            const status = statusMap[data.status] || { label: data.status, color: 'var(--ink-mute)' };\n            resultEl.innerHTML = `\n              <h3 style=\"font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);\">Wholesale Property Status</h3>\n              <div style=\"display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5;\">\n                <div><strong>Owner Name:</strong><br>${esc(data.full_name)}</div>\n                <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>\n                <div><strong>Property Address:</strong><br>${esc(data.property_address)}</div>\n                <div><strong>Asking Price:</strong><br>${data.asking_price ? formatMoney(data.asking_price) : 'Not specified'}</div>\n                <div style=\"margin-top:0.5rem; padding:1rem; background:rgba(21,23,43,0.03); border-left:3px solid ${status.color};\">\n                  <strong>Current Status:</strong><br>\n                  <span style=\"color:${status.color}; font-weight:bold;\">${status.label}</span>\n                </div>\n              </div>\n            `;\n          }\n        } else if (trackingId.startsWith('VRV-PRP-')) {\n          const { data, error } = await supabaseClient\n            .from('property_quotes')\n            .select('*')\n            .eq('tracking_id', trackingId)\n            .single();\n            \n          if (error || !data) {\n            resultEl.innerHTML = `<div style=\"color:var(--rust); line-height:1.5;\"><strong>No record found</strong><br>We couldn't find a property service request matching ID \"${esc(trackingId)}\". Please check the spelling or contact support.</div>`;\n          } else {
+              'closed': { label: 'Transaction Closed ✓', color: 'var(--moss)' },
+              'cancelled': { label: 'Cancelled', color: 'var(--rust)' }
+            };
+            const status = statusMap[data.status] || { label: data.status, color: 'var(--ink-mute)' };
+            resultEl.innerHTML = `
+              <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);">Wholesale Property Status</h3>
+              <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5;">
+                <div><strong>Owner Name:</strong><br>${esc(data.full_name)}</div>
+                <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>
+                <div><strong>Property Address:</strong><br>${esc(data.property_address)}</div>
+                <div><strong>Asking Price:</strong><br>${data.asking_price ? formatMoney(data.asking_price) : 'Not specified'}</div>
+                <div style="margin-top:0.5rem; padding:1rem; background:rgba(21,23,43,0.03); border-left:3px solid ${status.color};">
+                  <strong>Current Status:</strong><br>
+                  <span style="color:${status.color}; font-weight:bold;">${status.label}</span>
+                </div>
+              </div>
+            `;
+          }
+        } else if (trackingId.startsWith('VRV-PRP-')) {
+          const { data, error } = await supabaseClient
+            .from('property_quotes')
+            .select('*')
+            .eq('tracking_id', trackingId)
+            .single();
+            
+          if (error || !data) {
+            resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>No record found</strong><br>We couldn't find a property service request matching ID "${esc(trackingId)}". Please check the spelling or contact support.</div>`;
+          } else {
             const statusMap = {
               'new': { label: 'Awaiting Provider Match', color: 'var(--gold)' },
               'quoted': { label: 'Quote Prepared', color: 'var(--gold-soft)' },
