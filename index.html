@@ -1419,13 +1419,12 @@ function renderHeader(route) {
             <div class="brand__mark" style="font-style:normal;">✦</div>
             <div class="brand__name">
               Vorvo Services
-              <small>Property &amp; Asset Solutions</small>
+              <small>Property &amp; Labor Services</small>
             </div>
           </a>
           <nav class="nav-links" style="display:flex;">
-            <a href="#/surplus">Surplus Recovery</a>
-            <a href="#/wholesale">Wholesale Property</a>
-            <a href="#/vorvo">Labor Services</a>
+            <a href="#/?scroll=property-services-section">Property Services</a>
+            <a href="#/?scroll=labor-services-section">Labor Services</a>
             <a href="#/track">Track Status</a>
           </nav>
         </div>
@@ -1711,7 +1710,7 @@ function renderPortal() {
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:2.5rem; margin-bottom:4rem;">
           
           <!-- Category 1: Property Services -->
-          <div class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
+          <div id="property-services-section" class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
             <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category A — Property Services</div>
             <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Property Services</h2>
             <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
@@ -1740,7 +1739,7 @@ function renderPortal() {
           </div>
 
           <!-- Category 2: Labor & Contractor Services -->
-          <div class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
+          <div id="labor-services-section" class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
             <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category B — Labor &amp; Contractor Services</div>
             <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Labor Services</h2>
             <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
