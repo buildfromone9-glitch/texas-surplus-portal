@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/v3/"></script>
 
 <style>
   /* ============================================================
@@ -1262,12 +1263,18 @@ const App = {
     if (currentRoute === 'agreement') {
       await loadAgreement();
       this.loadSignedState();
+    } else if (currentRoute === 'wholesale-agreement') {
+      await loadWholesaleAgreement();
+      this.loadSignedState();
     }
 
     window.addEventListener('hashchange', async () => {
       const route = this.getRoute();
       if (route === 'agreement') {
         await loadAgreement();
+        this.loadSignedState();
+      } else if (route === 'wholesale-agreement') {
+        await loadWholesaleAgreement();
         this.loadSignedState();
       }
       this.render();
@@ -1356,6 +1363,13 @@ const App = {
       case 'surplus':   html += renderLanding(); break;
       case 'vorvo':     html += renderVorvoLanding(); break;
       case 'wholesale': html += renderWholesaleLanding(); break;
+      case 'wholesale-agreement': {
+        const _hash = window.location.hash;
+        const _qs = _hash.includes('?') ? _hash.split('?')[1] : '';
+        const _token = new URLSearchParams(_qs).get('token');
+        html += _token ? renderWholesaleAgreement() : renderUnauthorized();
+        break;
+      }
       case 'track':     html += renderTrack(); break;
       case 'portal':
       default:          html += renderPortal(); break;
@@ -3299,6 +3313,10 @@ function bindHandlers(route) {
     window.addEventListener('scroll', onScroll);
   }
 
+  if (route === 'wholesale-agreement' && !App.hasSigned()) {
+    initWholesaleSignatureArea();
+  }
+
   if (route === 'landing' || route === 'surplus') {
     const form = document.getElementById('search-form-el');
     form?.addEventListener('submit', (e) => {
@@ -3723,6 +3741,13 @@ function bindHandlers(route) {
                     </select>
                   </div>
 
+                  <!-- Stripe Secure Credit Card Element -->
+                  <div id="stripe-card-container" style="margin-bottom:1.5rem; display:block;">
+                    <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Credit or Debit Card Details</label>
+                    <div id="stripe-card-element" style="padding:0.75rem; border:1px solid var(--rule); background:var(--paper); border-radius:3px;"></div>
+                    <div id="stripe-card-errors" role="alert" style="color:var(--rust); font-size:0.8rem; margin-top:0.4rem; display:none;"></div>
+                  </div>
+
                   <div class="field" style="margin-bottom:1rem;">
                     <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Type Full Legal Name</label>
                     <input type="text" id="contract-typed-name" placeholder="e.g., ${esc(data.full_name)}" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); font-size:0.9rem;" />
@@ -3747,6 +3772,45 @@ function bindHandlers(route) {
                 let drawing = false;
                 let hasInk = false;
                 
+                // Initialize Stripe
+                const stripe = Stripe('pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR');
+                const elements = stripe.elements();
+                const cardElement = elements.create('card', {
+                  style: {
+                    base: {
+                      color: '#FFFFFF',
+                      fontFamily: 'DM Sans, sans-serif',
+                      fontSize: '15px',
+                      '::placeholder': { color: '#888888' }
+                    },
+                    invalid: { color: '#FF3333' }
+                  }
+                });
+                cardElement.mount('#stripe-card-element');
+                
+                // Handle real-time validation errors from the card Element
+                cardElement.on('change', (event) => {
+                  const displayError = document.getElementById('stripe-card-errors');
+                  if (event.error) {
+                    displayError.textContent = event.error.message;
+                    displayError.style.display = 'block';
+                  } else {
+                    displayError.textContent = '';
+                    displayError.style.display = 'none';
+                  }
+                });
+                
+                // Show/hide Stripe card container based on selected payment method
+                const paymentMethodSelect = document.getElementById('contract-payment-method');
+                const stripeContainer = document.getElementById('stripe-card-container');
+                paymentMethodSelect?.addEventListener('change', (e) => {
+                  if (e.target.value === 'Credit/Debit Card') {
+                    stripeContainer.style.display = 'block';
+                  } else {
+                    stripeContainer.style.display = 'none';
+                  }
+                });
+
                 const resizeCanvas = () => {
                   const rect = canvas.getBoundingClientRect();
                   canvas.width = rect.width;
@@ -3808,6 +3872,43 @@ function bindHandlers(route) {
                   submitBtn.disabled = true;
                   submitBtn.textContent = 'Processing Signature...';
                   
+                  // Stripe Credit Card Authorization Flow
+                  if (paymentMethod === 'Credit/Debit Card') {
+                    submitBtn.textContent = 'Authorizing card via Stripe...';
+                    try {
+                      const piRes = await fetch('/api/create-payment-intent', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          amount: data.quote_amount,
+                          trackingId: data.tracking_id,
+                          description: `Vorvo Direct Labor Payment - ${data.tracking_id}`
+                        })
+                      });
+                      const piData = await piRes.json();
+                      if (!piRes.ok) throw new Error(piData.error || 'Failed to create PaymentIntent');
+                      
+                      const stripeResult = await stripe.confirmCardPayment(piData.clientSecret, {
+                        payment_method: {
+                          card: cardElement,
+                          billing_details: { name: data.full_name, email: data.email, phone: data.phone }
+                        }
+                      });
+                      
+                      if (stripeResult.error) {
+                        throw new Error(stripeResult.error.message);
+                      }
+                      
+                      App.logAudit('Stripe payment authorized successfully: ' + stripeResult.paymentIntent.id);
+                    } catch (err) {
+                      alert('Payment Authorization Failed: ' + err.message);
+                      submitBtn.disabled = false;
+                      submitBtn.textContent = 'Accept Quote & Sign Contract →';
+                      return;
+                    }
+                  }
+
+                  submitBtn.textContent = 'Saving Agreement...';
                   const signatureData = canvas.toDataURL('image/png');
                   
                   try {
@@ -3986,7 +4087,7 @@ function bindHandlers(route) {
                 <th style="padding:0.75rem;">Owner</th>
                 <th style="padding:0.75rem;">Property Address</th>
                 <th style="padding:0.75rem;">Asking Price</th>
-                <th style="padding:0.75rem;">Est. Value</th>
+                <th style="padding:0.75rem;">Offer Amount</th>
                 <th style="padding:0.75rem;">Status</th>
                 <th style="padding:0.75rem; text-align:center;">Actions</th>
               </tr>
@@ -4005,13 +4106,15 @@ function bindHandlers(route) {
           };
           const color = statusColors[q.status] || 'var(--ink-mute)';
           
+          const contractLink = q.access_token ? `${window.location.origin}${window.location.pathname}#/wholesale-agreement?token=${q.access_token}` : '';
+          
           html += `
             <tr style="border-bottom:1px solid var(--rule-soft);">
               <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
               <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
               <td style="padding:0.75rem; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${esc(q.property_address)}">${esc(q.property_address)}</td>
               <td style="padding:0.75rem;">${q.asking_price ? formatMoney(q.asking_price) : '<em>Not specified</em>'}</td>
-              <td style="padding:0.75rem;">${q.estimated_value ? formatMoney(q.estimated_value) : '<em>Pending</em>'}</td>
+              <td style="padding:0.75rem;">${q.offer_amount ? formatMoney(q.offer_amount) : '<em>Pending Offer</em>'}</td>
               <td style="padding:0.75rem;"><span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${esc(q.status)}</span></td>
               <td style="padding:0.75rem; text-align:center;">
                 <button class="btn btn--small btn--ghost btn-edit-wholesale" data-id="${q.id}" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Manage</button>
@@ -4039,11 +4142,46 @@ function bindHandlers(route) {
                     <label style="font-size:0.75rem;">Estimated Value ($)</label>
                     <input type="number" class="ew-value" step="0.01" value="${q.estimated_value || ''}" placeholder="e.g., 210000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
                   </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Offer Amount ($)</label>
+                    <input type="number" class="ew-offer" step="0.01" value="${q.offer_amount || ''}" placeholder="e.g., 150000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Earnest Deposit ($)</label>
+                    <input type="number" class="ew-deposit" step="0.01" value="${q.deposit_amount || ''}" placeholder="e.g., 1000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
                   <div class="field" style="margin:0; grid-column: span 2;">
+                    <label style="font-size:0.75rem;">Custom Contract Terms</label>
+                    <input type="text" class="ew-terms" value="${q.contract_terms || ''}" placeholder="e.g., Subject to 15-day inspection. Closing on or before June 30." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                  </div>
+                  <div class="field" style="margin:0; grid-column: span 3;">
                     <label style="font-size:0.75rem;">Internal Notes</label>
                     <input type="text" class="ew-notes" value="${q.internal_notes || ''}" placeholder="e.g., Investor match: John Doe. Target margin: 15%." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
                   </div>
-                  <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 2; margin-top:0.5rem;">
+                  
+                  <div style="grid-column: span 3; padding: 1rem; background: var(--paper); border: 1px solid var(--rule-soft); margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.5; color: var(--ink-soft); border-radius:3px;">
+                    <strong>Seller Contract &amp; Signature Status:</strong><br>
+                    • <strong>Contract Signed:</strong> ${q.signed_at ? `<span style="color:var(--moss); font-weight:bold;">Signed by ${esc(q.signer_name)} on ${new Date(q.signed_at).toLocaleString()}</span>` : '<span style="color:var(--rust);">Awaiting Signature</span>'}<br>
+                    ${q.signature_data ? `
+                      <div style="margin-top:0.75rem;">
+                        <strong>Signature:</strong><br>
+                        <img src="${q.signature_data}" style="border:1px solid var(--rule-soft); background:#fff; height:50px; display:block; margin-top:0.25rem;" />
+                      </div>
+                    ` : ''}
+                    <div style="margin-top:1rem; border-top:1px solid var(--rule-soft); padding-top:1rem;">
+                      <strong>Seller Contract Link:</strong><br>
+                      ${contractLink ? `
+                        <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem;">
+                          <input type="text" readonly value="${contractLink}" style="flex:1; padding:0.4rem; font-family:var(--mono); font-size:0.75rem; background:var(--paper-deep); border:1px solid var(--rule-soft); color:var(--gold-soft);" />
+                          <button type="button" class="btn btn--small btn--ghost btn-copy-wholesale-link" data-link="${contractLink}" style="padding:0.4rem 0.8rem; font-size:0.75rem; white-space:nowrap;">Copy Link</button>
+                        </div>
+                      ` : `
+                        <button type="button" class="btn btn--small btn--gold btn-generate-wholesale-contract" data-id="${q.id}" style="margin-top:0.5rem; font-size:0.75rem; padding:0.4rem 0.8rem;">Generate Contract Link</button>
+                      `}
+                    </div>
+                  </div>
+                  
+                  <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 3; margin-top:0.5rem;">
                     <button type="button" class="btn btn--small btn--ghost btn-cancel-edit-wholesale" data-id="${q.id}" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Cancel</button>
                     <button type="submit" class="btn btn--small btn--gold">Save Changes</button>
                   </div>
@@ -4078,6 +4216,44 @@ function bindHandlers(route) {
             if (editRow) editRow.style.display = 'none';
           });
         });
+
+        // Bind copy link handlers
+        container.querySelectorAll('.btn-copy-wholesale-link').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const link = e.currentTarget.getAttribute('data-link');
+            navigator.clipboard.writeText(link);
+            const origText = e.currentTarget.textContent;
+            e.currentTarget.textContent = 'Copied!';
+            setTimeout(() => e.currentTarget.textContent = origText, 1500);
+          });
+        });
+
+        // Bind contract generation handler
+        container.querySelectorAll('.btn-generate-wholesale-contract').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+            e.currentTarget.disabled = true;
+            e.currentTarget.textContent = 'Generating...';
+            
+            const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            
+            try {
+              const { error } = await supabaseClient
+                .from('wholesale_leads')
+                .update({ access_token: token })
+                .eq('id', id);
+                
+              if (error) throw error;
+              alert('Contract link generated successfully!');
+              await loadWholesaleLeads();
+            } catch (err) {
+              console.error('Error generating contract token:', err);
+              alert('Failed to generate contract link: ' + err.message);
+              e.currentTarget.disabled = false;
+              e.currentTarget.textContent = 'Generate Contract Link';
+            }
+          });
+        });
         
         container.querySelectorAll('.edit-wholesale-form').forEach(form => {
           form.addEventListener('submit', async (e) => {
@@ -4090,6 +4266,9 @@ function bindHandlers(route) {
             const status = e.currentTarget.querySelector('.ew-status').value;
             const askingPrice = parseFloat(e.currentTarget.querySelector('.ew-asking').value) || null;
             const estimatedValue = parseFloat(e.currentTarget.querySelector('.ew-value').value) || null;
+            const offerAmount = parseFloat(e.currentTarget.querySelector('.ew-offer').value) || null;
+            const depositAmount = parseFloat(e.currentTarget.querySelector('.ew-deposit').value) || null;
+            const contractTerms = e.currentTarget.querySelector('.ew-terms').value.trim() || null;
             const internalNotes = e.currentTarget.querySelector('.ew-notes').value.trim() || null;
             
             try {
@@ -4099,6 +4278,9 @@ function bindHandlers(route) {
                   status,
                   asking_price: askingPrice,
                   estimated_value: estimatedValue,
+                  offer_amount: offerAmount,
+                  deposit_amount: depositAmount,
+                  contract_terms: contractTerms,
                   internal_notes: internalNotes
                 })
                 .eq('id', id);
@@ -4567,6 +4749,326 @@ function generateAccessToken() {
     token += chars[Math.floor(Math.random() * chars.length)];
   }
   return token;
+}
+
+
+async function loadWholesaleAgreement() {
+  const hash = window.location.hash;
+  const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+  const params = new URLSearchParams(queryString);
+  const token = params.get('token');
+
+  if (!token) return;
+
+  const { data, error } = await supabaseClient
+    .from('wholesale_leads')
+    .select('*')
+    .eq('access_token', token)
+    .single();
+
+  if (error) {
+    console.error("[Vorvo] Supabase load error:", error.code, error.message, error.details, error.hint);
+    return;
+  }
+
+  if (!data) {
+    console.error('[Vorvo] No data returned for wholesale lead token:', token);
+    return;
+  }
+
+  console.log('[Vorvo] Wholesale agreement loaded successfully:', data.tracking_id);
+
+  App.state.client = {
+    id: data.id,
+    accessToken: data.access_token,
+    claimantName: data.full_name,
+    trackingId: data.tracking_id,
+    propertyAddress: data.property_address,
+    propertyDetails: data.property_details,
+    askingPrice: data.asking_price,
+    estimatedValue: data.estimated_value,
+    offerAmount: data.offer_amount,
+    depositAmount: data.deposit_amount || 0,
+    contractTerms: data.contract_terms || '',
+    dateIssued: data.created_at ? new Date(data.created_at).toLocaleDateString() : ''
+  };
+
+  if (data.signed && data.signature_data) {
+    App.state.signature = data.signature_data;
+    App.state.typedName = data.signer_name || '';
+    App.state.signedAt = data.signed_at || new Date().toISOString();
+  }
+
+  App.render();
+}
+
+function renderWholesaleAgreement() {
+  const c = App.state.client || {};
+  const signed = App.hasSigned();
+
+  const sigBlock = signed ? `
+    <div class="sig-grid">
+      <div class="sig-block">
+        <h4>Seller (Seller)</h4>
+        <div class="sig-static">
+          <div class="sig-static__sig">
+            <img src="${App.state.signature}" alt="Seller signature" style="max-height:80px; max-width:100%;" />
+          </div>
+          <div class="sig-static__line">${esc(App.state.typedName)} — ${new Date(App.state.signedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+        </div>
+      </div>
+      <div class="sig-block">
+        <h4>Buyer (Vorvo Services)</h4>
+        <div class="sig-static">
+          <div class="sig-static__sig" style="font-size:1.2rem;">D. S. &nbsp;·&nbsp; J. V.</div>
+          <div class="sig-static__line">Co-Operators · countersigned upon receipt</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:2.5rem; padding:1.5rem; background:rgba(61,92,68,0.08); border-left:3px solid var(--moss); font-size:0.95rem;">
+      <strong style="color:var(--moss); display:block; margin-bottom:0.4rem;">Agreement signed</strong>
+      You signed this agreement on ${new Date(App.state.signedAt).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })}. A copy has been saved to your property file.
+    </div>
+    <div class="hero__cta-row no-print" style="margin-top:2rem;">
+      <button class="btn" onclick="window.print()">Print / Save Signed Copy</button>
+    </div>
+  ` : `
+    <div id="wholesale-signature-area"></div>
+  `;
+
+  return `
+    <main class="agreement-wrap">
+      <div class="agreement-cover">
+        <div class="agreement-cover__label">Wholesale Property Agreement</div>
+        <h1 class="agreement-cover__title">Real Estate Purchase<br/>&amp; Sale Agreement</h1>
+        <dl class="agreement-meta">
+          <div class="agreement-meta__item">
+            <dt>Seller Name</dt>
+            <dd>${esc(c.claimantName || '[Seller Name]')}</dd>
+          </div>
+          <div class="agreement-meta__item">
+            <dt>Tracking ID</dt>
+            <dd>${esc(c.trackingId || '[Internal ID]')}</dd>
+          </div>
+          <div class="agreement-meta__item">
+            <dt>Date Issued</dt>
+            <dd>${esc(c.dateIssued || new Date().toLocaleDateString('en-US'))}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="notice-block">
+        <h3>Notice to Seller</h3>
+        <p>This is a legally binding contract for the purchase and sale of real property. By signing below, you agree to sell the property described in Section 1 to Vorvo Services (or its assigns) under the terms and conditions set forth herein. Please review all terms carefully.</p>
+      </div>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 1</span> Parties &amp; Property</h2>
+        <p>This Agreement is entered into by and between <strong>${esc(c.claimantName || '[Seller Name]')}</strong> ("Seller") and <strong>Vorvo Services, LLC</strong> and/or its assigns ("Buyer"). Seller agrees to sell, and Buyer agrees to purchase, the real property located at:</p>
+        <div style="padding:1rem; background:rgba(255,204,0,0.05); border-left:3px solid var(--gold); margin:1rem 0; font-family:var(--mono); font-size:1.05rem;">
+          ${esc(c.propertyAddress || '[Property Address Pending]')}
+        </div>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 2</span> Purchase Price &amp; Financial Terms</h2>
+        <p>The financial terms of this purchase and sale transaction are agreed upon as follows:</p>
+        <table class="agreement-table">
+          <thead>
+            <tr><th>Description</th><th style="text-align:right;">Amount (USD)</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>(a) Total Purchase Price (payable in cash or certified funds at closing)</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.offerAmount)}</td>
+            </tr>
+            <tr>
+              <td>(b) Earnest Money Deposit (to be held in escrow upon contract execution)</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.depositAmount)}</td>
+            </tr>
+            <tr>
+              <td>(c) Estimated Cash to Seller at Closing (before taxes, liens, and title adjustments)</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.offerAmount ? c.offerAmount - (c.depositAmount || 0) : null)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 3</span> Custom Contract Terms &amp; Addenda</h2>
+        <p>The following custom terms, conditions, and special stipulations apply to this transaction:</p>
+        <div style="padding:1.5rem; background:rgba(255,255,255,0.02); border:1px solid var(--rule-soft); border-radius:3px; min-height:100px; font-size:0.95rem; line-height:1.6; white-space:pre-wrap;">${esc(c.contractTerms || 'No custom terms specified. Property to be purchased in as-is condition with standard title and closing procedures.')}</div>
+      </section>
+
+      <section class="agreement-section">
+        <h2><span class="num">§ 4</span> General Provisions</h2>
+        <ol>
+          <li><strong>As-Is Condition:</strong> Seller agrees to convey the property in its current "as-is" condition as of the date of this agreement. Seller makes no warranties regarding property condition except that title shall be clean and clear at closing.</li>
+          <li><strong>Title &amp; Closing Costs:</strong> Seller shall convey clean, marketable, and insurable title by general warranty deed. Buyer shall pay standard closing costs, including title insurance and escrow fees, unless otherwise specified in custom terms.</li>
+          <li><strong>Assignability:</strong> Buyer has the absolute and unrestricted right to assign this agreement to any third-party investor, buyer, or entity without the prior written consent of Seller. All terms of this contract shall remain binding on the assignee.</li>
+          <li><strong>Inspection Contingency:</strong> This agreement is contingent upon Buyer's satisfactory inspection of the property condition, environmental review, and verification of all public and legal records within fifteen (15) days of contract execution.</li>
+          <li><strong>Closing Timeline:</strong> Closing shall take place within thirty (30) days of clean title approval, or on a date mutually agreed upon by both Parties in writing.</li>
+        </ol>
+      </section>
+
+      <section class="sig-section">
+        <h2 style="font-size:1.6rem; margin-bottom:0.4rem;">Acknowledgment and Signature</h2>
+        <p style="color:var(--ink-soft); font-size:0.95rem;">By signing below, the Seller certifies that they have read, understood, and agreed to the entirety of this Purchase &amp; Sale Agreement, and that they possess lawful authority to sell the property.</p>
+        ${sigBlock}
+      </section>
+    </main>
+  `;
+}
+
+function initWholesaleSignatureArea() {
+  const area = document.getElementById('wholesale-signature-area');
+  if (!area) return;
+
+  area.innerHTML = `
+    <div class="sig-grid">
+      <div class="sig-block">
+        <h4>Seller Signature</h4>
+        <div class="sig-pad" id="sig-pad">
+          <canvas id="sig-canvas"></canvas>
+          <div class="sig-pad__placeholder">Sign here using mouse or finger</div>
+        </div>
+        <div class="sig-controls">
+          <span>Draw your signature above</span>
+          <button type="button" class="sig-clear" id="sig-clear">Clear</button>
+        </div>
+        <div class="field" style="margin-top:1.25rem;">
+          <label for="typed-name">Printed Name (typed)</label>
+          <input type="text" id="typed-name" placeholder="Type your full legal name" />
+        </div>
+        <div class="field">
+          <label for="sign-email">Email on File</label>
+          <input type="email" id="sign-email" placeholder="your@email.com" />
+        </div>
+      </div>
+      <div class="sig-block">
+        <h4>Vorvo Services</h4>
+        <div class="sig-static">
+          <div class="sig-static__sig">D. S. &nbsp;·&nbsp; J. V.</div>
+          <div class="sig-static__line">Co-Operators · countersigned upon receipt</div>
+        </div>
+        <div style="margin-top:1.25rem; padding:1rem; background:var(--paper-deep); font-size:0.85rem; color:var(--ink-soft); line-height:1.5;">
+          Vorvo will countersign and email a fully-executed PDF copy to the address you provide above within one business day of receipt.
+        </div>
+      </div>
+    </div>
+
+    <div class="agree-confirm">
+      <input type="checkbox" id="confirm-box" />
+      <label for="confirm-box">
+        <strong>I have read and understood</strong> the entirety of this Real Estate Purchase &amp; Sale Agreement, and I authorize Vorvo Services to proceed with the transaction.
+      </label>
+    </div>
+
+    <div class="form__submit">
+      <button id="sign-submit" class="btn btn--gold" style="width:100%; justify-content:center;">Accept Terms &amp; Sign Agreement →</button>
+      <div id="sign-error" style="display:none; margin-top:1rem; padding:1rem; background:rgba(255,51,51,0.1); border-left:3px solid var(--rust); font-size:0.9rem; color:var(--rust);"></div>
+    </div>
+  `;
+
+  setupSignaturePad();
+  setupWholesaleSignSubmit();
+}
+
+function setupWholesaleSignSubmit() {
+  const typedInput = document.getElementById('typed-name');
+  const confirmBox = document.getElementById('confirm-box');
+  const submit = document.getElementById('sign-submit');
+  const emailInput = document.getElementById('sign-email');
+
+  const updateSubmitState = () => {
+    const ready = document.getElementById('sig-pad')?.classList.contains('signed')
+                 && typedInput?.value.trim().length >= 3
+                 && confirmBox?.checked
+                 && emailInput?.value.trim().length > 0;
+    if (submit) submit.disabled = !ready;
+  };
+
+  typedInput?.addEventListener('input', updateSubmitState);
+  confirmBox?.addEventListener('change', updateSubmitState);
+  emailInput?.addEventListener('input', updateSubmitState);
+
+  submit?.addEventListener('click', async () => {
+    const errEl = document.getElementById('sign-error');
+    const pad = document.getElementById('sig-pad');
+    const canvas = document.getElementById('sig-canvas');
+    const typedName = typedInput.value.trim();
+    const clientEmail = emailInput.value.trim();
+
+    if (!pad.classList.contains('signed')) {
+      errEl.textContent = 'Please draw your signature in the box above.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (typedName.length < 3) {
+      errEl.textContent = 'Please type your full legal name to confirm your signature.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!confirmBox.checked) {
+      errEl.textContent = 'Please check the confirmation box to agree to the terms.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!clientEmail) {
+      errEl.textContent = 'Please enter your email address.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = 'Submitting…';
+
+    App.state.signature = canvas.toDataURL('image/png');
+    App.state.typedName = typedName;
+    App.state.signedAt = new Date().toISOString();
+    App.saveSignedState();
+
+    const leadId = App.state.client?.id;
+    if (leadId) {
+      const { error } = await supabaseClient
+        .from('wholesale_leads')
+        .update({
+          signed: true,
+          signature_data: App.state.signature,
+          signer_name: typedName,
+          signed_at: App.state.signedAt,
+          email: clientEmail,
+          status: 'under_contract'
+        })
+        .eq('id', leadId);
+
+      if (error) {
+        console.error('Supabase update failed for wholesale lead id', leadId, '—', error.message);
+        alert('Failed to save signature: ' + error.message);
+        submit.disabled = false;
+        submit.textContent = 'Accept Terms & Sign Agreement →';
+      } else {
+        console.log('Supabase updated wholesale lead for id:', leadId);
+        
+        // Submit notification to Formspree
+        const formspreeData = new FormData();
+        formspreeData.append('subject', `Wholesale Purchase & Sale Agreement Signed - ${App.state.client?.trackingId}`);
+        formspreeData.append('trackingId', App.state.client?.trackingId);
+        formspreeData.append('signerName', typedName);
+        formspreeData.append('propertyAddress', App.state.client?.propertyAddress);
+        formspreeData.append('offerAmount', formatMoney(App.state.client?.offerAmount));
+        
+        fetch('https://formspree.io/f/xqejewzo', {
+          method: 'POST',
+          body: formspreeData,
+          headers: { 'Accept': 'application/json' }
+        }).catch(err => console.warn('Formspree notification error:', err));
+        
+        alert('Agreement Signed successfully! Your property is now under contract.');
+        await loadWholesaleAgreement();
+      }
+    }
+  });
 }
 
 
