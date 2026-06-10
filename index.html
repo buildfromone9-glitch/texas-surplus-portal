@@ -1351,6 +1351,8 @@ const App = {
     let html = renderHeader(route);
     switch (route) {
       case 'privacy': html += renderPrivacy(); break;
+      case 'terms': html += renderTerms(); break;
+      case 'client-agreement': html += renderClientAgreement(); break;
       case 'agreement': {
         const _hash = window.location.hash;
         const _qs = _hash.includes('?') ? _hash.split('?')[1] : '';
@@ -1592,6 +1594,252 @@ function renderPrivacy() {
   `;
 }
 
+function renderTerms() {
+  return `
+    <main class="doc-wrap" style="max-width:760px;margin:0 auto;padding:4rem 2rem;">
+      <div style="font-family:var(--mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Legal</div>
+      <h1 style="font-family:var(--serif);font-size:2.4rem;margin:0 0 0.5rem;">Terms of Service</h1>
+      <p style="color:var(--ink-mute);font-size:0.85rem;margin:0 0 3rem;">Vorvo Services · vorvoservices.com · Effective Date: June 8, 2026</p>
+
+      <p>Welcome to Vorvo Services ("we," "us," or "our"). By accessing or using our website, portals, or services, you agree to be bound by these Terms of Service. Please read them carefully.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">1. Description of Services</h2>
+      <p>Vorvo Services operates as an informational resource and nationwide coordination layer. We provide research, procurement, and logistics coordination services to help clients find, compare, and coordinate with independent third-party service providers. <strong>Vorvo Services is not a contractor, does not perform direct physical labor or construction, and does not employ service providers.</strong></p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">2. Relationship of Parties</h2>
+      <p>All service providers recommended or coordinated by Vorvo are independent third-party contractors. Any agreement for actual physical labor, construction, or trade services is strictly and solely between the client and the selected contractor. Vorvo is not a party to, and is not responsible for, the performance, quality, safety, or outcome of any work performed by independent contractors.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">3. Fees and Payments</h2>
+      <p>Clients pay Vorvo Services directly for selected research and coordination services. Contractors are paid directly by clients for any actual work performed. Vorvo does not collect labor payments on behalf of independent contractors, nor do we charge contractors referral fees or commissions.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">4. Limitation of Liability</h2>
+      <p>To the maximum extent permitted by law, Vorvo Services shall not be liable for any property damage, personal injury, lost profits, or any indirect, special, or consequential damages arising out of or related to the services of independent third-party contractors. Vorvo's total cumulative liability for any claim shall not exceed $100.00.</p>
+
+      <h2 style="font-family:var(--serif);font-size:1.3rem;margin:2rem 0 0.75rem;border-bottom:1px solid var(--rule);padding-bottom:0.5rem;">5. Governing Law</h2>
+      <p>These Terms of Service are governed by and construed in accordance with the laws of the State of Texas, without regard to conflict of law principles. Any dispute arising under these Terms shall be resolved exclusively in the state or federal courts located in Texas.</p>
+
+      <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--rule);font-size:0.8rem;color:var(--ink-mute);">
+        <p>These Terms of Service were last updated on June 8, 2026. Vorvo Services operates under United States law.</p>
+        <p style="margin-top:0.5rem;"><a href="#/" style="color:var(--gold-soft);">← Back to Home</a></p>
+      </div>
+    </main>
+  `;
+}
+
+function renderClientAgreement() {
+  return `
+    <main class="agreement-wrap" style="max-width:820px; margin:0 auto; padding:4rem 1.5rem;">
+      <div class="agreement-cover" style="text-align:center; margin-bottom:3rem;">
+        <div class="agreement-cover__label" style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem;">Legal Document</div>
+        <h1 class="agreement-cover__title" style="font-family:var(--serif); font-size:2.5rem; margin:0 0 0.5rem; color:var(--ink);">Client Service Agreement</h1>
+        <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Vorvo Services · Nationwide Coordination Layer</p>
+      </div>
+
+      <!-- Interactive Checklist Section -->
+      <div style="background:var(--cream); border:1px solid var(--rule); padding:2rem; border-radius:4px; margin-bottom:3rem;">
+        <h3 style="font-family:var(--serif); font-size:1.4rem; color:var(--gold); margin-top:0; margin-bottom:0.5rem;">1. Select Your Coordination Services</h3>
+        <p style="color:var(--ink-soft); font-size:0.95rem; margin-bottom:1.5rem;">Choose the individual services you would like Vorvo Services to perform on your behalf. These selections will dynamically update your Client Service Agreement below.</p>
+        
+        <!-- Full Service Option Card -->
+        <div id="ca-full-service-card" style="border: 2px solid var(--gold); background: rgba(255, 204, 0, 0.05); padding: 1.25rem; margin-bottom:1.5rem; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <input type="checkbox" id="ca-chk-full-service" style="width: 1.5rem; height: 1.5rem; accent-color: var(--gold); cursor: pointer;" />
+            <div>
+              <h4 style="margin: 0; font-size: 1.15rem; color: var(--gold-soft); text-transform:none;">Full Service Bundle</h4>
+              <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--ink-soft);">Select all coordination and procurement services for complete, end-to-end project support.</p>
+            </div>
+          </div>
+          <div style="font-family: var(--mono); font-size: 1.25rem; font-weight: bold; color: var(--gold); white-space: nowrap;">$343</div>
+        </div>
+
+        <!-- Individual Services Checklist -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+          
+          <!-- Contractor Research -->
+          <div class="ca-service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="ca-chk-service" data-price="49" data-name="Contractor Research" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Research</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Identify and provide up to 3 relevant contractors.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$49</div>
+          </div>
+
+          <!-- Quote Collection -->
+          <div class="ca-service-item-card" data-price="79" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="ca-chk-service" data-price="79" data-name="Quote Collection" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Collection</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Contact contractors and obtain quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$79</div>
+          </div>
+
+          <!-- Quote Comparison -->
+          <div class="ca-service-item-card" data-price="39" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="ca-chk-service" data-price="39" data-name="Quote Comparison" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Comparison</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Summarize and compare contractor quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$39</div>
+          </div>
+
+          <!-- Contractor Recommendation -->
+          <div class="ca-service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="ca-chk-service" data-price="29" data-name="Contractor Recommendation" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Recommendation</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Provide recommendation based on responsiveness and submitted quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$29</div>
+          </div>
+
+          <!-- Scheduling Coordination -->
+          <div class="ca-service-item-card" data-price="69" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="ca-chk-service" data-price="69" data-name="Scheduling Coordination" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Scheduling Coordination</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Coordinate scheduling between client and contractor.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$69</div>
+          </div>
+
+          <!-- Communication Assistance -->
+          <div class="ca-service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="ca-chk-service" data-price="49" data-name="Communication Assistance" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Communication Assistance</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Assist with communications and follow-ups.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$49</div>
+          </div>
+
+          <!-- Completion Confirmation -->
+          <div class="ca-service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="ca-chk-service" data-price="29" data-name="Completion Confirmation" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Completion Confirmation</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Confirm work completion with client.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$29</div>
+          </div>
+
+        </div>
+
+        <!-- Running Total Display -->
+        <div style="border-top: 1px solid var(--rule-soft); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <div id="ca-running-total" style="font-family: var(--serif); font-size: 1.75rem; font-weight: bold; color: var(--gold);">Base Total: $0</div>
+        </div>
+      </div>
+
+      <!-- Agreement Text Container -->
+      <div style="border: 1px solid var(--rule-soft); padding: 2.5rem; background: var(--paper-deep); font-size: 0.9rem; line-height: 1.6; color: var(--ink-soft); margin-bottom: 3rem; border-radius: 4px;">
+        <div style="text-align: center; margin-bottom: 2.5rem; border-bottom: 1px solid var(--rule-soft); padding-bottom: 1.5rem;">
+          <h2 style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold); margin: 0 0 0.5rem; text-transform: uppercase;">Client Service Agreement</h2>
+          <p style="font-family: var(--mono); font-size: 0.8rem; margin: 0; color: var(--ink-mute);">VORVO SERVICES · STATE OF TEXAS</p>
+          <p style="font-family: var(--mono); font-size: 0.8rem; margin: 0.25rem 0 0; color: var(--ink-mute);">Effective Date: Upon Execution</p>
+        </div>
+
+        <p>This Client Service Agreement (the "Agreement") is entered into between <strong>Vorvo Services</strong> ("Vorvo" or the "Company"), a Texas-based service coordination layer, and the undersigned individual or entity ("Client"). By signing below, the Client agrees to every term of this Agreement.</p>
+
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">1. What Vorvo Does</h3>
+        <p>Vorvo provides research, procurement, and coordination services to its Clients. Vorvo’s role is strictly limited to performing the specific coordination and research tasks selected by the Client via the checklist model, which may include:</p>
+        <ul>
+          <li><strong>Contractor Research:</strong> Researching and identifying independent third-party service providers.</li>
+          <li><strong>Quote Collection:</strong> Contacting independent providers and obtaining quotes.</li>
+          <li><strong>Quote Comparison:</strong> Summarizing and comparing quotes from independent providers.</li>
+          <li><strong>Contractor Recommendation:</strong> Providing recommendations based on provider responsiveness and quotes.</li>
+          <li><strong>Scheduling Coordination:</strong> Coordinating scheduling and logistics between the Client and independent providers.</li>
+          <li><strong>Communication Assistance:</strong> Assisting with communications and follow-ups between the Client and independent providers.</li>
+          <li><strong>Completion Confirmation:</strong> Confirming project completion with the Client.</li>
+        </ul>
+
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">2. What Vorvo Does Not Do (Disclaimers)</h3>
+        <p><strong>Client expressly acknowledges and agrees to the following disclaimers:</strong></p>
+        <ul>
+          <li><strong>No Contracting Services:</strong> Vorvo is not a contractor, subcontractor, construction manager, or builder. Vorvo does not perform any physical labor, construction, cleaning, hauling, or trade work.</li>
+          <li><strong>No Employment Relationship:</strong> Vorvo does not employ, lease, or engage service providers as employees or agents. All service providers are independent third parties.</li>
+          <li><strong>No Guarantees:</strong> Vorvo does not guarantee the quality, safety, outcome, or timeliness of any work performed by independent service providers.</li>
+          <li><strong>Direct Contract for Labor:</strong> Any agreement or contract for actual labor, construction, or physical services is solely and directly between the Client and the selected independent service provider. Vorvo is not a party to, and is not responsible for, any such agreement.</li>
+        </ul>
+
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">3. Fees and Payment Flow</h3>
+        <ul>
+          <li><strong>Coordination Fees:</strong> Client agrees to pay Vorvo directly for the specific coordination and research services selected in the checklist above, in accordance with the running total displayed.</li>
+          <li><strong>Direct Provider Payment:</strong> Independent contractors and service providers are paid directly by the Client for any physical labor or services they perform. Vorvo does not collect payments on behalf of independent providers, and Vorvo charges no referral fees, commissions, or percentages of provider revenue.</li>
+        </ul>
+
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">4. Client Responsibilities</h3>
+        <p>The Client is solely responsible for:</p>
+        <ul>
+          <li>Providing accurate project details, location, and access to the job site.</li>
+          <li>Independently verifying the licensing, credentials, and insurance of any independent service providers recommended by Vorvo.</li>
+          <li>Negotiating final pricing, terms, and payment schedules directly with the selected service provider.</li>
+          <li>Providing a safe working environment at the service location.</li>
+        </ul>
+
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">5. Indemnification & Limitation of Liability</h3>
+        <p><strong>5.1 Indemnification:</strong> Client agrees to defend, indemnify, and hold harmless Vorvo Services and its owners, officers, and agents from any and all claims, demands, losses, damages, or liabilities — including reasonable attorneys' fees — arising out of or related to the work performed by independent service providers, any property damage or personal injury occurring at the job site, or any breach of this Agreement by the Client.</p>
+        <p><strong>5.2 Limitation of Liability:</strong> TO THE MAXIMUM EXTENT PERMITTED BY LAW, VORVO'S TOTAL CUMULATIVE LIABILITY TO CLIENT FOR ANY CAUSE WHATSOEVER SHALL NOT EXCEED ONE HUNDRED DOLLARS ($100.00). VORVO SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES.</p>
+
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">6. General Provisions</h3>
+        <p>This Agreement is governed by the laws of the State of Texas. It represents the entire agreement between the Parties regarding Vorvo's coordination services and supersedes any prior discussions or representations.</p>
+      </div>
+
+      <!-- Signature Section -->
+      <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:2rem; border-radius:4px;">
+        <h3 style="font-family:var(--serif); font-size:1.3rem; color:var(--gold); margin-top:0; margin-bottom:1.5rem;">2. Sign the Agreement</h3>
+        
+        <div class="field" style="margin-bottom:1.25rem;">
+          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Your Full Legal Name</label>
+          <input type="text" id="ca-typed-name" placeholder="Type your full legal name" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:1rem; color:var(--ink); box-sizing:border-box;" />
+        </div>
+
+        <div class="field" style="margin-bottom:1.25rem;">
+          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Your Email Address</label>
+          <input type="email" id="ca-email" placeholder="your@email.com" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:1rem; color:var(--ink); box-sizing:border-box;" />
+        </div>
+
+        <div class="field" style="margin-bottom:1.5rem;">
+          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Draw Your Signature</label>
+          <div id="ca-sig-pad-container" style="position:relative; border:1px solid var(--rule); background:var(--paper); cursor:crosshair; height:120px;">
+            <canvas id="ca-sig-canvas" style="display:block; width:100%; height:100%; touch-action:none;"></canvas>
+            <button type="button" id="ca-sig-clear" style="position:absolute; bottom:5px; right:5px; font-family:var(--mono); font-size:0.6rem; background:none; border:1px solid var(--rule); padding:0.25rem 0.5rem; cursor:pointer; color:var(--ink-mute);">Clear</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.5rem; display:flex; align-items:flex-start; gap:0.5rem;">
+          <input type="checkbox" id="ca-confirm-box" style="width:1.2rem; height:1.2rem; accent-color:var(--gold); margin-top:0.1rem; cursor:pointer;" />
+          <label for="ca-confirm-box" style="font-size:0.85rem; color:var(--ink-soft); cursor:pointer; line-height:1.4;">
+            I agree to the terms of this Client Service Agreement, and I authorize Vorvo Services to proceed with the selected coordination services.
+          </label>
+        </div>
+
+        <button id="ca-submit-btn" class="btn btn--gold" style="width:100%; justify-content:center;">Accept Terms &amp; Sign Client Agreement →</button>
+        <div id="ca-submit-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:rgba(61,92,68,0.1); border-left:3px solid var(--moss); font-size:0.95rem; color:var(--ink-soft); line-height:1.6;">
+          <strong style="color:var(--moss); font-size:1.1rem; display:block; margin-bottom:0.5rem;">Client Service Agreement Signed!</strong>
+          Thank you! Your signed Client Service Agreement has been successfully registered. We will begin your selected coordination services immediately and contact you at the email address provided.
+        </div>
+      </div>
+    </main>
+  `;
+}
+
 function renderFooter(route) {
   if (route === 'vorvo') {
     return `
@@ -1619,7 +1867,9 @@ function renderFooter(route) {
           </div>
         </div>
         <div class="site-footer__legal" style="border-top:1px solid var(--ink-soft); color:var(--ink-mute);">
-          This site is an informational resource prepared by Vorvo Services. <strong>We are a coordination service, not a direct labor provider.</strong> All jobs are completed by independent, trusted local providers.
+          This site is an informational resource prepared by Vorvo Services. <strong>We are a coordination service, not a direct labor provider.</strong> All jobs are completed by independent, third-party service providers.
+          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
+          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
           <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
         </div>
       </footer>
@@ -1651,6 +1901,8 @@ function renderFooter(route) {
         </div>
         <div class="site-footer__legal" style="border-top:1px solid var(--ink-soft); color:var(--ink-mute);">
           This site is an informational resource prepared by Vorvo Services. <strong>We are a real estate wholesale coordination layer, not a licensed brokerage or legal advisory firm.</strong>
+          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
+          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
           <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
         </div>
       </footer>
@@ -1680,6 +1932,8 @@ function renderFooter(route) {
         </div>
         <div class="site-footer__legal">
           © 2026 Vorvo Services. All rights reserved.
+          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
+          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
           <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
         </div>
       </footer>
@@ -1711,6 +1965,8 @@ function renderFooter(route) {
         </div>
         <div class="site-footer__legal">
           This site is an educational resource prepared by Vorvo Services. <strong>It is not legal advice and does not create an attorney-client relationship.</strong> Information is current as of the date of preparation; State procedures and document requirements may change without notice. Always follow the on-screen instructions on the official Comptroller portal. For case-specific legal questions, consult a licensed Texas attorney.
+          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
+          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
           <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
         </div>
       </footer>
@@ -1792,12 +2048,12 @@ function renderPortal() {
             </div>
           </div>
 
-          <!-- Category 2: Labor & Contractor Services -->
+          <!-- Category 2: Labor Coordination Services -->
           <div id="labor-services-section" class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
-            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category B — Labor &amp; Contractor Services</div>
-            <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Labor Services</h2>
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category B — Labor Coordination Services</div>
+            <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Labor Coordination</h2>
             <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
-              Nationwide contractor coordination layer matching vetted local providers for quick, dependable property labor.
+              Nationwide coordination layer identifying, researching, and coordinating with independent third-party service providers on behalf of clients.
             </p>
             
             <div style="display:grid; grid-template-columns:1fr; gap:1.5rem; margin-top:1rem; height:100%; justify-content:space-between;">
@@ -1832,7 +2088,7 @@ function renderVorvoLanding() {
   return `
     <section class="hero">
       <div class="hero__inner">
-        <div class="hero__eyebrow">Vorvo Contractor Services</div>
+        <div class="hero__eyebrow">Vorvo Coordination Services</div>
         <h1 class="hero__title">Local Workers. Same Week. <em>Done Right.</em></h1>
         <p class="hero__lede">Vorvo Services helps property owners find, compare, and coordinate qualified service providers nationwide.</p>
         <div class="hero__cta-row">
@@ -1847,7 +2103,7 @@ function renderVorvoLanding() {
       <div class="section__head">
         <div class="section__eyebrow">Our Services</div>
         <h2>Coordination for Essential Local Services Nationwide</h2>
-        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">We connect you with trusted, vetted local providers for quick-turnaround home and property services. No complex negotiations, no hidden fees.</p>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">We identify, research, and coordinate with independent third-party service providers on behalf of clients for quick-turnaround home and property services. No complex negotiations, no hidden fees.</p>
       </div>
       
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:2rem; margin-top:3rem;">
@@ -1900,7 +2156,7 @@ function renderVorvoLanding() {
       <div class="section__head">
         <div class="section__eyebrow">How It Works</div>
         <h2>Simple, Streamlined Coordination Flow</h2>
-        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">We eliminate the back-and-forth of finding, vetting, and negotiating with local service providers.</p>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">We eliminate the back-and-forth of finding, researching, and coordinating with independent third-party service providers.</p>
       </div>
       
       <div class="steps">
@@ -1912,17 +2168,17 @@ function renderVorvoLanding() {
         <div class="step">
           <div class="step__num">02</div>
           <h3 class="step__title">Coordination</h3>
-          <p class="step__body">We review the details and check active coverage and scheduling with trusted local service providers.</p>
+          <p class="step__body">We review the details and identify, research, and coordinate with independent third-party service providers.</p>
         </div>
         <div class="step">
           <div class="step__num">03</div>
           <h3 class="step__title">Clear Quote</h3>
-          <p class="step__body">We deliver a transparent, clear quote for the job before any work is scheduled or dispatched.</p>
+          <p class="step__body">We deliver a transparent, clear quote for the coordination services before any work begins.</p>
         </div>
         <div class="step">
           <div class="step__num">04</div>
           <h3 class="step__title">Done Right</h3>
-          <p class="step__body">Vetted local workers complete the job. You review the work and pay upon satisfactory completion.</p>
+          <p class="step__body">Independent third-party service providers complete the work. You review the work and pay upon satisfactory completion.</p>
         </div>
       </div>
     </section>
@@ -2065,7 +2321,7 @@ function renderVorvoLanding() {
     <section class="section section--alt" id="vorvo-form">
       <div class="form">
         <h2 class="form__title">Request a Free Service Quote</h2>
-        <p class="form__intro">Submit your details below. We will coordinate with local providers and contact you with a clear estimate within 24 hours.</p>
+        <p class="form__intro">Submit your details below. We will coordinate with independent third-party service providers and contact you with a clear estimate within 24 hours.</p>
         
         <form id="vorvo-quote-form" action="https://formspree.io/f/xqejewzo" method="POST">
           <div class="field">
@@ -3649,7 +3905,7 @@ function bindHandlers(route) {
         headers: { 'Accept': 'application/json' }
       }).catch(err => console.warn('Formspree submission error:', err));
 
-      successEl.innerHTML = `<strong>Quote request received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your quote request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>We will coordinate with local providers and contact you within 24 hours with a transparent estimate. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
+      successEl.innerHTML = `<strong>Quote request received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your quote request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>We will coordinate with independent third-party service providers and contact you within 24 hours with a transparent estimate. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
       successEl.style.display = 'block';
       form.reset();
       selectedFiles = [];
@@ -3726,6 +3982,212 @@ function bindHandlers(route) {
     });
 
     updatePricingTotal();
+  }
+
+  if (route === 'client-agreement') {
+    // Checklist Logic
+    const fullServiceCard = document.getElementById('ca-full-service-card');
+    const chkFullService = document.getElementById('ca-chk-full-service');
+    const serviceCheckboxes = document.querySelectorAll('.ca-chk-service');
+    const serviceItemCards = document.querySelectorAll('.ca-service-item-card');
+    const totalDisplay = document.getElementById('ca-running-total');
+
+    const updatePricingTotal = () => {
+      let total = 0;
+      let allSelected = true;
+      serviceCheckboxes.forEach(cb => {
+        if (cb.checked) {
+          total += parseInt(cb.dataset.price, 10);
+          cb.closest('.ca-service-item-card').style.borderColor = 'var(--gold)';
+          cb.closest('.ca-service-item-card').style.background = 'rgba(255, 204, 0, 0.02)';
+        } else {
+          allSelected = false;
+          cb.closest('.ca-service-item-card').style.borderColor = 'var(--rule-soft)';
+          cb.closest('.ca-service-item-card').style.background = 'var(--paper)';
+        }
+      });
+
+      totalDisplay.textContent = `Base Total: $${total}`;
+
+      if (allSelected) {
+        if (chkFullService) chkFullService.checked = true;
+        if (fullServiceCard) {
+          fullServiceCard.style.background = 'rgba(255, 204, 0, 0.1)';
+          fullServiceCard.style.borderColor = 'var(--gold)';
+        }
+      } else {
+        if (chkFullService) chkFullService.checked = false;
+        if (fullServiceCard) {
+          fullServiceCard.style.background = 'rgba(255, 204, 0, 0.05)';
+          fullServiceCard.style.borderColor = 'rgba(255, 204, 0, 0.3)';
+        }
+      }
+    };
+
+    fullServiceCard?.addEventListener('click', (e) => {
+      if (e.target !== chkFullService) {
+        if (chkFullService) chkFullService.checked = !chkFullService.checked;
+      }
+      serviceCheckboxes.forEach(cb => {
+        cb.checked = chkFullService ? chkFullService.checked : false;
+      });
+      updatePricingTotal();
+    });
+
+    serviceItemCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        const cb = card.querySelector('.ca-chk-service');
+        if (e.target !== cb) {
+          cb.checked = !cb.checked;
+        }
+        updatePricingTotal();
+      });
+    });
+
+    serviceCheckboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        updatePricingTotal();
+      });
+    });
+
+    updatePricingTotal();
+
+    // Signature Pad Logic
+    const canvas = document.getElementById('ca-sig-canvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      let drawing = false;
+      let hasInk = false;
+
+      const resizeCanvas = () => {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        ctx.strokeStyle = '#FFCC00';
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+      };
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const getPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      };
+
+      const startDraw = (e) => {
+        drawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        e.preventDefault();
+      };
+
+      const draw = (e) => {
+        if (!drawing) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        hasInk = true;
+        e.preventDefault();
+      };
+
+      const stopDraw = () => { drawing = false; };
+
+      canvas.addEventListener('mousedown', startDraw);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDraw);
+      canvas.addEventListener('mouseleave', stopDraw);
+
+      canvas.addEventListener('touchstart', startDraw);
+      canvas.addEventListener('touchmove', draw);
+      canvas.addEventListener('touchend', stopDraw);
+
+      document.getElementById('ca-sig-clear')?.addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hasInk = false;
+      });
+
+      document.getElementById('ca-submit-btn')?.addEventListener('click', async (ev) => {
+        const submitBtn = ev.currentTarget;
+        const typedName = document.getElementById('ca-typed-name').value.trim();
+        const email = document.getElementById('ca-email').value.trim();
+        const confirmBox = document.getElementById('ca-confirm-box');
+
+        if (!typedName) return alert('Please type your full legal name to sign.');
+        if (!email) return alert('Please enter your email address.');
+        if (!hasInk) return alert('Please draw your signature to accept the agreement.');
+        if (!confirmBox || !confirmBox.checked) return alert('Please agree to the terms by checking the box.');
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Registering Signature...';
+
+        const signatureData = canvas.toDataURL('image/png');
+        
+        // Collect selected services
+        const selectedServices = [];
+        let total = 0;
+        serviceCheckboxes.forEach(cb => {
+          if (cb.checked) {
+            selectedServices.push(cb.dataset.name);
+            total += parseInt(cb.dataset.price, 10);
+          }
+        });
+
+        // Submit notification to Formspree
+        const formspreeData = new FormData();
+        formspreeData.append('subject', `Client Service Agreement Signed - ${typedName}`);
+        formspreeData.append('signerName', typedName);
+        formspreeData.append('email', email);
+        formspreeData.append('selectedServices', selectedServices.join(', '));
+        formspreeData.append('totalPrice', `$${total}`);
+        formspreeData.append('signature', signatureData);
+
+        fetch('https://formspree.io/f/xqejewzo', {
+          method: 'POST',
+          body: formspreeData,
+          headers: { 'Accept': 'application/json' }
+        })
+        .then(() => {
+          console.log('Formspree notification sent ✓');
+        })
+        .catch(err => console.warn('Formspree notification error:', err));
+
+        // Save to Supabase public.property_quotes
+        try {
+          const { data: insertData, error: insertErr } = await supabaseClient
+            .from('property_quotes')
+            .insert([{
+              full_name: typedName,
+              email: email,
+              phone: 'Not provided',
+              service_category: selectedServices.join(', ') || 'General Coordination',
+              location_address: 'Texas (General)',
+              job_details: 'Signed general Client Service Agreement for selected coordination services.',
+              status: 'new',
+              quote_amount: total,
+              contract_signer_name: typedName,
+              contract_signature_data: signatureData,
+              contract_signed_at: new Date().toISOString()
+            }])
+            .select();
+
+          if (insertErr) throw insertErr;
+          console.log('Client agreement saved to Supabase successfully:', insertData);
+        } catch (err) {
+          console.error('Failed to save to Supabase:', err.message);
+        }
+
+        // Show success view
+        document.getElementById('ca-submit-success').style.display = 'block';
+        submitBtn.style.display = 'none';
+        
+        // Scroll to success
+        document.getElementById('ca-submit-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
   }
 
   if (route === 'wholesale') {
@@ -3888,89 +4350,71 @@ function bindHandlers(route) {
 
                 <!-- Contract Signature Framework -->
                 <div id="contract-sign-container" style="border-top:1px solid var(--rule); padding-top:1.5rem; margin-top:1.5rem;">
-                  <h4 style="font-family:var(--serif); font-size:1.2rem; margin-bottom:0.75rem; color:var(--ink);">Customer Service Agreement &amp; Payment Plan</h4>
+                  <h4 style="font-family:var(--serif); font-size:1.2rem; margin-bottom:0.75rem; color:var(--ink);">Client Service Agreement &amp; Payment Plan</h4>
                   
                   <div style="height:300px; overflow-y:scroll; border:1px solid var(--rule); padding:1.5rem; background:var(--cream); font-size:0.82rem; line-height:1.5; color:var(--ink-soft); margin-bottom:1.5rem; border-radius:3px;">
                     <div style="text-align:center; margin-bottom:1.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:1rem;">
                       <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:0.25rem; color:var(--gold); text-transform:uppercase;">Vorvo Services</h3>
-                      <h4 style="font-family:var(--sans); font-size:0.9rem; margin-bottom:0.5rem; color:var(--ink); letter-spacing:0.05em; text-transform:uppercase;">Customer Service Agreement &amp; Payment Plan</h4>
+                      <h4 style="font-family:var(--sans); font-size:0.9rem; margin-bottom:0.5rem; color:var(--ink); letter-spacing:0.05em; text-transform:uppercase;">Client Service Agreement</h4>
                       <p style="font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft); margin:0;">Agreement Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                       <p style="font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft); margin:0;">Job Reference #: ${esc(data.tracking_id)}</p>
                     </div>
 
                     <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 1. PARTIES TO THIS AGREEMENT</h4>
-                    <p>This Customer Service Agreement (the "Agreement") is entered into as of the date written above by and among the following three (3) parties:</p>
-                    <p><strong>1.1 The Finder (Marketplace Platform):</strong><br>
-                    Vorvo Services ("the Company" / "the Finder"), online marketplace and dispatch platform connecting customers with independent service providers. Role: Marketplace facilitator, referral source, and payment processor on behalf of Provider. The Finder is NOT a party to the service itself and does NOT perform, supervise, or guarantee the work.</p>
+                    <p>This Client Service Agreement (the "Agreement") is entered into as of the date written above by and between the following two (2) parties:</p>
+                    <p><strong>1.1 The Company (Coordination Platform):</strong><br>
+                    Vorvo Services ("the Company" / "Vorvo"), a Texas-based service coordination layer. Role: Research, procurement, and logistics facilitator. Vorvo is NOT a contractor, does not perform direct physical labor, and does not employ service providers.</p>
                     
-                    <p><strong>1.2 The Contractor (Service Provider):</strong><br>
-                    <strong>Business/Individual Name:</strong> ${esc(data.assigned_provider_name || 'Matched Provider')}<br>
-                    <strong>Contact / Notices:</strong> ${esc(data.assigned_provider_phone || 'Contact via Vorvo Services')}<br>
-                    <strong>Role:</strong> Independent contractor responsible for performing all services described in Section 2. The Contractor sets its own methods, hours, and pricing and is solely liable for the quality and safety of its work.</p>
-                    
-                    <p><strong>1.3 The Customer (Client):</strong><br>
+                    <p><strong>1.2 The Client (Customer):</strong><br>
                     <strong>Full Legal Name:</strong> ${esc(data.full_name)}<br>
                     <strong>Service Address:</strong> ${esc(data.location_address)}<br>
                     <strong>Phone:</strong> ${esc(data.phone)}<br>
                     <strong>Email:</strong> ${esc(data.email)}<br>
-                    <strong>Role:</strong> The party requesting and receiving services and obligated to make all payments described in Section 4.</p>
+                    <strong>Role:</strong> The party requesting coordination services and agreeing to these terms.</p>
 
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 2. SCOPE OF WORK</h4>
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 2. SCOPE OF SERVICES</h4>
                     <p><strong>2.1 Description of Services:</strong><br>
-                    The Contractor agrees to perform the following services for the Customer:<br>
-                    <strong>[x] ${esc(data.service_category.toUpperCase())} SERVICES</strong></p>
+                    Vorvo agrees to provide the following coordination and research services to the Client:<br>
+                    <strong>[x] ${esc(data.service_category.toUpperCase())} SERVICES COORDINATION</strong></p>
                     
-                    <p><strong>2.2 Detailed Work Description:</strong><br>
+                    <p><strong>2.2 Detailed Coordination Request:</strong><br>
                     ${esc(data.job_details || 'As requested in the initial quote submission.')}</p>
                     
-                    <p><strong>2.3 Location of Services:</strong><br>
-                    Services will be performed at: ${esc(data.location_address)}</p>
+                    <p><strong>2.3 Independent Providers:</strong><br>
+                    All actual labor, construction, or trade work is performed by independent third-party service providers ("Providers") identified on behalf of the Client. The Client will contract directly with the selected Provider for the performance of the actual work.</p>
                     
-                    <p><strong>2.4 Materials &amp; Equipment:</strong><br>
-                    Contractor shall supply all tools, materials, and equipment necessary to complete the work unless otherwise agreed in writing.</p>
+                    <p><strong>2.4 Disclaimers:</strong><br>
+                    Vorvo does not perform, supervise, or guarantee the work of any Provider. Any agreement for actual work is solely between the Client and the selected Provider.</p>
 
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 3. TIMELINE &amp; SCHEDULE</h4>
-                    <p><strong>3.1 Project Dates:</strong><br>
-                    <strong>Estimated Start Date:</strong> As scheduled with matched provider<br>
-                    <strong>Work Hours:</strong> To be coordinated between Customer and Contractor</p>
-                    <p><strong>3.2 Delays &amp; Extensions:</strong><br>
-                    Time is of the essence in this Agreement. Any delays caused by the Customer (e.g., failure to provide access, failure to make timely payment) shall extend the completion date by a corresponding number of days.</p>
-
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 4. PAYMENT PLAN &amp; FINANCIAL OBLIGATIONS</h4>
-                    <p><strong>4.1 Total Contract Price:</strong><br>
-                    <strong>TOTAL CONTRACT PRICE:</strong> ${formatMoney(data.quote_amount)}</p>
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 3. FEES AND PAYMENT FLOW</h4>
+                    <p><strong>3.1 Coordination Fee:</strong><br>
+                    <strong>TOTAL COORDINATION FEE:</strong> ${formatMoney(data.quote_amount)}</p>
                     
-                    <p><strong>4.2 Payment Schedule:</strong><br>
-                    The Customer agrees to pay the Total Contract Price of <strong>${formatMoney(data.quote_amount)}</strong> upon final completion and acceptance of the work. No upfront deposit is required unless specified by the provider.</p>
+                    <p><strong>3.2 Payment Schedule:</strong><br>
+                    The Client agrees to pay the total coordination fee of <strong>${formatMoney(data.quote_amount)}</strong> upon completion of the coordination services. No upfront deposit is required unless specified.</p>
                     
-                    <p><strong>4.3 Accepted Payment Methods:</strong><br>
-                    The Customer may remit payment by any of the following methods: (a) Credit or debit card processed securely through the Vorvo Services platform; (b) ACH bank transfer through the Vorvo Services platform; or (c) Check made payable directly to the matched Contractor and delivered upon completion.</p>
-                    <p><strong>Prohibited Payment Redirection:</strong> The Customer shall not redirect payment outside the agreed process in order to circumvent applicable platform fees. Any such redirection shall be deemed a material breach of this Agreement.</p>
+                    <p><strong>3.3 Provider Payment:</strong><br>
+                    The Client is solely responsible for paying the independent Provider directly for any actual work performed, in accordance with the terms agreed between the Client and the Provider. Vorvo does not collect payments on behalf of Providers.</p>
 
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 5. CUSTOMER REPRESENTATIONS &amp; ACKNOWLEDGMENTS</h4>
-                    <p>By signing this Agreement, the Customer represents and acknowledges the following:</p>
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 4. CLIENT REPRESENTATIONS &amp; ACKNOWLEDGMENTS</h4>
+                    <p>By signing this Agreement, the Client represents and acknowledges the following:</p>
                     <ul>
-                      <li><strong>Independent Contractor Status:</strong> The Contractor is an independent business, not an employee or agent of Vorvo Services. The Company serves solely as a marketplace facilitator and is not responsible for the performance, quality, or outcome of the work.</li>
-                      <li><strong>Credential Verification:</strong> While Vorvo Services requires Providers to represent that they hold required licenses and insurance, the Company does not independently verify such credentials. The Customer is encouraged to independently verify the Contractor's qualifications.</li>
-                      <li><strong>Access &amp; Cooperation:</strong> The Customer shall provide the Contractor with timely access to the service location.</li>
-                      <li><strong>Property Conditions:</strong> The Customer represents that the service location is safe for the Contractor to work in and that the Customer has the legal right to authorize work.</li>
+                      <li><strong>Independent Contractor Status:</strong> Service providers are independent businesses, not employees or agents of Vorvo Services. The Company serves solely as a marketplace and coordination facilitator.</li>
+                      <li><strong>Credential Verification:</strong> While Vorvo requires Providers to represent that they hold required licenses and insurance, the Company does not independently verify such credentials. The Client is encouraged to independently verify any Provider's qualifications.</li>
+                      <li><strong>Access &amp; Cooperation:</strong> The Client shall provide the Provider with timely access to the service location.</li>
+                      <li><strong>Property Conditions:</strong> The Client represents that the service location is safe for the Provider to work in and that the Client has the legal right to authorize work.</li>
                     </ul>
 
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 6. LIABILITY &amp; INDEMNIFICATION</h4>
-                    <p><strong>6.1 Contractor Liability:</strong> The Contractor is solely responsible for the quality, safety, and outcome of the work performed. The Contractor shall indemnify and hold harmless the Customer and the Finder from any claims arising out of the Contractor's negligence.</p>
-                    <p><strong>6.2 Company (Finder) Liability:</strong> The Company's liability is limited to the accuracy of the information it passes to the Parties. The Company is not liable for property damage, personal injury, or other losses arising from the work.</p>
-                    <p><strong>6.3 Limitation of Consequential Damages:</strong> UNDER NO CIRCUMSTANCES SHALL ANY PARTY BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES arising out of or related to this Agreement.</p>
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 5. LIABILITY &amp; INDEMNIFICATION</h4>
+                    <p><strong>5.1 Provider Liability:</strong> The independent Provider is solely responsible for the quality, safety, and outcome of the work performed. The Provider shall indemnify and hold harmless the Client and Vorvo from any claims arising out of the Provider's work.</p>
+                    <p><strong>5.2 Vorvo Liability:</strong> Vorvo's liability is strictly limited to the accuracy of the information it coordinates. Vorvo is not liable for property damage, personal injury, or other losses arising from the work of independent Providers.</p>
+                    <p><strong>5.3 Limitation of Consequential Damages:</strong> UNDER NO CIRCUMSTANCES SHALL VORVO BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES arising out of or related to this Agreement. Vorvo's total liability is capped at $100.</p>
 
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 7. TERMINATION</h4>
-                    <p>The Customer may cancel this Agreement prior to the commencement of work. If cancellation occurs after work has commenced, the Customer shall pay for all work performed through the date of termination on a pro-rata basis.</p>
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 6. TERMINATION</h4>
+                    <p>The Client may cancel this Agreement prior to the commencement of work. If cancellation occurs after coordination work has commenced, the Client shall pay for all services performed through the date of termination.</p>
 
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 8. COMMUNICATIONS &amp; NOTICES</h4>
-                    <p>All notices required or permitted under this Agreement shall be in writing and may be delivered via the Vorvo Services platform, email, or text message.</p>
-
-                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 9. DISPUTE RESOLUTION</h4>
-                    <p><strong>9.1 Good-Faith Negotiation:</strong> The Parties agree to attempt in good faith to resolve any dispute by direct negotiation for a period of at least fifteen (15) calendar days.</p>
-                    <p><strong>9.2 Mediation:</strong> If the Dispute cannot be resolved through negotiation, the Parties agree to submit to non-binding mediation.</p>
-                    <p><strong>9.3 Governing Law &amp; Venue:</strong> This Agreement shall be governed by and construed in accordance with the laws of the State of Texas. Any legal action shall be brought exclusively in the state or federal courts located in Texas.</p>
+                    <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 7. GOVERNING LAW</h4>
+                    <p>This Agreement shall be governed by and construed in accordance with the laws of the State of Texas. Any dispute shall be resolved exclusively in the state or federal courts located in Texas.</p>
                   </div>
                   
                   <div class="field" style="margin-bottom:1.5rem;">
