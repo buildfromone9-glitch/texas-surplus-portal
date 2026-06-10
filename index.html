@@ -1754,7 +1754,7 @@ function renderPortal() {
         <div class="hero__eyebrow" style="justify-content:center; margin-bottom:1.5rem;">Vorvo Services</div>
         <h1 class="hero__title" style="font-size:clamp(2.5rem, 6vw, 4.5rem); margin-bottom:1.5rem;">A coordination &amp; recovery ecosystem.</h1>
         <p class="hero__lede" style="max-width:680px; margin:0 auto 3rem; font-size:1.2rem; color:var(--ink-soft);">
-          We build specialized tools, public-record research systems, and nationwide coordination networks to help property owners recover assets and get work done right.
+          Vorvo Services helps property owners find, compare, and coordinate qualified service providers nationwide.
         </p>
       </div>
     </section>
@@ -1834,7 +1834,7 @@ function renderVorvoLanding() {
       <div class="hero__inner">
         <div class="hero__eyebrow">Vorvo Contractor Services</div>
         <h1 class="hero__title">Local Workers. Same Week. <em>Done Right.</em></h1>
-        <p class="hero__lede">Vorvo is your nationwide coordination layer. We collect your service request, organize the details, check coverage with trusted local providers across the country, and help you get a clear, transparent quote — with zero hassle.</p>
+        <p class="hero__lede">Vorvo Services helps property owners find, compare, and coordinate qualified service providers nationwide.</p>
         <div class="hero__cta-row">
           <a href="javascript:void(0)" onclick="document.getElementById('vorvo-form')?.scrollIntoView({behavior: 'smooth'})" class="btn">Request a Quote <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
@@ -1924,6 +1924,140 @@ function renderVorvoLanding() {
           <h3 class="step__title">Done Right</h3>
           <p class="step__body">Vetted local workers complete the job. You review the work and pay upon satisfactory completion.</p>
         </div>
+      </div>
+    </section>
+
+    <!-- Pricing Checklist Section -->
+    <section class="section" id="pricing-section">
+      <div class="section__head">
+        <div class="section__eyebrow">Configurable Pricing</div>
+        <h2>Select Your Coordination Services</h2>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">
+          Build your own custom service package. Select only the coordination tasks you need, or choose our full-service option for end-to-end support.
+        </p>
+      </div>
+
+      <div class="container" style="max-width: var(--content-w); margin: 0 auto; padding: 0 1.5rem;">
+        <!-- Full Service Option Card -->
+        <div id="full-service-card" style="border: 2px solid var(--gold); background: rgba(255, 204, 0, 0.05); padding: 1.5rem; margin-bottom: 2rem; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <input type="checkbox" id="chk-full-service" style="width: 1.5rem; height: 1.5rem; accent-color: var(--gold); cursor: pointer;" />
+            <div>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--gold-soft);">Full Service Bundle</h3>
+              <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft); text-transform: none;">Select all coordination and procurement services for complete, hassle-free project management.</p>
+            </div>
+          </div>
+          <div style="font-family: var(--mono); font-size: 1.25rem; font-weight: bold; color: var(--gold); white-space: nowrap;">$343</div>
+        </div>
+
+        <!-- Individual Services Checklist -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
+          
+          <!-- Contractor Research -->
+          <div class="service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="49" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Contractor Research</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Identify and provide up to 3 relevant contractors.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$49</div>
+          </div>
+
+          <!-- Quote Collection -->
+          <div class="service-item-card" data-price="79" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="79" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Quote Collection</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Contact contractors and obtain quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$79</div>
+          </div>
+
+          <!-- Quote Comparison -->
+          <div class="service-item-card" data-price="39" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="39" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Quote Comparison</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Summarize and compare contractor quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$39</div>
+          </div>
+
+          <!-- Contractor Recommendation -->
+          <div class="service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="29" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Contractor Recommendation</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Provide recommendation based on responsiveness and submitted quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$29</div>
+          </div>
+
+          <!-- Scheduling Coordination -->
+          <div class="service-item-card" data-price="69" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="69" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Scheduling Coordination</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Coordinate scheduling between client and contractor.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$69</div>
+          </div>
+
+          <!-- Communication Assistance -->
+          <div class="service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="49" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Communication Assistance</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Assist with communications and follow-ups.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$49</div>
+          </div>
+
+          <!-- Completion Confirmation -->
+          <div class="service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="29" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Completion Confirmation</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Confirm work completion with client.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$29</div>
+          </div>
+
+        </div>
+
+        <!-- Running Total Display -->
+        <div style="border-top: 2px solid var(--rule); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+          <div id="pricing-running-total" style="font-family: var(--serif); font-size: 2rem; font-weight: bold; color: var(--gold);">Base Total: $0</div>
+        </div>
+
+        <!-- How Payment Works Explanation -->
+        <div style="background: var(--cream); border-left: 3px solid var(--gold); padding: 1.5rem; margin-bottom: 1rem; border-radius: 3px;">
+          <h3 style="font-family: var(--serif); font-size: 1.2rem; margin-top: 0; margin-bottom: 0.75rem; color: var(--gold-soft); text-transform: uppercase;">How Payment Works</h3>
+          <p style="margin: 0 0 0.75rem; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+            Clients pay Vorvo separately for research, procurement, and coordination services.
+          </p>
+          <p style="margin: 0 0 0.75rem; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+            Contractors are paid directly by clients for any work performed.
+          </p>
+          <p style="margin: 0; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+            Vorvo does not perform contracting work and does not collect payments on behalf of contractors.
+          </p>
+        </div>
+
       </div>
     </section>
 
@@ -3525,6 +3659,73 @@ function bindHandlers(route) {
       submitBtn.innerHTML = 'Submit Quote Request <span class="btn__arrow">→</span>';
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
+
+    // Pricing Checklist Logic
+    const fullServiceCard = document.getElementById('full-service-card');
+    const chkFullService = document.getElementById('chk-full-service');
+    const serviceCheckboxes = document.querySelectorAll('.chk-service');
+    const serviceItemCards = document.querySelectorAll('.service-item-card');
+    const totalDisplay = document.getElementById('pricing-running-total');
+
+    const updatePricingTotal = () => {
+      let total = 0;
+      let allSelected = true;
+      serviceCheckboxes.forEach(cb => {
+        if (cb.checked) {
+          total += parseInt(cb.dataset.price, 10);
+          cb.closest('.service-item-card').style.borderColor = 'var(--gold)';
+          cb.closest('.service-item-card').style.background = 'rgba(255, 204, 0, 0.02)';
+        } else {
+          allSelected = false;
+          cb.closest('.service-item-card').style.borderColor = 'var(--rule-soft)';
+          cb.closest('.service-item-card').style.background = 'var(--paper)';
+        }
+      });
+
+      totalDisplay.textContent = `Base Total: $${total}`;
+
+      if (allSelected) {
+        if (chkFullService) chkFullService.checked = true;
+        if (fullServiceCard) {
+          fullServiceCard.style.background = 'rgba(255, 204, 0, 0.1)';
+          fullServiceCard.style.borderColor = 'var(--gold)';
+        }
+      } else {
+        if (chkFullService) chkFullService.checked = false;
+        if (fullServiceCard) {
+          fullServiceCard.style.background = 'rgba(255, 204, 0, 0.05)';
+          fullServiceCard.style.borderColor = 'rgba(255, 204, 0, 0.3)';
+        }
+      }
+    };
+
+    fullServiceCard?.addEventListener('click', (e) => {
+      if (e.target !== chkFullService) {
+        if (chkFullService) chkFullService.checked = !chkFullService.checked;
+      }
+      serviceCheckboxes.forEach(cb => {
+        cb.checked = chkFullService ? chkFullService.checked : false;
+      });
+      updatePricingTotal();
+    });
+
+    serviceItemCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        const cb = card.querySelector('.chk-service');
+        if (e.target !== cb) {
+          cb.checked = !cb.checked;
+        }
+        updatePricingTotal();
+      });
+    });
+
+    serviceCheckboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        updatePricingTotal();
+      });
+    });
+
+    updatePricingTotal();
   }
 
   if (route === 'wholesale') {
