@@ -1,8 +1,8 @@
 export const config = { runtime: 'edge' };
 
 const RESEND_KEY = 're_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi';
-const SPRG_EMAIL = 'claims@sprggroup.com';
-const SPRG_NOTIFY = 'buildfromone9@gmail.com';
+const SPRG_EMAIL = 'help@vorvoservices.com';
+const SPRG_NOTIFY = 'help@vorvoservices.com';
 
 export default async function handler(req) {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
@@ -86,7 +86,7 @@ export default async function handler(req) {
       body: JSON.stringify({
         from: 'Surplus Property Research Group <noreply@sprggroup.com>',
         to: claimantEmail,
-        reply_to: 'claims@sprggroup.com',
+        reply_to: SPRG_EMAIL,
         subject: `Your Texas Surplus Property Research Packet — Tracking ${trackingId}`,
         html,
       }),

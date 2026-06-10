@@ -2,7 +2,7 @@ export const config = { runtime: 'edge' };
 
 const RESEND_KEY = 're_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi';
 const SENDER_EMAIL = 'Vorvo Services <noreply@sprggroup.com>'; // using verified domain on Resend
-const VORVO_NOTIFY = 'buildfromone9@gmail.com';
+const VORVO_NOTIFY = 'help@vorvoservices.com';
 
 function formatMoney(n) {
   return n ? '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
@@ -119,7 +119,7 @@ export default async function handler(req) {
 
     <p>If you have any questions in the meantime, please do not hesitate to call, text, or reply directly to this email.</p>
 
-    <p style="margin-top:32px;">Best regards,<br/><strong>Vorvo Services</strong><br/>Phone: (832) 735-0603<br/>Email: buildfromone9@gmail.com</p>
+    <p style="margin-top:32px;">Best regards,<br/><strong>Vorvo Services</strong><br/>Phone: (832) 735-0603<br/>Email: help@vorvoservices.com</p>
     
     <div class="ftr"><p>Tracking ID: ${trackingId}</p></div>
   </div>
@@ -131,7 +131,7 @@ export default async function handler(req) {
       headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: SENDER_EMAIL,
-        reply_to: 'buildfromone9@gmail.com',
+        reply_to: 'help@vorvoservices.com',
         to: VORVO_NOTIFY,
         subject: `[SIGNED] ${trackingId} — ${sellerName}`,
         html: adminHtml,
@@ -145,7 +145,7 @@ export default async function handler(req) {
         headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           from: SENDER_EMAIL,
-          reply_to: 'buildfromone9@gmail.com',
+          reply_to: 'help@vorvoservices.com',
           to: clientEmail,
           subject: `Your Signed Agreement Has Been Received — ${trackingId}`,
           html: sellerHtml,
