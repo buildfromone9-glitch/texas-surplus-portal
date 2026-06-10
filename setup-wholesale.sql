@@ -44,6 +44,13 @@ CREATE POLICY "Allow public select by tracking_id wholesale"
 ON public.wholesale_leads FOR SELECT 
 USING (true);
 
+-- Allow public updates to sign agreements
+DROP POLICY IF EXISTS "Allow public update to wholesale_leads" ON public.wholesale_leads;
+CREATE POLICY "Allow public update to wholesale_leads" 
+ON public.wholesale_leads FOR UPDATE 
+USING (true)
+WITH CHECK (true);
+
 -- Allow authenticated users (admin) to do all operations
 DROP POLICY IF EXISTS "Allow authenticated users full access wholesale" ON public.wholesale_leads;
 CREATE POLICY "Allow authenticated users full access wholesale" 

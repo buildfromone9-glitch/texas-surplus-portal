@@ -47,6 +47,13 @@ ON public.property_quotes
 FOR SELECT 
 USING (true);
 
+-- Allow public updates to sign agreements
+CREATE POLICY "Allow public update to property_quotes" 
+ON public.property_quotes 
+FOR UPDATE 
+USING (true)
+WITH CHECK (true);
+
 -- Allow authenticated users (admin) to do all operations
 CREATE POLICY "Allow authenticated users full access" 
 ON public.property_quotes 
