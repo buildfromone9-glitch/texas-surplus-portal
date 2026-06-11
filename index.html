@@ -3985,6 +3985,33 @@ function bindHandlers(route) {
   }
 
   if (route === 'client-agreement') {
+    const hash = window.location.hash;
+    const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+    const params = new URLSearchParams(queryString);
+    const trackingId = params.get('id');
+
+    if (trackingId) {
+      supabaseClient
+        .from('property_quotes')
+        .select('*')
+        .eq('tracking_id', trackingId)
+        .single()
+        .then(({ data, error }) => {
+          if (!error && data) {
+            const nameEl = document.getElementById('ca-typed-name');
+            const emailEl = document.getElementById('ca-email');
+            if (nameEl) {
+              nameEl.value = data.full_name || '';
+              nameEl.readOnly = true;
+            }
+            if (emailEl) {
+              emailEl.value = data.email || '';
+              emailEl.readOnly = true;
+            }
+          }
+        });
+    }
+
     // Checklist Logic
     const fullServiceCard = document.getElementById('ca-full-service-card');
     const chkFullService = document.getElementById('ca-chk-full-service');
@@ -4157,35 +4184,64 @@ function bindHandlers(route) {
 
         // Save to Supabase public.property_quotes
         try {
-          const { data: insertData, error: insertErr } = await supabaseClient
-            .from('property_quotes')
-            .insert([{
-              full_name: typedName,
-              email: email,
-              phone: 'Not provided',
-              service_category: selectedServices.join(', ') || 'General Coordination',
-              location_address: 'Texas (General)',
-              job_details: 'Signed general Client Service Agreement for selected coordination services.',
-              status: 'new',
-              quote_amount: total,
-              contract_signer_name: typedName,
-              contract_signature_data: signatureData,
-              contract_signed_at: new Date().toISOString()
-            }])
-            .select();
+          if (trackingId) {
+            // Update existing record
+            const { error: updateErr } = await supabaseClient
+              .from('property_quotes')
+              .update({
+                service_category: selectedServices.join(', ') || 'General Coordination',
+                quote_amount: total,
+                contract_signer_name: typedName,
+                contract_signature_data: signatureData,
+                contract_signed_at: new Date().toISOString()
+              })
+              .eq('tracking_id', trackingId);
 
-          if (insertErr) throw insertErr;
-          console.log('Client agreement saved to Supabase successfully:', insertData);
+            if (updateErr) throw updateErr;
+            console.log('Client agreement updated in Supabase successfully');
+          } else {
+            // Insert new record (fallback)
+            const { data: insertData, error: insertErr } = await supabaseClient
+              .from('property_quotes')
+              .insert([{
+                full_name: typedName,
+                email: email,
+                phone: 'Not provided',
+                service_category: selectedServices.join(', ') || 'General Coordination',
+                location_address: 'Texas (General)',
+                job_details: 'Signed general Client Service Agreement for selected coordination services.',
+                status: 'new',
+                quote_amount: total,
+                contract_signer_name: typedName,
+                contract_signature_data: signatureData,
+                contract_signed_at: new Date().toISOString()
+              }])
+              .select();
+
+            if (insertErr) throw insertErr;
+            console.log('Client agreement saved to Supabase successfully:', insertData);
+          }
         } catch (err) {
           console.error('Failed to save to Supabase:', err.message);
         }
 
         // Show success view
-        document.getElementById('ca-submit-success').style.display = 'block';
+        const successEl = document.getElementById('ca-submit-success');
+        if (successEl) {
+          successEl.innerHTML = `
+            <strong style="color:var(--moss); font-size:1.1rem; display:block; margin-bottom:0.5rem;">Client Service Agreement Signed!</strong>
+            Thank you! Your signed Client Service Agreement has been successfully registered. We will begin your selected coordination services immediately and contact you at the email address provided.
+            ${trackingId ? `
+              <br><br>
+              <a href="#/track?id=${esc(trackingId)}" class="btn btn--small btn--gold" style="display:inline-flex; text-decoration:none; margin-top:0.5rem; justify-content:center;">← Return to Project Tracking</a>
+            ` : ''}
+          `;
+          successEl.style.display = 'block';
+        }
         submitBtn.style.display = 'none';
         
         // Scroll to success
-        document.getElementById('ca-submit-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        successEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
     }
   }
@@ -4278,6 +4334,15 @@ function bindHandlers(route) {
                   <strong>Current Status:</strong><br>
                   <span style="color:${statusColor}; font-weight:bold;">${statusLabel}</span>
                 </div>
+                ${data.access_token ? `
+                  <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--rule-soft);">
+                    ${data.signed ? `
+                      <a href="#/agreement?token=${data.access_token}" class="btn btn--ghost" style="width:100%; justify-content:center; text-decoration:none; border:1px solid var(--moss); color:var(--moss);">View Signed Agreement ✓</a>
+                    ` : `
+                      <a href="#/agreement?token=${data.access_token}" class="btn btn--gold" style="width:100%; justify-content:center; text-decoration:none;">Review &amp; Sign Your Agreement →</a>
+                    `}
+                  </div>
+                ` : ''}
               </div>
             `;
           }
@@ -4311,10 +4376,19 @@ function bindHandlers(route) {
                   <strong>Current Status:</strong><br>
                   <span style="color:${status.color}; font-weight:bold;">${status.label}</span>
                 </div>
+                ${data.access_token ? `
+                  <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--rule-soft);">
+                    ${data.signed ? `
+                      <a href="#/wholesale-agreement?token=${data.access_token}" class="btn btn--ghost" style="width:100%; justify-content:center; text-decoration:none; border:1px solid var(--moss); color:var(--moss);">View Signed Agreement ✓</a>
+                    ` : `
+                      <a href="#/wholesale-agreement?token=${data.access_token}" class="btn btn--gold" style="width:100%; justify-content:center; text-decoration:none;">Review &amp; Sign Purchase Agreement →</a>
+                    `}
+                  </div>
+                ` : ''}
               </div>
             `;
           }
-        } else if (trackingId.startsWith('VRV-PRP-')) {
+        } else if (trackingId.startsWith('VRV-PRP-') || trackingId.startsWith('VRV-MOV-') || trackingId.startsWith('VRV-JNK-') || trackingId.startsWith('VRV-WSH-') || trackingId.startsWith('VRV-YRD-')) {
           const { data, error } = await supabaseClient
             .from('property_quotes')
             .select('*')
@@ -4333,18 +4407,61 @@ function bindHandlers(route) {
             };
             const status = statusMap[data.status] || { label: data.status, color: 'var(--ink-mute)' };
             
-            if (data.status === 'quoted') {
+            const hash = window.location.hash;
+            const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+            const params = new URLSearchParams(queryString);
+            const isForcePreview = params.get('force_preview') === 'true' || params.get('force') === 'true';
+            
+            if (data.status === 'quoted' || isForcePreview) {
               resultEl.innerHTML = `
                 <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1rem; color:var(--ink);">Property Service Status</h3>
                 <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; font-size:0.95rem; line-height:1.5; margin-bottom:1.5rem;">
                   <div><strong>Customer Name:</strong><br>${esc(data.full_name)}</div>
                   <div><strong>Tracking ID:</strong><br>${esc(data.tracking_id)}</div>
                   <div><strong>Service Category:</strong><br><span style="text-transform:capitalize;">${esc(data.service_category)}</span></div>
-                  <div><strong>Quote Amount:</strong><br>${formatMoney(data.quote_amount)}</div>
-                  <div style="margin-top:0.5rem; padding:1rem; background:rgba(160,127,61,0.08); border-left:3px solid var(--gold);">
+                  
+                  <div style="margin-top:1rem; margin-bottom:0.5rem; font-weight:bold; color:var(--ink); font-size:1rem;">Select Your Preferred Service Option:</div>
+                  
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:1rem; margin-bottom:1rem;">
+                    <!-- Option 1 Card -->
+                    <label class="option-card" style="border:2px solid var(--gold); padding:1rem; background:rgba(255,204,0,0.04); border-radius:4px; cursor:pointer; display:block; position:relative;">
+                      <input type="radio" name="selected_option" value="1" checked style="position:absolute; top:1rem; right:1rem; accent-color:var(--gold);" />
+                      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--gold); text-transform:uppercase; margin-bottom:0.25rem;">Option 01 (Recommended)</div>
+                      <div style="font-size:1.25rem; font-weight:bold; color:var(--ink); margin-bottom:0.5rem;">${formatMoney(data.quote_amount)}</div>
+                      <div style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:0.25rem;"><strong>Provider:</strong> ${esc(data.assigned_provider_name || 'TBD')}</div>
+                      ${data.provider_schedule_1 ? `<div style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:0.25rem;"><strong>Schedule:</strong> ${esc(data.provider_schedule_1)}</div>` : ''}
+                      ${data.provider_notes_1 ? `<div style="font-size:0.8rem; color:var(--ink-mute); margin-top:0.5rem; font-style:italic;">"${esc(data.provider_notes_1)}"</div>` : ''}
+                    </label>
+
+                    <!-- Option 2 Card -->
+                    ${data.provider_name_2 ? `
+                    <label class="option-card" style="border:1px solid var(--rule); padding:1rem; background:var(--paper); border-radius:4px; cursor:pointer; display:block; position:relative;">
+                      <input type="radio" name="selected_option" value="2" style="position:absolute; top:1rem; right:1rem; accent-color:var(--gold);" />
+                      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--ink-mute); text-transform:uppercase; margin-bottom:0.25rem;">Option 02</div>
+                      <div style="font-size:1.25rem; font-weight:bold; color:var(--ink); margin-bottom:0.5rem;">${formatMoney(data.quote_amount_2)}</div>
+                      <div style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:0.25rem;"><strong>Provider:</strong> ${esc(data.provider_name_2)}</div>
+                      ${data.provider_schedule_2 ? `<div style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:0.25rem;"><strong>Schedule:</strong> ${esc(data.provider_schedule_2)}</div>` : ''}
+                      ${data.provider_notes_2 ? `<div style="font-size:0.8rem; color:var(--ink-mute); margin-top:0.5rem; font-style:italic;">"${esc(data.provider_notes_2)}"</div>` : ''}
+                    </label>
+                    ` : ''}
+
+                    <!-- Option 3 Card -->
+                    ${data.provider_name_3 ? `
+                    <label class="option-card" style="border:1px solid var(--rule); padding:1rem; background:var(--paper); border-radius:4px; cursor:pointer; display:block; position:relative;">
+                      <input type="radio" name="selected_option" value="3" style="position:absolute; top:1rem; right:1rem; accent-color:var(--gold);" />
+                      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--ink-mute); text-transform:uppercase; margin-bottom:0.25rem;">Option 03</div>
+                      <div style="font-size:1.25rem; font-weight:bold; color:var(--ink); margin-bottom:0.5rem;">${formatMoney(data.quote_amount_3)}</div>
+                      <div style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:0.25rem;"><strong>Provider:</strong> ${esc(data.provider_name_3)}</div>
+                      ${data.provider_schedule_3 ? `<div style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:0.25rem;"><strong>Schedule:</strong> ${esc(data.provider_schedule_3)}</div>` : ''}
+                      ${data.provider_notes_3 ? `<div style="font-size:0.8rem; color:var(--ink-mute); margin-top:0.5rem; font-style:italic;">"${esc(data.provider_notes_3)}"</div>` : ''}
+                    </label>
+                    ` : ''}
+                  </div>
+
+                  <div style="margin-top:0.5rem; padding:1rem; background:rgba(160,127,61,0.08); border-left:3px solid var(--gold); margin-bottom:1.5rem;">
                     <strong>Current Status:</strong><br>
                     <span style="color:var(--gold); font-weight:bold;">Quote Prepared</span>
-                    <br><small style="color:var(--ink-mute); display:block; margin-top:0.25rem;">Assigned Provider: ${esc(data.assigned_provider_name)}</small>
+                    <br><small id="status-assigned-provider" style="color:var(--ink-mute); display:block; margin-top:0.25rem;">Assigned Provider: ${esc(data.assigned_provider_name || 'TBD')}</small>
                   </div>
                 </div>
 
@@ -4388,10 +4505,10 @@ function bindHandlers(route) {
 
                     <h4 style="font-size:0.9rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; color:var(--gold); margin-top:1.5rem;">SECTION 3. FEES AND PAYMENT FLOW</h4>
                     <p><strong>3.1 Coordination Fee:</strong><br>
-                    <strong>TOTAL COORDINATION FEE:</strong> ${formatMoney(data.quote_amount)}</p>
+                    <strong>TOTAL COORDINATION FEE:</strong> <span id="contract-amount-display">${formatMoney(data.quote_amount)}</span></p>
                     
                     <p><strong>3.2 Payment Schedule:</strong><br>
-                    The Client agrees to pay the total coordination fee of <strong>${formatMoney(data.quote_amount)}</strong> upon completion of the coordination services. No upfront deposit is required unless specified.</p>
+                    The Client agrees to pay the total coordination fee of <strong id="contract-amount-display-2">${formatMoney(data.quote_amount)}</strong> upon completion of the coordination services. No upfront deposit is required unless specified.</p>
                     
                     <p><strong>3.3 Provider Payment:</strong><br>
                     The Client is solely responsible for paying the independent Provider directly for any actual work performed, in accordance with the terms agreed between the Client and the Provider. Vorvo does not collect payments on behalf of Providers.</p>
@@ -4457,6 +4574,54 @@ function bindHandlers(route) {
                 let drawing = false;
                 let hasInk = false;
                 
+                // Initialize Option Selection Logic
+                let selectedAmount = data.quote_amount || 0;
+                let selectedProviderName = data.assigned_provider_name || 'TBD';
+                let selectedProviderPhone = data.assigned_provider_phone || '';
+                let selectedOptionIdx = 1;
+
+                const optionRadios = resultEl.querySelectorAll('input[name="selected_option"]');
+                optionRadios.forEach(radio => {
+                  radio.addEventListener('change', (e) => {
+                    const opt = e.target.value;
+                    // Reset all card styles
+                    resultEl.querySelectorAll('.option-card').forEach(card => {
+                      card.style.border = '1px solid var(--rule)';
+                      card.style.background = 'var(--paper)';
+                    });
+                    // Highlight selected card
+                    const selectedCard = e.target.closest('.option-card');
+                    selectedCard.style.border = '2px solid var(--gold)';
+                    selectedCard.style.background = 'rgba(255,204,0,0.04)';
+                    
+                    if (opt === '1') {
+                      selectedAmount = data.quote_amount || 0;
+                      selectedProviderName = data.assigned_provider_name || 'TBD';
+                      selectedProviderPhone = data.assigned_provider_phone || '';
+                      selectedOptionIdx = 1;
+                    } else if (opt === '2') {
+                      selectedAmount = data.quote_amount_2 || 0;
+                      selectedProviderName = data.provider_name_2 || '';
+                      selectedProviderPhone = data.provider_phone_2 || '';
+                      selectedOptionIdx = 2;
+                    } else if (opt === '3') {
+                      selectedAmount = data.quote_amount_3 || 0;
+                      selectedProviderName = data.provider_name_3 || '';
+                      selectedProviderPhone = data.provider_phone_3 || '';
+                      selectedOptionIdx = 3;
+                    }
+                    
+                    // Update contract text displays
+                    const disp1 = document.getElementById('contract-amount-display');
+                    const disp2 = document.getElementById('contract-amount-display-2');
+                    if (disp1) disp1.textContent = formatMoney(selectedAmount);
+                    if (disp2) disp2.textContent = formatMoney(selectedAmount);
+                    
+                    const statusProv = document.getElementById('status-assigned-provider');
+                    if (statusProv) statusProv.textContent = `Assigned Provider: ${selectedProviderName}`;
+                  });
+                });
+
                 // Initialize Stripe
                 const stripe = Stripe('pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR');
                 const elements = stripe.elements();
@@ -4565,7 +4730,7 @@ function bindHandlers(route) {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                          amount: data.quote_amount,
+                          amount: selectedAmount || 1.00,
                           trackingId: data.tracking_id,
                           description: `Vorvo Direct Labor Payment - ${data.tracking_id}`
                         })
@@ -4601,6 +4766,10 @@ function bindHandlers(route) {
                       .from('property_quotes')
                       .update({
                         status: 'scheduled',
+                        quote_amount: selectedAmount,
+                        assigned_provider_name: selectedProviderName,
+                        assigned_provider_phone: selectedProviderPhone,
+                        selected_option_index: selectedOptionIdx,
                         contract_signer_name: typedName,
                         contract_signature_data: signatureData,
                         contract_signed_at: new Date().toISOString(),
@@ -4615,10 +4784,12 @@ function bindHandlers(route) {
                     formspreeData.append('subject', `Work Service Agreement Signed - ${data.tracking_id}`);
                     formspreeData.append('trackingId', data.tracking_id);
                     formspreeData.append('signerName', typedName);
-                    formspreeData.append('quoteAmount', formatMoney(data.quote_amount));
+                    formspreeData.append('quoteAmount', formatMoney(selectedAmount));
                     formspreeData.append('service', data.service_category);
                     formspreeData.append('location', data.location_address);
                     formspreeData.append('paymentMethod', paymentMethod);
+                    formspreeData.append('selectedOptionIndex', selectedOptionIdx);
+                    formspreeData.append('assignedProvider', selectedProviderName);
                     
                     fetch('https://formspree.io/f/xqejewzo', {
                       method: 'POST',
@@ -4649,12 +4820,26 @@ function bindHandlers(route) {
                     <span style="color:${status.color}; font-weight:bold;">${status.label}</span>
                     ${data.assigned_provider_name ? `<br><small style="color:var(--ink-mute); display:block; margin-top:0.25rem;">Assigned Provider: ${esc(data.assigned_provider_name)}</small>` : ''}
                   </div>
+                  
+                  ${!data.contract_signed_at ? `
+                    <div style="margin-top:1.5rem; padding:1.25rem; border:1px solid rgba(255,204,0,0.3); background:rgba(255,204,0,0.04); border-radius:4px; line-height:1.5;">
+                      <strong style="color:var(--gold); display:block; margin-bottom:0.4rem;">Action Required: Sign Your Agreement</strong>
+                      To authorize Vorvo to begin researching contractors and collecting quotes on your behalf, please review and sign the general Client Service Agreement.
+                      <a href="#/client-agreement?id=${esc(data.tracking_id)}" class="btn btn--gold" style="width:100%; justify-content:center; text-decoration:none; margin-top:1rem; font-size:0.9rem;">Review &amp; Sign Agreement →</a>
+                    </div>
+                  ` : `
+                    <div style="margin-top:1.5rem; padding:1.25rem; border:1px solid rgba(61,92,68,0.3); background:rgba(61,92,68,0.04); border-radius:4px; line-height:1.5; color:var(--ink-soft);">
+                      <strong style="color:var(--moss); display:block; margin-bottom:0.4rem;">Agreement Signed ✓</strong>
+                      You have successfully signed the Client Service Agreement. Our coordination team is actively researching providers and collecting quotes for you. We will update your tracking status as soon as quotes are prepared!
+                    </div>
+                  `}
                 </div>
               `;
             }
+            }
           }
         } else {
-          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus Solutions) or "VRV-PRP-" (Property Services).</div>`;
+          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus), "VRV-WHL-" (Wholesale), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
         }
       } catch (err) {
         console.error('Tracking lookup error:', err);
@@ -4666,6 +4851,16 @@ function bindHandlers(route) {
     input?.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') doLookup();
     });
+
+    // Auto-load Tracking ID if passed in the URL (e.g., #/track?id=VRV-PRP-5004)
+    const hash = window.location.hash;
+    const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+    const params = new URLSearchParams(queryString);
+    const idParam = params.get('id');
+    if (idParam && input) {
+      input.value = idParam.toUpperCase();
+      setTimeout(() => doLookup(), 150);
+    }
   }
 
   if (route === 'admin') {
@@ -4971,8 +5166,8 @@ function bindHandlers(route) {
                 .eq('id', id);
                 
               if (error) throw error;
-              alert('Changes saved successfully!');
               await loadWholesaleLeads();
+              alert('Changes saved successfully!');
             } catch (err) {
               console.error('Error updating wholesale lead:', err);
               alert('Failed to save changes: ' + err.message);
@@ -5013,8 +5208,9 @@ function bindHandlers(route) {
                 <th style="padding:0.75rem;">Tracking ID</th>
                 <th style="padding:0.75rem;">Customer</th>
                 <th style="padding:0.75rem;">Service</th>
-                <th style="padding:0.75rem;">Location</th>
-                <th style="padding:0.75rem;">Status</th>
+                <th style="padding:0.75rem;">Current Status</th>
+                <th style="padding:0.75rem;">Contract Status</th>
+                <th style="padding:0.75rem;">Payment Status</th>
                 <th style="padding:0.75rem;">Quote</th>
                 <th style="padding:0.75rem; text-align:center;">Actions</th>
               </tr>
@@ -5032,61 +5228,187 @@ function bindHandlers(route) {
           };
           const color = statusColors[q.status] || 'var(--ink-mute)';
           
+          // Contract Status
+          const contractLabel = q.contract_signed_at ? 'Signed' : 'Awaiting Sign';
+          const contractColor = q.contract_signed_at ? 'var(--moss)' : 'var(--gold-deep)';
+          
+          // Payment Status
+          let paymentLabel = 'Unpaid';
+          let paymentColor = 'var(--rust)';
+          if (q.payment_method) {
+            if (q.status === 'completed') {
+              paymentLabel = 'Paid';
+              paymentColor = 'var(--moss)';
+            } else {
+              paymentLabel = 'Authorized';
+              paymentColor = 'var(--gold-soft)';
+            }
+          }
+          
+          const contractLink = `${window.location.origin}/#/track?id=${q.tracking_id}`;
+          
           html += `
             <tr style="border-bottom:1px solid var(--rule-soft);">
               <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
               <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
               <td style="padding:0.75rem; text-transform:capitalize;">${esc(q.service_category)}</td>
-              <td style="padding:0.75rem; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${esc(q.location_address)}">${esc(q.location_address)}</td>
               <td style="padding:0.75rem;"><span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${esc(q.status)}</span></td>
+              <td style="padding:0.75rem;"><span style="color:${contractColor}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${contractLabel}</span></td>
+              <td style="padding:0.75rem;"><span style="color:${paymentColor}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${paymentLabel}</span></td>
               <td style="padding:0.75rem;">${q.quote_amount ? formatMoney(q.quote_amount) : '<em>Pending</em>'}</td>
               <td style="padding:0.75rem; text-align:center;">
                 <button class="btn btn--small btn--ghost btn-edit-quote" data-id="${q.id}" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Manage</button>
               </td>
             </tr>
             <tr id="edit-row-${q.id}" class="edit-quote-row" style="display:none; background:var(--paper-deep); border-bottom:2px solid var(--rule);">
-              <td colspan="7" style="padding:1.5rem;">
-                <form class="edit-quote-form" data-id="${q.id}" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; align-items:flex-end;">
-                  <div class="field" style="margin:0;">
-                    <label style="font-size:0.75rem;">Job Status</label>
-                    <select class="eq-status" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);">
-                      <option value="new" ${q.status === 'new' ? 'selected' : ''}>Awaiting Provider Match (NEW)</option>
-                      <option value="quoted" ${q.status === 'quoted' ? 'selected' : ''}>Quote Prepared (QUOTED)</option>
-                      <option value="scheduled" ${q.status === 'scheduled' ? 'selected' : ''}>Job Scheduled (SCHEDULED)</option>
-                      <option value="completed" ${q.status === 'completed' ? 'selected' : ''}>Completed (COMPLETED)</option>
-                      <option value="cancelled" ${q.status === 'cancelled' ? 'selected' : ''}>Cancelled (CANCELLED)</option>
-                    </select>
+              <td colspan="8" style="padding:1.5rem;">
+                <form class="edit-quote-form" data-id="${q.id}" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:1.5rem; align-items:flex-start;">
+                  
+                  <!-- Left Column: Request Details & General Settings -->
+                  <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                    
+                    <!-- Original Request Box -->
+                    <div style="border:1px solid var(--rule-soft); padding:1rem; border-radius:4px; background:rgba(255,255,255,0.01); font-size:0.85rem; line-height:1.5; color:var(--ink-soft);">
+                      <strong style="color:var(--gold); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid var(--rule-soft); padding-bottom:0.25rem; display:block; margin-bottom:0.5rem;">Client's Original Request</strong>
+                      <div style="margin-bottom:0.5rem;"><strong>Service Requested:</strong><br><span style="text-transform:capitalize; color:var(--ink); font-weight:bold;">${esc(q.service_category)}</span></div>
+                      <div style="margin-bottom:0.5rem;"><strong>Service Location:</strong><br><span style="color:var(--ink); font-weight:bold;">${esc(q.location_address)}</span></div>
+                      <div style="margin-bottom:0.5rem;"><strong>Job Details:</strong><br><p style="margin:0.25rem 0 0; color:var(--ink); white-space:pre-wrap; font-size:0.8rem; background:var(--paper); padding:0.5rem; border:1px solid var(--rule-soft); border-radius:3px;">${esc(q.job_details)}</p></div>
+                      
+                      ${q.image_urls && q.image_urls.length > 0 ? `
+                        <div>
+                          <strong>Uploaded Photos (${q.image_urls.length}):</strong><br>
+                          <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.4rem;">
+                            ${q.image_urls.map(url => `
+                              <a href="${url}" target="_blank" title="View full photo" style="display:block; width:50px; height:50px; border:1px solid var(--rule-soft); border-radius:3px; overflow:hidden;">
+                                <img src="${url}" style="width:100%; height:100%; object-fit:cover;" />
+                              </a>
+                            `).join('')}
+                          </div>
+                        </div>
+                      ` : ''}
+                    </div>
+
+                    <!-- General Settings -->
+                    <div class="field" style="margin:0;">
+                      <label style="font-size:0.75rem; font-weight:bold; color:var(--gold);">Job Status (Must be QUOTED for client to see contract)</label>
+                      <select class="eq-status" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);">
+                        <option value="new" ${q.status === 'new' ? 'selected' : ''}>Awaiting Provider Match (NEW)</option>
+                        <option value="quoted" ${q.status === 'quoted' ? 'selected' : ''}>Quote Prepared (QUOTED)</option>
+                        <option value="scheduled" ${q.status === 'scheduled' ? 'selected' : ''}>Job Scheduled (SCHEDULED)</option>
+                        <option value="completed" ${q.status === 'completed' ? 'selected' : ''}>Completed (COMPLETED)</option>
+                        <option value="cancelled" ${q.status === 'cancelled' ? 'selected' : ''}>Cancelled (CANCELLED)</option>
+                      </select>
+                    </div>
+
+                    <div class="field" style="margin:0;">
+                      <label style="font-size:0.75rem;">Internal Coordination Notes</label>
+                      <input type="text" class="eq-notes" value="${q.internal_notes || ''}" placeholder="e.g., Payout to Careful Movers: $120. Profit margin: 20%." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+                    </div>
+
+                    <div style="padding:1rem; background:var(--paper); border:1px solid var(--rule-soft); font-size:0.8rem; line-height:1.5; color:var(--ink-soft); border-radius:3px;">
+                      <strong>Client Contract &amp; Payment Status:</strong><br>
+                      • <strong>Payment Method:</strong> ${q.payment_method ? `<span style="color:var(--gold); font-weight:bold;">${esc(q.payment_method)}</span>` : '<span style="color:var(--rust);">Not Selected Yet</span>'}<br>
+                      • <strong>Contract Signed:</strong> ${q.contract_signed_at ? `<span style="color:var(--moss); font-weight:bold;">Signed by ${esc(q.contract_signer_name)} on ${new Date(q.contract_signed_at).toLocaleString()}</span>` : '<span style="color:var(--rust);">Awaiting Signature</span>'}
+                      ${q.contract_signature_data ? `
+                        <div style="margin-top:0.5rem;">
+                          <strong>Signature:</strong><br>
+                          <img src="${q.contract_signature_data}" style="border:1px solid var(--rule-soft); background:#fff; height:45px; display:block; margin-top:0.25rem;" />
+                        </div>
+                      ` : ''}
+                    </div>
                   </div>
-                  <div class="field" style="margin:0;">
-                    <label style="font-size:0.75rem;">Quote Amount ($)</label>
-                    <input type="number" class="eq-amount" step="0.01" value="${q.quote_amount || ''}" placeholder="e.g., 150.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
-                  </div>
-                  <div class="field" style="margin:0;">
-                    <label style="font-size:0.75rem;">Assigned Provider Name</label>
-                    <input type="text" class="eq-provider-name" value="${q.assigned_provider_name || ''}" placeholder="e.g., Careful Movers" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
-                  </div>
-                  <div class="field" style="margin:0;">
-                    <label style="font-size:0.75rem;">Assigned Provider Phone</label>
-                    <input type="text" class="eq-provider-phone" value="${q.assigned_provider_phone || ''}" placeholder="e.g., 713-292-1233" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
-                  </div>
-                  <div class="field" style="margin:0; grid-column: span 2;">
-                    <label style="font-size:0.75rem;">Internal Coordination Notes</label>
-                    <input type="text" class="eq-notes" value="${q.internal_notes || ''}" placeholder="e.g., Payout to Careful Movers: $120. Profit margin: 20%." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
-                  </div>
-                  <div style="grid-column: span 2; padding: 1rem; background: var(--paper); border: 1px solid var(--rule-soft); margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.5; color: var(--ink-soft); border-radius:3px;">
-                    <strong>Client Contract &amp; Payment Status:</strong><br>
-                    • <strong>Payment Method:</strong> ${q.payment_method ? `<span style="color:var(--gold); font-weight:bold;">${esc(q.payment_method)}</span>` : '<span style="color:var(--rust);">Not Selected Yet</span>'}<br>
-                    • <strong>Contract Signed:</strong> ${q.contract_signed_at ? `<span style="color:var(--moss); font-weight:bold;">Signed by ${esc(q.contract_signer_name)} on ${new Date(q.contract_signed_at).toLocaleString()}</span>` : '<span style="color:var(--rust);">Awaiting Signature</span>'}
-                    ${q.contract_signature_data ? `
-                      <div style="margin-top:0.75rem;">
-                        <strong>Signature:</strong><br>
-                        <img src="${q.contract_signature_data}" style="border:1px solid var(--rule-soft); background:#fff; height:50px; display:block; margin-top:0.25rem;" />
+
+                  <!-- Right Column: Option 1, 2, 3 Blocks & Actions -->
+                  <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                    
+                    <!-- Option 1 Block -->
+                    <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; border:1px dashed var(--rule-soft); padding:1rem; border-radius:4px; background:rgba(255,204,0,0.02);">
+                      <strong style="color:var(--gold); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em;">Option 1 (Recommended / Standard)</strong>
+                      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.5rem;">
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Quote Amount ($)</label>
+                          <input type="number" class="eq-amount" step="0.01" value="${q.quote_amount || ''}" placeholder="e.g., 150.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Provider Name</label>
+                          <input type="text" class="eq-provider-name" value="${q.assigned_provider_name || ''}" placeholder="e.g., Careful Movers" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Provider Phone</label>
+                          <input type="text" class="eq-provider-phone" value="${q.assigned_provider_phone || ''}" placeholder="e.g., 713-292-1233" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Est. Schedule/Timeframe</label>
+                          <input type="text" class="eq-schedule-1" value="${q.provider_schedule_1 || ''}" placeholder="e.g., Mon 9am-12pm" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
                       </div>
-                    ` : ''}
-                  </div>
-                  <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 2; margin-top:0.5rem;">
-                    <button type="button" class="btn btn--small btn--ghost btn-cancel-edit" data-id="${q.id}" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Cancel</button>
-                    <button type="submit" class="btn btn--small btn--gold">Save Changes</button>
+                      <div class="field" style="margin:0;">
+                        <label style="font-size:0.7rem;">Option 1 Notes</label>
+                        <input type="text" class="eq-notes-1" value="${q.provider_notes_1 || ''}" placeholder="e.g., Standard moving team of 2 people" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                      </div>
+                    </div>
+
+                    <!-- Option 2 Block -->
+                    <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; border:1px dashed var(--rule-soft); padding:1rem; border-radius:4px; background:rgba(255,255,255,0.01);">
+                      <strong style="color:var(--ink-mute); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em;">Option 2 (Alternative / Budget)</strong>
+                      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.5rem;">
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Quote Amount ($)</label>
+                          <input type="number" class="eq-amount-2" step="0.01" value="${q.quote_amount_2 || ''}" placeholder="e.g., 120.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Provider Name</label>
+                          <input type="text" class="eq-provider-name-2" value="${q.provider_name_2 || ''}" placeholder="e.g., Swift Haulers" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Provider Phone</label>
+                          <input type="text" class="eq-provider-phone-2" value="${q.provider_phone_2 || ''}" placeholder="e.g., 832-555-1212" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Est. Schedule/Timeframe</label>
+                          <input type="text" class="eq-schedule-2" value="${q.provider_schedule_2 || ''}" placeholder="e.g., Tue 1pm-4pm" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                      </div>
+                      <div class="field" style="margin:0;">
+                        <label style="font-size:0.7rem;">Option 2 Notes</label>
+                        <input type="text" class="eq-notes-2" value="${q.provider_notes_2 || ''}" placeholder="e.g., Budget option, 1 provider helper" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                      </div>
+                    </div>
+
+                    <!-- Option 3 Block -->
+                    <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; border:1px dashed var(--rule-soft); padding:1rem; border-radius:4px; background:rgba(255,255,255,0.01);">
+                      <strong style="color:var(--ink-mute); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em;">Option 3 (Alternative / Premium)</strong>
+                      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.5rem;">
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Quote Amount ($)</label>
+                          <input type="number" class="eq-amount-3" step="0.01" value="${q.quote_amount_3 || ''}" placeholder="e.g., 220.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Provider Name</label>
+                          <input type="text" class="eq-provider-name-3" value="${q.provider_name_3 || ''}" placeholder="e.g., Elite Services" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Provider Phone</label>
+                          <input type="text" class="eq-provider-phone-3" value="${q.provider_phone_3 || ''}" placeholder="e.g., 281-555-9999" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                        <div class="field" style="margin:0;">
+                          <label style="font-size:0.7rem;">Est. Schedule/Timeframe</label>
+                          <input type="text" class="eq-schedule-3" value="${q.provider_schedule_3 || ''}" placeholder="e.g., Flexible Booking" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                        </div>
+                      </div>
+                      <div class="field" style="margin:0;">
+                        <label style="font-size:0.7rem;">Option 3 Notes</label>
+                        <input type="text" class="eq-notes-3" value="${q.provider_notes_3 || ''}" placeholder="e.g., Premium 3-man team with full equipment" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); font-size:0.85rem;" />
+                      </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display:flex; gap:0.5rem; justify-content:flex-end; flex-wrap:wrap; margin-top:0.5rem; align-items:center;">
+                      <a href="#/track?id=${esc(q.tracking_id)}&force_preview=true" target="_blank" class="btn btn--small btn--ghost" style="border:1px solid var(--gold); color:var(--gold); text-decoration:none; margin-right:auto; font-size:0.75rem; padding:0.4rem 0.8rem;">Force Contract Preview</a>
+                      <button type="button" class="btn btn--small btn--ghost btn-copy-contract-link" data-link="${contractLink}" style="padding:0.4rem 0.8rem; font-size:0.75rem; white-space:nowrap; border:1px solid var(--gold); color:var(--gold);">Copy Contract Link</button>
+                      <button type="button" class="btn btn--small btn--ghost btn-cancel-edit" data-id="${q.id}" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Cancel</button>
+                      <button type="submit" class="btn btn--small btn--gold">Save Changes</button>
+                    </div>
                   </div>
                 </form>
               </td>
@@ -5119,6 +5441,21 @@ function bindHandlers(route) {
             if (editRow) editRow.style.display = 'none';
           });
         });
+
+        // Bind copy link handlers for property quotes
+        container.querySelectorAll('.btn-copy-contract-link').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const link = e.currentTarget.getAttribute('data-link');
+            navigator.clipboard.writeText(link);
+            const origText = e.currentTarget.textContent;
+            e.currentTarget.textContent = 'Copied!';
+            e.currentTarget.style.color = 'var(--moss)';
+            setTimeout(() => {
+              e.currentTarget.textContent = origText;
+              e.currentTarget.style.color = '';
+            }, 1500);
+          });
+        });
         
         container.querySelectorAll('.edit-quote-form').forEach(form => {
           form.addEventListener('submit', async (e) => {
@@ -5129,9 +5466,25 @@ function bindHandlers(route) {
             submitBtn.textContent = 'Saving...';
             
             const status = e.currentTarget.querySelector('.eq-status').value;
+            
             const quoteAmount = parseFloat(e.currentTarget.querySelector('.eq-amount').value) || null;
             const assignedProviderName = e.currentTarget.querySelector('.eq-provider-name').value.trim() || null;
             const assignedProviderPhone = e.currentTarget.querySelector('.eq-provider-phone').value.trim() || null;
+            const providerSchedule1 = e.currentTarget.querySelector('.eq-schedule-1').value.trim() || null;
+            const providerNotes1 = e.currentTarget.querySelector('.eq-notes-1').value.trim() || null;
+
+            const quoteAmount2 = parseFloat(e.currentTarget.querySelector('.eq-amount-2').value) || null;
+            const providerName2 = e.currentTarget.querySelector('.eq-provider-name-2').value.trim() || null;
+            const providerPhone2 = e.currentTarget.querySelector('.eq-provider-phone-2').value.trim() || null;
+            const providerSchedule2 = e.currentTarget.querySelector('.eq-schedule-2').value.trim() || null;
+            const providerNotes2 = e.currentTarget.querySelector('.eq-notes-2').value.trim() || null;
+
+            const quoteAmount3 = parseFloat(e.currentTarget.querySelector('.eq-amount-3').value) || null;
+            const providerName3 = e.currentTarget.querySelector('.eq-provider-name-3').value.trim() || null;
+            const providerPhone3 = e.currentTarget.querySelector('.eq-provider-phone-3').value.trim() || null;
+            const providerSchedule3 = e.currentTarget.querySelector('.eq-schedule-3').value.trim() || null;
+            const providerNotes3 = e.currentTarget.querySelector('.eq-notes-3').value.trim() || null;
+
             const internalNotes = e.currentTarget.querySelector('.eq-notes').value.trim() || null;
             
             try {
@@ -5142,13 +5495,28 @@ function bindHandlers(route) {
                   quote_amount: quoteAmount,
                   assigned_provider_name: assignedProviderName,
                   assigned_provider_phone: assignedProviderPhone,
+                  provider_schedule_1: providerSchedule1,
+                  provider_notes_1: providerNotes1,
+                  
+                  quote_amount_2: quoteAmount2,
+                  provider_name_2: providerName2,
+                  provider_phone_2: providerPhone2,
+                  provider_schedule_2: providerSchedule2,
+                  provider_notes_2: providerNotes2,
+                  
+                  quote_amount_3: quoteAmount3,
+                  provider_name_3: providerName3,
+                  provider_phone_3: providerPhone3,
+                  provider_schedule_3: providerSchedule3,
+                  provider_notes_3: providerNotes3,
+                  
                   internal_notes: internalNotes
                 })
                 .eq('id', id);
                 
               if (error) throw error;
-              alert('Changes saved successfully!');
               await loadPropertyQuotes();
+              alert('Changes saved successfully!');
             } catch (err) {
               console.error('Error updating quote:', err);
               alert('Failed to save changes: ' + err.message);

@@ -13,9 +13,30 @@ CREATE TABLE IF NOT EXISTS public.property_quotes (
     location_address text NOT NULL,
     job_details text NOT NULL,
     status text DEFAULT 'new'::text NOT NULL, -- 'new', 'quoted', 'scheduled', 'completed', 'cancelled'
+    
+    -- Option 1 (Recommended) details
     quote_amount numeric(10,2),
     assigned_provider_name text,
     assigned_provider_phone text,
+    provider_schedule_1 text,
+    provider_notes_1 text,
+    
+    -- Option 2 details
+    provider_name_2 text,
+    provider_phone_2 text,
+    quote_amount_2 numeric(10,2),
+    provider_schedule_2 text,
+    provider_notes_2 text,
+    
+    -- Option 3 details
+    provider_name_3 text,
+    provider_phone_3 text,
+    quote_amount_3 numeric(10,2),
+    provider_schedule_3 text,
+    provider_notes_3 text,
+    
+    -- Client choice and signature details
+    selected_option_index integer DEFAULT 1,
     internal_notes text,
     image_urls text[] DEFAULT '{}'::text[],
     contract_signer_name text,
@@ -30,6 +51,23 @@ ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS contract_signer_name
 ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS contract_signature_data text;
 ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS contract_signed_at timestamp with time zone;
 ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS payment_method text;
+
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_schedule_1 text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_notes_1 text;
+
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_name_2 text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_phone_2 text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS quote_amount_2 numeric(10,2);
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_schedule_2 text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_notes_2 text;
+
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_name_3 text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_phone_3 text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS quote_amount_3 numeric(10,2);
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_schedule_3 text;
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS provider_notes_3 text;
+
+ALTER TABLE public.property_quotes ADD COLUMN IF NOT EXISTS selected_option_index integer DEFAULT 1;
 
 -- 2. Enable Row Level Security (RLS)
 ALTER TABLE public.property_quotes ENABLE ROW LEVEL SECURITY;
@@ -63,12 +101,23 @@ USING (auth.role() = 'authenticated');
 -- 4. Create sequence for generating clean sequential tracking IDs (starting at 5001 for professional appearance)
 CREATE SEQUENCE IF NOT EXISTS property_quote_seq START WITH 5001;
 
--- 5. Trigger function to automatically format and assign VRV-PRP-XXXX tracking IDs
+-- 5. Trigger function to automatically format and assign tracking IDs based on service category
 CREATE OR REPLACE FUNCTION set_property_tracking_id()
 RETURNS TRIGGER AS $$
+DECLARE
+    prefix text := 'VRV-PRP-';
 BEGIN
     IF NEW.tracking_id IS NULL THEN
-        NEW.tracking_id := 'VRV-PRP-' || nextval('property_quote_seq');
+        IF NEW.service_category = 'moving' THEN
+            prefix := 'VRV-MOV-';
+        ELSIF NEW.service_category = 'junk' THEN
+            prefix := 'VRV-JNK-';
+        ELSIF NEW.service_category = 'pressure' THEN
+            prefix := 'VRV-WSH-';
+        ELSIF NEW.service_category = 'yard' THEN
+            prefix := 'VRV-YRD-';
+        END IF;
+        NEW.tracking_id := prefix || nextval('property_quote_seq');
     END IF;
     RETURN NEW;
 END;
