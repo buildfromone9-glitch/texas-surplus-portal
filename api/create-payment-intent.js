@@ -11,6 +11,15 @@ export default async function handler(req) {
   }
 
   try {
+    if (!STRIPE_SECRET_KEY) {
+      return new Response(JSON.stringify({
+        error: 'Stripe Secret Key is not configured on Vercel. Please log into your Vercel dashboard, go to your Project Settings -> Environment Variables, and add STRIPE_SECRET_KEY with your Stripe Secret Key.'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const { amount, currency, trackingId, description } = await req.json();
 
     if (!amount || amount <= 0) {
