@@ -1,6 +1,7 @@
 export const config = { runtime: 'edge' };
 
-const RESEND_KEY = 're_iNRTDfoC_NG2h6N7yuQp9ykTTAPC6C9wi';
+const RESEND_KEY = process.env.RESEND_KEY;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const SPRG_EMAIL = 'help@vorvoservices.com';
 const SPRG_NOTIFY = 'help@vorvoservices.com';
 
@@ -12,6 +13,18 @@ export default async function handler(req) {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
   try {
+    const body = await req.json();
+    
+    // Admin authentication required
+    if (!body.adminPassword || body.adminPassword !== ADMIN_PASSWORD) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+    
+    // Verify RESEND_KEY is configured
+    if (!RESEND_KEY) {
+      return new Response(JSON.stringify({ error: 'Email service not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    }
+    
     const {
       claimantName, clientEmail, trackingId, propertyId,
       disbursementDate, dateOfNotice, grossAmount,
