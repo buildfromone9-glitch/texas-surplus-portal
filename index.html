@@ -5632,9 +5632,13 @@ function bindHandlers(route) {
         statusEl.style.color = 'var(--ink-mute)';
         statusEl.textContent = '';
         try {
+          const { data: { session } } = await supabaseClient.auth.getSession();
           const res = await fetch('/api/send-invite', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token || ''}`
+            },
             body: JSON.stringify(inviteData),
           });
           const result = await res.json();
@@ -5711,7 +5715,15 @@ function bindHandlers(route) {
         paymentDueDate:    document.getElementById('inv-due-date').value.trim(),
       };
       try {
-        const res = await fetch('/api/send-invoice', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        const res = await fetch('/api/send-invoice', { 
+          method: 'POST', 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token || ''}`
+          }, 
+          body: JSON.stringify(payload) 
+        });
         const invResult = document.getElementById('invoice-result');
         invResult.style.display = 'block';
         if (res.ok) {
@@ -5760,7 +5772,15 @@ function bindHandlers(route) {
         noticePeriodEnd:      fmt(periodEnd),
       };
       try {
-        const res = await fetch('/api/send-demand', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        const res = await fetch('/api/send-demand', { 
+          method: 'POST', 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token || ''}`
+          }, 
+          body: JSON.stringify(payload) 
+        });
         const demResult = document.getElementById('demand-result');
         demResult.style.display = 'block';
         if (res.ok) {
