@@ -25,7 +25,6 @@ export default async function handler(req) {
     
     const {
       typedName,
-      typedName,
       signedAt,
       trackingId,
       claimantName,
@@ -142,7 +141,7 @@ export default async function handler(req) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Surplus Property Research Group <noreply@sprggroup.com>',
+        from: 'Surplus Property Research Group <noreply@vorvoservices.com>',
         reply_to: SPRG_EMAIL,
         to: SPRG_NOTIFY,
         subject: `[SIGNED] ${trackingId} — ${claimantName}`,
@@ -156,7 +155,7 @@ export default async function handler(req) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'Surplus Property Research Group <noreply@sprggroup.com>',
+          from: 'Surplus Property Research Group <noreply@vorvoservices.com>',
           reply_to: SPRG_EMAIL,
           to: clientEmail,
           subject: `Your SPRG Agreement Has Been Received — ${trackingId}`,

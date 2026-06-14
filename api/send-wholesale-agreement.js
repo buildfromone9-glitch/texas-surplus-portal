@@ -2,7 +2,7 @@ export const config = { runtime: 'edge' };
 
 const RESEND_KEY = process.env.RESEND_KEY;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-const SENDER_EMAIL = 'Vorvo Services <noreply@sprggroup.com>'; // using verified domain on Resend
+const SENDER_EMAIL = 'Vorvo Services <noreply@vorvoservices.com>'; // using verified domain on Resend
 const VORVO_NOTIFY = 'help@vorvoservices.com';
 
 function formatMoney(n) {

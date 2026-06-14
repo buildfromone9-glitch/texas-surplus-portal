@@ -76,7 +76,7 @@ export default async function handler(req) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Surplus Property Research Group <noreply@sprggroup.com>',
+        from: 'Surplus Property Research Group <noreply@vorvoservices.com>',
         to,
         reply_to: SPRG_EMAIL,
         subject,
