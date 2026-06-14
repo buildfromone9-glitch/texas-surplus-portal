@@ -3658,6 +3658,7 @@ function setupSignSubmit() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          accessToken,
           typedName,
           signedAt: App.state.signedAt,
           trackingId: App.state.client?.trackingId || '',
@@ -6127,6 +6128,7 @@ function setupWholesaleSignSubmit() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              accessToken,
               typedName,
               signedAt: App.state.signedAt,
               trackingId: App.state.client?.trackingId || '',

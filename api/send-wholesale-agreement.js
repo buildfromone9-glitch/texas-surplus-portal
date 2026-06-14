@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 const RESEND_KEY = process.env.RESEND_KEY;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SENDER_EMAIL = 'Vorvo Services <noreply@vorvoservices.com>'; // using verified domain on Resend
 const VORVO_NOTIFY = 'help@vorvoservices.com';
 
@@ -17,17 +17,13 @@ export default async function handler(req) {
   try {
     const body = await req.json();
     
-    // Admin authentication required
-    if (!body.adminPassword || body.adminPassword !== ADMIN_PASSWORD) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
-    }
-    
     // Verify RESEND_KEY is configured
     if (!RESEND_KEY) {
       return new Response(JSON.stringify({ error: 'Email service not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
     
     const {
+      accessToken,
       typedName,
       signedAt,
       trackingId,
@@ -40,7 +36,37 @@ export default async function handler(req) {
       ipAddress,
       ipLocation,
       agreementPageUrl,
-    } = await req.json();
+    } = body;
+
+    // ===== SECURITY VALIDATION =====
+    // Verify accessToken and trackingId in Supabase wholesale_leads table
+    if (!accessToken || !trackingId) {
+      return new Response(JSON.stringify({ error: 'Unauthorized: Missing token or tracking ID' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    const supabaseUrl = 'https://urmwrmeycimtleoeirmn.supabase.co';
+    const fetchResponse = await fetch(
+      `${supabaseUrl}/rest/v1/wholesale_leads?tracking_id=eq.${encodeURIComponent(trackingId)}&access_token=eq.${encodeURIComponent(accessToken)}&select=id`,
+      {
+        headers: {
+          'apikey': SUPABASE_SERVICE_ROLE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!fetchResponse.ok) {
+      console.error('Failed to verify wholesale agreement with Supabase:', await fetchResponse.text());
+      return new Response(JSON.stringify({ error: 'Failed to verify authorization' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    const records = await fetchResponse.json();
+    if (!records || records.length === 0) {
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid token or tracking ID' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    // ===== CONSTRUCT EMAIL =====
 
     const signedDate = new Date(signedAt).toLocaleString('en-US', {
       timeZone: 'America/Chicago',
