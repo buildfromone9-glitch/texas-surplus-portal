@@ -4762,22 +4762,25 @@ function bindHandlers(route) {
                   const signatureData = canvas.toDataURL('image/png');
                   
                   try {
-                    const { error: updateErr } = await supabaseClient
-                      .from('property_quotes')
-                      .update({
-                        status: 'scheduled',
-                        quote_amount: selectedAmount,
-                        assigned_provider_name: selectedProviderName,
-                        assigned_provider_phone: selectedProviderPhone,
-                        selected_option_index: selectedOptionIdx,
-                        contract_signer_name: typedName,
-                        contract_signature_data: signatureData,
-                        contract_signed_at: new Date().toISOString(),
-                        payment_method: paymentMethod
+                    // Call secure backend API for contract signing
+                    const response = await fetch('/api/sign-contract', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        trackingId: data.tracking_id,
+                        selectedOption: selectedOptionIdx,
+                        signerName: typedName,
+                        signatureData: signatureData,
+                        paymentMethod: paymentMethod,
+                        stripePaymentIntentId: null // Will be added after Stripe integration
                       })
-                      .eq('id', data.id);
-                      
-                    if (updateErr) throw updateErr;
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (!response.ok || !result.success) {
+                      throw new Error(result.error || 'Failed to sign contract');
+                    }
                     
                     // Submit to Formspree for immediate notification
                     const formspreeData = new FormData();
