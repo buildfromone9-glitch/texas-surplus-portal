@@ -13,6 +13,53 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://js.stripe.com/v3/"></script>
 
+<script>
+  /**
+   * VORVO SELF-HEALING & ERROR RECOVERY SYSTEM
+   * This script runs first to catch fatal errors and prevent the "Black Screen of Death".
+   */
+  window.addEventListener('error', function(event) {
+    // If it's a syntax error in the main script, the app won't load.
+    // We show the recovery UI immediately.
+    console.error('Fatal App Error:', event.error);
+    displayCrashRecovery(event.error);
+  });
+
+  window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled Promise Rejection:', event.reason);
+    // Optional: show recovery for promise rejections
+  });
+
+  function displayCrashRecovery(error) {
+    // Wait for DOM to be ready if it's not
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => _show(error));
+    } else {
+      _show(error);
+    }
+
+    function _show(err) {
+      const recoveryEl = document.getElementById('crash-recovery');
+      const appEl = document.getElementById('app');
+      if (recoveryEl) {
+        if (appEl) appEl.style.display = 'none';
+        recoveryEl.style.display = 'flex';
+        const msgEl = document.getElementById('crash-message');
+        if (msgEl && err) msgEl.textContent = err.message || err;
+      }
+    }
+  }
+
+  function runSelfRepair() {
+    console.log('Running self-repair...');
+    // Clear potentially corrupt state
+    localStorage.clear();
+    sessionStorage.clear();
+    // Force reload ignoring cache
+    window.location.reload(true);
+  }
+</script>
+
 <style>
   /* ============================================================
      DESIGN TOKENS
@@ -72,6 +119,81 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.09 0 0 0 0 0.17 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
   #app { position: relative; z-index: 2; }
+
+  /* ============================================================
+     CRASH RECOVERY UI
+     ============================================================ */
+  #crash-recovery {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #111111;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--sans);
+    color: #ffffff;
+  }
+  .crash-card {
+    max-width: 500px;
+    background: #181818;
+    border: 1px solid #FFCC00;
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+  .crash-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1.5rem;
+    color: #FFCC00;
+  }
+  .crash-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #FFCC00;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .crash-text {
+    color: #D8D8D8;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .crash-details {
+    background: #000;
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 2rem;
+    text-align: left;
+    max-height: 100px;
+    overflow: auto;
+    border-left: 2px solid #FF3333;
+  }
+  .repair-btn {
+    background: #FFCC00;
+    color: #000;
+    border: none;
+    padding: 1rem 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: transform 100ms;
+  }
+  .repair-btn:hover {
+    background: #FFE066;
+    transform: translateY(-2px);
+  }
 
   h1, h2, h3, h4, h5 {
     font-family: var(--serif);
@@ -1134,7 +1256,22 @@
   }
 </style>
 </head>
-<body>
+<body id="vorvo-body">
+  <!-- Crash Recovery UI (Hidden by default) -->
+  <div id="crash-recovery">
+    <div class="crash-card">
+      <svg class="crash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <div class="crash-title">System Interruption</div>
+      <p class="crash-text">The application encountered a critical runtime error. This is usually caused by a temporary connection issue or state corruption.</p>
+      <div class="crash-details" id="crash-message">No details available.</div>
+      <button class="repair-btn" onclick="runSelfRepair()">Repair &amp; Restart</button>
+    </div>
+  </div>
+
   <div id="app"></div>
 
 <script>
@@ -1334,6 +1471,60 @@ const App = {
         signedAt: this.state.signedAt,
       }));
     } catch (e) { console.warn('Save failed', e); }
+  },
+
+  /**
+   * SELF-HEALING: Setup global error listeners
+   */
+  setupErrorRecovery() {
+    window.onerror = (msg, url, line, col, error) => {
+      this.handleFatalError(error || msg, 'global');
+    };
+    window.onunhandledrejection = (event) => {
+      this.handleFatalError(event.reason, 'promise');
+    };
+  },
+
+  /**
+   * SELF-HEALING: Diagnostic tools (Ctrl+Shift+D)
+   */
+  setupDiagnostics() {
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        const logs = JSON.parse(localStorage.getItem('vorvo-error-logs') || '[]');
+        console.table(logs);
+        alert('Diagnostic data logged to console. Errors found: ' + logs.length);
+      }
+    });
+  },
+
+  /**
+   * SELF-HEALING: Logic to handle fatal crashes
+   */
+  handleFatalError(error, source) {
+    const errorMsg = error?.message || String(error);
+    console.error(`[Vorvo Self-Healing] Fatal error from ${source}:`, errorMsg);
+    
+    // Log to localStorage for diagnostics
+    try {
+      const logs = JSON.parse(localStorage.getItem('vorvo-error-logs') || '[]');
+      logs.push({
+        time: new Date().toISOString(),
+        source,
+        message: errorMsg,
+        stack: error?.stack,
+        url: window.location.href
+      });
+      localStorage.setItem('vorvo-error-logs', JSON.stringify(logs.slice(-20)));
+      
+      const count = parseInt(localStorage.getItem('vorvo-crash-count') || '0') + 1;
+      localStorage.setItem('vorvo-crash-count', count);
+    } catch (e) {}
+
+    // Show the recovery UI
+    if (typeof displayCrashRecovery === 'function') {
+      displayCrashRecovery(errorMsg);
+    }
   },
 
   hasSigned() {
@@ -6676,14 +6867,6 @@ function setupWholesaleSignSubmit() {
           console.error('[Vorvo] Email send failed:', err.message);
         }
         
-        alert('Agreement Signed successfully! Your property is now under contract.');
-        await loadWholesaleAgreement();
-      }
-    }
-  });
-}
-
-
         alert('Agreement Signed successfully! Your property is now under contract.');
         await loadWholesaleAgreement();
       }
