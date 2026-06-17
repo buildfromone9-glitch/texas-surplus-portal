@@ -801,26 +801,27 @@
   }
   .sig-static {
     border: 1px solid var(--rule);
-    background: var(--cream);
+    background: #ffffff;
     padding: 1rem;
     min-height: 100px;
     display: flex;
     flex-direction: column;
+    border-radius: 4px;
   }
   .sig-static__sig {
     font-family: var(--serif);
     font-style: italic;
     font-size: 1.4rem;
-    color: var(--ink);
+    color: #111111;
     flex-grow: 1;
     display: flex;
     align-items: center;
   }
   .sig-static__line {
-    border-top: 1px solid var(--ink);
+    border-top: 1px solid #dddddd;
     padding-top: 0.4rem;
     font-size: 0.75rem;
-    color: var(--ink-mute);
+    color: #555555;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
@@ -7026,9 +7027,9 @@ function initAssignmentSignatureArea() {
       </div>
       <div class="sig-block">
         <h4>Assignor (Vorvo Services)</h4>
-        <div class="sig-static" style="border:1px solid var(--rule-soft); padding:1.5rem; background:var(--paper-deep); border-radius:3px; height:160px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center;">
-          <div class="sig-static__sig" style="font-family:'Brush Script MT', cursive; font-size:1.6rem; color:var(--gold); text-align:center; margin-bottom:0.5rem;">D. S. &nbsp;·&nbsp; J. V.</div>
-          <div class="sig-static__line" style="font-size:0.75rem; color:var(--ink-soft); text-align:center;">Authorized Assignor (countersigned)</div>
+        <div class="sig-static" style="border:1px solid var(--rule-soft); padding:1.5rem; background:#ffffff; border-radius:3px; height:160px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center;">
+          <div class="sig-static__sig" style="font-family:'Brush Script MT', cursive; font-size:1.6rem; color:#B88A00; text-align:center; margin-bottom:0.5rem; width:100%; justify-content:center;">D. S. &nbsp;·&nbsp; J. V.</div>
+          <div class="sig-static__line" style="font-size:0.75rem; color:#555555; text-align:center; border-top:1px solid #dddddd; padding-top:0.4rem;">Authorized Assignor (countersigned)</div>
         </div>
       </div>
     </div>
