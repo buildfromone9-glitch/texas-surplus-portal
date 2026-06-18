@@ -6636,7 +6636,7 @@ function renderWholesaleAgreement() {
           <tbody>
             <tr>
               <td>(a) Total Purchase Price (payable in cash or certified funds at closing)</td>
-              <td class="amount" style="text-align:right;">${formatMoney(c.offerAmount)}</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.askingPrice)}</td>
             </tr>
             <tr>
               <td>(b) Earnest Money Deposit (to be held in escrow upon contract execution)</td>
@@ -6644,7 +6644,7 @@ function renderWholesaleAgreement() {
             </tr>
             <tr>
               <td>(c) Estimated Cash to Seller at Closing (before taxes, liens, and title adjustments)</td>
-              <td class="amount" style="text-align:right;">${formatMoney(c.offerAmount ? c.offerAmount - (c.depositAmount || 0) : null)}</td>
+              <td class="amount" style="text-align:right;">${formatMoney(c.askingPrice ? c.askingPrice - (c.depositAmount || 0) : null)}</td>
             </tr>
           </tbody>
         </table>
@@ -6843,7 +6843,7 @@ function setupWholesaleSignSubmit() {
         formspreeData.append('trackingId', App.state.client?.trackingId);
         formspreeData.append('signerName', typedName);
         formspreeData.append('propertyAddress', App.state.client?.propertyAddress);
-        formspreeData.append('offerAmount', formatMoney(App.state.client?.offerAmount));
+        formspreeData.append('offerAmount', formatMoney(App.state.client?.askingPrice));
         
         fetch('https://formspree.io/f/xqejewzo', {
           method: 'POST',
@@ -6865,7 +6865,7 @@ function setupWholesaleSignSubmit() {
               trackingId: App.state.client?.trackingId || '',
               sellerName: App.state.client?.claimantName || typedName,
               propertyAddress: App.state.client?.propertyAddress || '',
-              offerAmount: App.state.client?.offerAmount || null,
+              offerAmount: App.state.client?.askingPrice || null,
               depositAmount: App.state.client?.depositAmount || null,
               contractTerms: App.state.client?.contractTerms || '',
               clientEmail,
