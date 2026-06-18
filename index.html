@@ -6460,8 +6460,8 @@ async function loadWholesaleAgreement() {
           propertyDetails: lead.property_details,
           askingPrice: lead.asking_price,
           estimatedValue: lead.estimated_value,
-          offerAmount: contract.deal_data.purchase_price || lead.offer_amount,
-          depositAmount: contract.deal_data.earnest_money || lead.deposit_amount || 0,
+          offerAmount: lead.asking_price,  // Purchase Price = asking_price
+          depositAmount: lead.deposit_amount || 0,  // Earnest Money = deposit_amount from wholesale_leads
           contractTerms: contract.deal_data.contract_terms || lead.contract_terms || '',
           governingState: contract.state,
           dateIssued: new Date(contract.created_at).toLocaleDateString()
@@ -6916,8 +6916,8 @@ async function loadAssignmentAgreement() {
           propertyDetails: lead.property_details,
           askingPrice: lead.asking_price,
           estimatedValue: lead.estimated_value,
-          offerAmount: contract.deal_data.purchase_price || lead.offer_amount,
-          depositAmount: contract.deal_data.earnest_money || lead.deposit_amount || 0,
+          offerAmount: lead.asking_price,  // Purchase Price = asking_price
+          depositAmount: lead.deposit_amount || 0,  // Earnest Money = deposit_amount from wholesale_leads
           contractTerms: contract.deal_data.contract_terms || lead.contract_terms || '',
           governingState: contract.state,
           dateIssued: new Date(contract.created_at).toLocaleDateString()

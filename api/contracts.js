@@ -134,9 +134,9 @@ function generateContractHTML(contract, lead) {
     </tr>
     <tr>
       <td class="label">Purchase Price</td>
-      <td><strong>${formatMoney(deal.purchase_price)}</strong></td>
+      <td><strong>${formatMoney(lead.asking_price)}</strong></td>
       <td class="label">Earnest Money</td>
-      <td>${formatMoney(deal.earnest_money)}</td>
+      <td>${formatMoney(lead.deposit_amount || 0)}</td>
     </tr>
     <tr>
       <td class="label">Inspection Period</td>
@@ -152,7 +152,7 @@ function generateContractHTML(contract, lead) {
   <p>Seller agrees to sell and convey, and Buyer agrees to purchase, all of Seller's right, title, and interest in and to the real property located at the address specified above, together with all improvements, fixtures, and appurtenances thereto.</p>
 
   <h3>2. Purchase Price &amp; Escrow Deposit</h3>
-  <p>The total Purchase Price to be paid by Buyer at closing shall be ${formatMoney(deal.purchase_price)}. Buyer shall deposit the Earnest Money of ${formatMoney(deal.earnest_money)} with a mutually agreeable licensed title company or escrow agent within three (3) business days of the fully executed Agreement. The balance of the Purchase Price shall be paid in cash or certified funds at Closing.</p>
+  <p>The total Purchase Price to be paid by Buyer at closing shall be ${formatMoney(lead.asking_price)}. Buyer shall deposit the Earnest Money of ${formatMoney(lead.deposit_amount || 0)} with a mutually agreeable licensed title company or escrow agent within three (3) business days of the fully executed Agreement. The balance of the Purchase Price shall be paid in cash or certified funds at Closing.</p>
 
   <h3>3. Due Diligence &amp; Access</h3>
   <div class="clause-box">${clauses.inspection}</div>
@@ -258,17 +258,17 @@ function generateContractHTML(contract, lead) {
       <td class="label">Original Contract Date</td>
       <td>${contractDate}</td>
       <td class="label">Original Purchase Price</td>
-      <td>${formatMoney(deal.purchase_price)}</td>
+      <td>${formatMoney(lead.asking_price)}</td>
     </tr>
     <tr>
       <td class="label">Assignment Fee</td>
       <td><strong>${formatMoney(deal.assignment_fee)}</strong></td>
       <td class="label">Earnest Deposit</td>
-      <td>${formatMoney(deal.earnest_money)}</td>
+      <td>${formatMoney(lead.deposit_amount || 0)}</td>
     </tr>
     <tr>
       <td class="label">Total Acquisition Price</td>
-      <td><strong>${formatMoney(deal.purchase_price + (deal.assignment_fee || 0))}</strong></td>
+      <td><strong>${formatMoney(lead.asking_price + (deal.assignment_fee || 0))}</strong></td>
       <td class="label">Closing Date</td>
       <td>${closingDate}</td>
     </tr>
@@ -286,7 +286,7 @@ function generateContractHTML(contract, lead) {
   <h3>2. Financial Terms &amp; Assignment Fee</h3>
   <p>Assignee agrees to pay Assignor a non-refundable Assignment Fee of <strong>${formatMoney(deal.assignment_fee)}</strong>. This Assignment Fee shall be paid as follows:</p>
   <ol>
-    <li>An Earnest Money Deposit of ${formatMoney(deal.earnest_money)} shall be deposited by Assignee with the designated escrow agent/title company within twenty-four (24) hours of execution of this Assignment Agreement.</li>
+    <li>An Earnest Money Deposit of ${formatMoney(lead.deposit_amount || 0)} shall be deposited by Assignee with the designated escrow agent/title company within twenty-four (24) hours of execution of this Assignment Agreement.</li>
     <li>The remaining balance of the Assignment Fee shall be paid to Assignor in cash or wire transfer at the time of closing.</li>
   </ol>
 
