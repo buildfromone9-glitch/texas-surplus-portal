@@ -2679,15 +2679,9 @@ function renderWholesaleLanding() {
             <input type="text" id="w-location" name="location" required placeholder="Street, City, State, ZIP" />
           </div>
 
-          <div class="field--row">
-            <div class="field">
-              <label for="w-asking">Desired Asking Price (Optional)</label>
-              <input type="number" id="w-asking" name="askingPrice" placeholder="e.g., 180000" />
-            </div>
-            <div class="field">
-              <label for="w-value">Estimated Market Value (Optional)</label>
-              <input type="number" id="w-value" name="estimatedValue" placeholder="e.g., 210000" />
-            </div>
+          <div class="field">
+            <label for="w-asking">Desired Asking Price (Optional)</label>
+            <input type="number" id="w-asking" name="askingPrice" placeholder="e.g., 180000" style="width:100%;" />
           </div>
 
           <div class="field">
@@ -3455,7 +3449,6 @@ function renderAdmin() {
           <button id="tab-btn-assets" class="admin-tab-btn active" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid var(--gold); cursor:pointer; color:var(--ink); font-size:0.95rem;">Surplus Recovery</button>
           <button id="tab-btn-wholesale" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Wholesale Property</button>
           <button id="tab-btn-property" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Labor Services</button>
-          <button id="tab-btn-contracts" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Contracts</button>
         </div>
       </div>
 
@@ -3581,119 +3574,22 @@ function renderAdmin() {
 
       <!-- Tab 2: Wholesale Property -->
       <div id="tab-content-wholesale" class="admin-tab-content" style="display:none; margin-top:2rem;">
-        <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Wholesale Property Leads</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">
+          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Wholesale Property Leads</h2>
+          <button type="button" id="btn-refresh-wholesale" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">🔄 Refresh</button>
+        </div>
         <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming wholesale real estate leads, analyze comparables, and set offer statuses.</p>
         <div id="wholesale-leads-list" style="margin-bottom:2rem;">Loading leads...</div>
       </div>
 
       <!-- Tab 3: Labor Services (Contracting) -->
       <div id="tab-content-property" class="admin-tab-content" style="display:none; margin-top:2rem;">
-        <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Labor Service Quote Requests</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">
+          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Labor Service Quote Requests</h2>
+          <button type="button" id="btn-refresh-property" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">🔄 Refresh</button>
+        </div>
         <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming labor services quotes, assign providers, update pricing, and set job statuses.</p>
         <div id="property-quotes-list" style="margin-bottom:2rem;">Loading requests...</div>
-      </div>
-
-      <!-- Tab 4: Contracts -->
-      <div id="tab-content-contracts" class="admin-tab-content" style="display:none; margin-top:2rem;">
-        <h2 style="font-family:var(--serif); font-size:1.8rem; margin-bottom:0.5rem;">Wholesale Contracts Management</h2>
-        <p class="admin__sub" style="margin-bottom:1.5rem;">Generate and manage Purchase Agreements (Seller ↔ Vorvo) and Assignment Agreements (Vorvo ↔ Cash Buyer).</p>
-        
-        <!-- Generate Contract Form -->
-        <div style="background:var(--paper-deep); border:1px solid var(--rule-soft); padding:1.5rem; margin-bottom:2rem; border-radius:4px;">
-          <h3 style="font-family:var(--serif); font-size:1.2rem; color:var(--gold); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.1em; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">Generate New Contract</h3>
-          <form id="generate-contract-form" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; align-items:flex-end;">
-            <div class="field" style="margin:0;">
-              <label style="font-size:0.75rem;">Select Wholesale Lead</label>
-              <select id="gc-deal-id" required style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);"></select>
-            </div>
-            <div class="field" style="margin:0;">
-              <label style="font-size:0.75rem;">Contract Type</label>
-              <select id="gc-type" required style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);">
-                <option value="purchase">Purchase Agreement (Seller ↔ Vorvo)</option>
-                <option value="assignment">Assignment Agreement (Vorvo ↔ Cash Buyer)</option>
-              </select>
-            </div>
-            <div class="field" style="margin:0;">
-              <label style="font-size:0.75rem;">Governing State</label>
-              <select id="gc-state" required style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);">
-                <option value="TX">Texas (TX)</option>
-                <option value="FL">Florida (FL)</option>
-                <option value="GA">Georgia (GA)</option>
-                <option value="AZ">Arizona (AZ)</option>
-                <option value="OH">Ohio (OH)</option>
-                <option value="NC">North Carolina (NC)</option>
-                <option value="TN">Tennessee (TN)</option>
-                <option value="MO">Missouri (MO)</option>
-                <option value="OK">Oklahoma (OK)</option>
-                <option value="Other">Other State</option>
-              </select>
-            </div>
-            <div class="field" style="margin:0;">
-              <label style="font-size:0.75rem;">Purchase Price ($)</label>
-              <input type="number" id="gc-purchase-price" required step="0.01" placeholder="e.g. 150000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-            </div>
-            <div class="field" style="margin:0;">
-              <label style="font-size:0.75rem;">Earnest Money ($)</label>
-              <input type="number" id="gc-earnest-money" required step="0.01" placeholder="e.g. 1000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-            </div>
-            <div class="field" style="margin:0;" id="field-gc-assignment-fee">
-              <label style="font-size:0.75rem;">Assignment Fee ($)</label>
-              <input type="number" id="gc-assignment-fee" step="0.01" placeholder="e.g. 10000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-            </div>
-            <div class="field" style="margin:0;">
-              <label style="font-size:0.75rem;">Closing Date</label>
-              <input type="date" id="gc-closing-date" required style="width:100%; padding:0.45rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-            </div>
-            <div class="field" style="margin:0;" id="field-gc-contract-date">
-              <label style="font-size:0.75rem;">Original Contract Date</label>
-              <input type="date" id="gc-contract-date" style="width:100%; padding:0.45rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-            </div>
-            <div class="field" style="margin:0;">
-              <label style="font-size:0.75rem;">Inspection Period (Days)</label>
-              <input type="number" id="gc-inspection-period" value="15" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-            </div>
-            
-            <!-- Cash Buyer Fields (Hidden by default, shown for Assignment) -->
-            <div id="gc-buyer-fields" style="display:none; grid-column:span 4; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; border-top:1px solid var(--rule-soft); padding-top:1rem; margin-top:0.5rem;">
-              <div class="field" style="margin:0;">
-                <label style="font-size:0.75rem;">Cash Buyer Full Name</label>
-                <input type="text" id="gc-buyer-name" placeholder="e.g. John Doe" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-              </div>
-              <div class="field" style="margin:0;">
-                <label style="font-size:0.75rem;">Cash Buyer Entity Name</label>
-                <input type="text" id="gc-buyer-entity" placeholder="e.g. JD Properties LLC" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-              </div>
-              <div class="field" style="margin:0;">
-                <label style="font-size:0.75rem;">Cash Buyer Email</label>
-                <input type="email" id="gc-buyer-email" placeholder="e.g. buyer@email.com" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-              </div>
-              <div class="field" style="margin:0;">
-                <label style="font-size:0.75rem;">Cash Buyer Phone</label>
-                <input type="tel" id="gc-buyer-phone" placeholder="e.g. (832) 555-0199" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-              </div>
-              <div class="field" style="grid-column:span 2; margin:0;">
-                <label style="font-size:0.75rem;">Cash Buyer Address</label>
-                <input type="text" id="gc-buyer-address" placeholder="e.g. 123 Main St, Houston, TX 77002" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-              </div>
-              <div class="field" style="grid-column:span 2; margin:0;">
-                <label style="font-size:0.75rem;">Proof of Funds Link</label>
-                <input type="text" id="gc-buyer-pof" placeholder="e.g. https://dropbox.com/pof.pdf" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
-              </div>
-            </div>
-            
-            <div class="field" style="grid-column:span 4; margin:0;">
-              <label style="font-size:0.75rem;">Custom Contract Terms / Disclosures</label>
-              <textarea id="gc-terms" placeholder="Any special stipulations or clauses to add to this contract..." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); height:60px; font-family:var(--sans); font-size:0.9rem; box-sizing:border-box;"></textarea>
-            </div>
-            
-            <div style="grid-column:span 4; display:flex; justify-content:flex-end;">
-              <button type="submit" class="btn btn--gold" style="padding:0.75rem 2rem;">Generate &amp; Send Contract Link</button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Contracts List -->
-        <div id="contracts-list" style="margin-bottom:2rem;">Loading contracts...</div>
       </div>
     </main>
   `;
@@ -5247,21 +5143,19 @@ function bindHandlers(route) {
     const tabAssetsBtn = document.getElementById('tab-btn-assets');
     const tabWholesaleBtn = document.getElementById('tab-btn-wholesale');
     const tabPropertyBtn = document.getElementById('tab-btn-property');
-    const tabContractsBtn = document.getElementById('tab-btn-contracts');
     
     const tabAssetsContent = document.getElementById('tab-content-assets');
     const tabWholesaleContent = document.getElementById('tab-content-wholesale');
     const tabPropertyContent = document.getElementById('tab-content-property');
-    const tabContractsContent = document.getElementById('tab-content-contracts');
     
     const switchTab = (activeBtn, activeContent) => {
-      [tabAssetsBtn, tabWholesaleBtn, tabPropertyBtn, tabContractsBtn].forEach(btn => {
+      [tabAssetsBtn, tabWholesaleBtn, tabPropertyBtn].forEach(btn => {
         if (!btn) return;
         btn.classList.remove('active');
         btn.style.borderBottomColor = 'transparent';
         btn.style.color = 'var(--ink-mute)';
       });
-      [tabAssetsContent, tabWholesaleContent, tabPropertyContent, tabContractsContent].forEach(content => {
+      [tabAssetsContent, tabWholesaleContent, tabPropertyContent].forEach(content => {
         if (content) content.style.display = 'none';
       });
       
@@ -5277,17 +5171,26 @@ function bindHandlers(route) {
     
     tabWholesaleBtn?.addEventListener('click', async () => {
       switchTab(tabWholesaleBtn, tabWholesaleContent);
-      await loadWholesaleLeads();
+      const listContainer = document.getElementById('wholesale-leads-list');
+      if (!listContainer || listContainer.innerHTML.includes('Loading wholesale leads') || !listContainer.querySelector('table')) {
+        await loadWholesaleLeads();
+      }
     });
     
     tabPropertyBtn?.addEventListener('click', async () => {
       switchTab(tabPropertyBtn, tabPropertyContent);
-      await loadPropertyQuotes();
+      const listContainer = document.getElementById('property-quotes-list');
+      if (!listContainer || listContainer.innerHTML.includes('Loading requests') || !listContainer.querySelector('table')) {
+        await loadPropertyQuotes();
+      }
     });
 
-    tabContractsBtn?.addEventListener('click', async () => {
-      switchTab(tabContractsBtn, tabContractsContent);
-      await loadContractsTab();
+    // Bind manual refresh buttons
+    document.getElementById('btn-refresh-wholesale')?.addEventListener('click', async () => {
+      await loadWholesaleLeads();
+    });
+    document.getElementById('btn-refresh-property')?.addEventListener('click', async () => {
+      await loadPropertyQuotes();
     });
 
     async function loadWholesaleLeads() {
@@ -5306,6 +5209,25 @@ function bindHandlers(route) {
         if (!data || data.length === 0) {
           container.innerHTML = '<p style="color:var(--ink-mute); font-style:italic; padding:1rem; text-align:center;">No wholesale leads found in the database.</p>';
           return;
+        }
+
+        // Fetch contracts to show them inside each lead's expanded row
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        let contractsList = [];
+        try {
+          const cRes = await fetch('/api/contracts', {
+            headers: {
+              'Authorization': `Bearer ${session?.access_token || ''}`
+            }
+          });
+          if (cRes.ok) {
+            const cData = await cRes.json();
+            if (cData.success) {
+              contractsList = cData.contracts || [];
+            }
+          }
+        } catch (cErr) {
+          console.error('Error fetching contracts for wholesale leads:', cErr);
         }
         
         let html = `
@@ -5335,7 +5257,162 @@ function bindHandlers(route) {
           };
           const color = statusColors[q.status] || 'var(--ink-mute)';
           
-          const contractLink = q.access_token ? `${window.location.origin}${window.location.pathname}#/wholesale-agreement?token=${q.access_token}` : '';
+          // Filter contracts for this specific lead
+          const leadContracts = contractsList.filter(c => c.deal_id === q.id);
+          
+          // Build left column HTML (Generated Contracts)
+          let contractsListHTML = '';
+          if (leadContracts.length > 0) {
+            contractsListHTML += `
+              <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--rule-soft); padding: 1.25rem; border-radius: 4px; height: 100%; box-sizing: border-box; text-align: left;">
+                <h4 style="font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.4rem; margin-top: 0;">Generated Contracts</h4>
+                <div style="overflow-x: auto;">
+                  <table style="width:100%; font-size:0.8rem; border-collapse:collapse; text-align: left;">
+                    <thead>
+                      <tr style="border-bottom:1px solid var(--rule-soft); color:var(--ink-mute);">
+                        <th style="padding:0.4rem 0.25rem;">Type</th>
+                        <th style="padding:0.4rem 0.25rem;">State</th>
+                        <th style="padding:0.4rem 0.25rem;">Status</th>
+                        <th style="padding:0.4rem 0.25rem;">Generated</th>
+                        <th style="padding:0.4rem 0.25rem; text-align:center;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+            `;
+            leadContracts.forEach(c => {
+              const typeLabel = c.contract_type === 'purchase' ? 'Purchase' : 'Assignment';
+              const statusColors = {
+                'sent': 'var(--gold-soft)',
+                'signed': 'var(--moss)',
+                'void': 'var(--rust)'
+              };
+              const color = statusColors[c.status] || 'var(--ink-mute)';
+              const createdDate = new Date(c.created_at).toLocaleDateString();
+              const cLink = `${window.location.origin}${window.location.pathname}#/${c.contract_type === 'purchase' ? 'wholesale-agreement' : 'assignment'}?token=${c.secure_token}`;
+              
+              contractsListHTML += `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                  <td style="padding:0.4rem 0.25rem;"><strong>${typeLabel}</strong></td>
+                  <td style="padding:0.4rem 0.25rem; font-family:var(--mono);">${c.state}</td>
+                  <td style="padding:0.4rem 0.25rem;"><span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.75rem;">${c.status}</span></td>
+                  <td style="padding:0.4rem 0.25rem;">${createdDate}</td>
+                  <td style="padding:0.4rem 0.25rem; text-align:center;">
+                    <div style="display:inline-flex; gap:0.25rem; justify-content:center; align-items:center;">
+                      <a href="${cLink}" target="_blank" class="btn btn--small btn--ghost" style="padding:0.15rem 0.4rem; font-size:0.7rem; text-decoration:none;">Preview</a>
+                      <button type="button" class="btn btn--small btn--ghost btn-copy-contract-link" data-link="${cLink}" style="padding:0.15rem 0.4rem; font-size:0.7rem;">Copy</button>
+                      ${c.status !== 'void' ? `<button type="button" class="btn btn--small btn--ghost btn-void-contract" data-id="${c.id}" style="padding:0.15rem 0.4rem; font-size:0.7rem; color:var(--rust); border-color:var(--rust);">Void</button>` : ''}
+                    </div>
+                  </td>
+                </tr>
+              `;
+            });
+            contractsListHTML += `
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `;
+          } else {
+            contractsListHTML += `
+              <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--rule-soft); padding: 1.5rem; border-radius: 4px; color:var(--ink-mute); font-style:italic; font-size:0.85rem; text-align:center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 150px; box-sizing: border-box; text-align: left;">
+                <h4 style="font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.4rem; margin-top: 0; width: 100%; text-align: left; font-style: normal;">Generated Contracts</h4>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                  No contracts generated for this lead yet.
+                </div>
+              </div>
+            `;
+          }
+
+          // Build right column HTML (Generate New Contract Form)
+          const contractFormHTML = `
+            <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--rule-soft); padding: 1.25rem; border-radius: 4px; box-sizing: border-box; text-align: left;">
+              <h4 style="font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.4rem; margin-top: 0;">Generate New Contract</h4>
+              <form class="inline-generate-contract-form" data-deal-id="${q.id}" style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                <div class="field" style="margin:0; grid-column: span 2;">
+                  <label style="font-size:0.7rem;">Contract Type</label>
+                  <select class="igc-type" required style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;">
+                    <option value="purchase">Purchase Agreement (Seller ↔ Vorvo)</option>
+                    <option value="assignment">Assignment Agreement (Vorvo ↔ Cash Buyer)</option>
+                  </select>
+                </div>
+                <div class="field" style="margin:0;">
+                  <label style="font-size:0.7rem;">Governing State</label>
+                  <select class="igc-state" required style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;">
+                    <option value="TX" ${q.governing_state === 'TX' ? 'selected' : ''}>Texas (TX)</option>
+                    <option value="FL" ${q.governing_state === 'FL' ? 'selected' : ''}>Florida (FL)</option>
+                    <option value="GA" ${q.governing_state === 'GA' ? 'selected' : ''}>Georgia (GA)</option>
+                    <option value="AZ" ${q.governing_state === 'AZ' ? 'selected' : ''}>Arizona (AZ)</option>
+                    <option value="OH" ${q.governing_state === 'OH' ? 'selected' : ''}>Ohio (OH)</option>
+                    <option value="NC" ${q.governing_state === 'NC' ? 'selected' : ''}>North Carolina (NC)</option>
+                    <option value="TN" ${q.governing_state === 'TN' ? 'selected' : ''}>Tennessee (TN)</option>
+                    <option value="MO" ${q.governing_state === 'MO' ? 'selected' : ''}>Missouri (MO)</option>
+                    <option value="OK" ${q.governing_state === 'OK' ? 'selected' : ''}>Oklahoma (OK)</option>
+                    <option value="Other" ${q.governing_state === 'Other' ? 'selected' : ''}>Other State</option>
+                  </select>
+                </div>
+                <div class="field" style="margin:0;">
+                  <label style="font-size:0.7rem;">Purchase Price ($)</label>
+                  <input type="number" class="igc-purchase-price" required step="0.01" value="${q.offer_amount || q.asking_price || ''}" placeholder="e.g. 150000.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                <div class="field" style="margin:0;">
+                  <label style="font-size:0.7rem;">Earnest Money ($)</label>
+                  <input type="number" class="igc-earnest-money" required step="0.01" value="${q.deposit_amount || ''}" placeholder="e.g. 1000.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                <div class="field field-igc-assignment-fee" style="margin:0; display:none;">
+                  <label style="font-size:0.7rem;">Assignment Fee ($)</label>
+                  <input type="number" class="igc-assignment-fee" step="0.01" placeholder="e.g. 10000.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                <div class="field" style="margin:0;">
+                  <label style="font-size:0.7rem;">Closing Date</label>
+                  <input type="date" class="igc-closing-date" required style="width:100%; padding:0.35rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                <div class="field field-igc-contract-date" style="margin:0; display:none;">
+                  <label style="font-size:0.7rem;">Original Contract Date</label>
+                  <input type="date" class="igc-contract-date" style="width:100%; padding:0.35rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                <div class="field" style="margin:0;">
+                  <label style="font-size:0.7rem;">Inspection Period (Days)</label>
+                  <input type="number" class="igc-inspection-period" value="15" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                <div class="field" style="margin:0; grid-column:span 2;">
+                  <label style="font-size:0.7rem;">Custom Contract Terms</label>
+                  <input type="text" class="igc-terms" value="${q.contract_terms || ''}" placeholder="e.g., Subject to 15-day inspection." style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                
+                <!-- Cash Buyer Fields (Hidden by default, shown for Assignment) -->
+                <div class="igc-buyer-fields" style="display:none; grid-column:span 2; grid-template-columns:1fr 1fr; gap:0.75rem; border-top:1px solid var(--rule-soft); padding-top:0.75rem; margin-top:0.25rem;">
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.7rem;">Cash Buyer Name</label>
+                    <input type="text" class="igc-buyer-name" placeholder="e.g. John Doe" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.7rem;">Cash Buyer Entity</label>
+                    <input type="text" class="igc-buyer-entity" placeholder="e.g. JD Holdings LLC" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.7rem;">Cash Buyer Email</label>
+                    <input type="email" class="igc-buyer-email" placeholder="e.g. john@email.com" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.7rem;">Cash Buyer Phone</label>
+                    <input type="tel" class="igc-buyer-phone" placeholder="e.g. 555-0199" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0; grid-column:span 2;">
+                    <label style="font-size:0.7rem;">Cash Buyer Address</label>
+                    <input type="text" class="igc-buyer-address" placeholder="e.g. 123 Main St, Houston, TX 77002" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0; grid-column:span 2;">
+                    <label style="font-size:0.7rem;">Proof of Funds URL</label>
+                    <input type="url" class="igc-buyer-pof" placeholder="e.g. https://dropbox.com/... (optional)" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                </div>
+                
+                <div style="grid-column:1/-1; display:flex; justify-content:flex-end; margin-top:0.5rem;">
+                  <button type="submit" class="btn btn--small btn--gold" style="padding:0.4rem 1rem; font-size:0.8rem;">Generate Contract</button>
+                </div>
+              </form>
+            </div>
+          `;
           
           html += `
             <tr style="border-bottom:1px solid var(--rule-soft);">
@@ -5403,26 +5480,9 @@ function bindHandlers(route) {
                     <input type="text" class="ew-notes" value="${q.internal_notes || ''}" placeholder="e.g., Investor match: John Doe. Target margin: 15%." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
                   </div>
                   
-                  <div style="grid-column: span 3; padding: 1rem; background: var(--paper); border: 1px solid var(--rule-soft); margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.5; color: var(--ink-soft); border-radius:3px;">
-                    <strong>Seller Contract &amp; Signature Status:</strong><br>
-                    • <strong>Contract Signed:</strong> ${q.signed_at ? `<span style="color:var(--moss); font-weight:bold;">Signed by ${esc(q.signer_name)} on ${new Date(q.signed_at).toLocaleString()}</span>` : '<span style="color:var(--rust);">Awaiting Signature</span>'}<br>
-                    ${q.signature_data ? `
-                      <div style="margin-top:0.75rem;">
-                        <strong>Signature:</strong><br>
-                        <img src="${q.signature_data}" style="border:1px solid var(--rule-soft); background:#fff; height:50px; display:block; margin-top:0.25rem;" />
-                      </div>
-                    ` : ''}
-                    <div style="margin-top:1rem; border-top:1px solid var(--rule-soft); padding-top:1rem;">
-                      <strong>Seller Contract Link:</strong><br>
-                      ${contractLink ? `
-                        <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem;">
-                          <input type="text" readonly value="${contractLink}" style="flex:1; padding:0.4rem; font-family:var(--mono); font-size:0.75rem; background:var(--paper-deep); border:1px solid var(--rule-soft); color:var(--gold-soft);" />
-                          <button type="button" class="btn btn--small btn--ghost btn-copy-wholesale-link" data-link="${contractLink}" style="padding:0.4rem 0.8rem; font-size:0.75rem; white-space:nowrap;">Copy Link</button>
-                        </div>
-                      ` : `
-                        <button type="button" class="btn btn--small btn--gold btn-generate-wholesale-contract" data-id="${q.id}" style="margin-top:0.5rem; font-size:0.75rem; padding:0.4rem 0.8rem;">Generate Contract Link</button>
-                      `}
-                    </div>
+                  <div style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; border-top: 1px solid var(--rule-soft); padding-top: 1.5rem; text-align: left;">
+                    ${contractsListHTML}
+                    ${contractFormHTML}
                   </div>
                   
                   <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 3; margin-top:0.5rem;">
@@ -5438,6 +5498,12 @@ function bindHandlers(route) {
         html += '</tbody></table>';
         container.innerHTML = html;
         
+        // Re-expand previously open row if any
+        if (App.state.expandedWholesaleId) {
+          const editRow = document.getElementById(`edit-wholesale-row-${App.state.expandedWholesaleId}`);
+          if (editRow) editRow.style.display = 'table-row';
+        }
+        
         // Bind inline edit handlers
         container.querySelectorAll('.btn-edit-wholesale').forEach(btn => {
           btn.addEventListener('click', (e) => {
@@ -5448,7 +5514,9 @@ function bindHandlers(route) {
               container.querySelectorAll('.edit-wholesale-row').forEach(row => {
                 if (row.id !== `edit-wholesale-row-${id}`) row.style.display = 'none';
               });
-              editRow.style.display = editRow.style.display === 'none' ? 'table-row' : 'none';
+              const isShowing = editRow.style.display === 'table-row';
+              editRow.style.display = isShowing ? 'none' : 'table-row';
+              App.state.expandedWholesaleId = isShowing ? null : id;
             }
           });
         });
@@ -5458,11 +5526,12 @@ function bindHandlers(route) {
             const id = e.currentTarget.getAttribute('data-id');
             const editRow = document.getElementById(`edit-wholesale-row-${id}`);
             if (editRow) editRow.style.display = 'none';
+            App.state.expandedWholesaleId = null;
           });
         });
 
         // Bind copy link handlers
-        container.querySelectorAll('.btn-copy-wholesale-link').forEach(btn => {
+        container.querySelectorAll('.btn-copy-contract-link').forEach(btn => {
           btn.addEventListener('click', (e) => {
             const link = e.currentTarget.getAttribute('data-link');
             navigator.clipboard.writeText(link);
@@ -5472,31 +5541,146 @@ function bindHandlers(route) {
           });
         });
 
-        // Bind contract generation handler
-        container.querySelectorAll('.btn-generate-wholesale-contract').forEach(btn => {
+        // Bind void contract handlers
+        container.querySelectorAll('.btn-void-contract').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            e.currentTarget.disabled = true;
-            e.currentTarget.textContent = 'Generating...';
+            if (!confirm('Are you sure you want to VOID this contract? This will permanently disable the signature link.')) return;
             
-            const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            e.currentTarget.disabled = true;
+            e.currentTarget.textContent = 'Voiding...';
             
             try {
-              const { error } = await supabaseClient
-                .from('wholesale_leads')
-                .update({ access_token: token })
-                .eq('id', id);
-                
-              if (error) throw error;
-              alert('Contract link generated successfully!');
+              const { data: { session } } = await supabaseClient.auth.getSession();
+              const voidRes = await fetch(`/api/contracts/void`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${session?.access_token || ''}`
+                },
+                body: JSON.stringify({ contractId: id })
+              });
+              
+              if (!voidRes.ok) throw new Error('Failed to void contract');
+              alert('Contract voided successfully!');
+              
+              // Save expanded state
+              const row = e.currentTarget.closest('.edit-wholesale-row');
+              if (row) {
+                const dealId = row.id.replace('edit-wholesale-row-', '');
+                App.state.expandedWholesaleId = dealId;
+              }
+              
               await loadWholesaleLeads();
             } catch (err) {
-              console.error('Error generating contract token:', err);
-              alert('Failed to generate contract link: ' + err.message);
+              alert('Error voiding contract: ' + err.message);
               e.currentTarget.disabled = false;
-              e.currentTarget.textContent = 'Generate Contract Link';
+              e.currentTarget.textContent = 'Void';
             }
           });
+        });
+
+        // Setup inline contract form toggles and submission
+        container.querySelectorAll('.inline-generate-contract-form').forEach(form => {
+          const typeSelect = form.querySelector('.igc-type');
+          const buyerFields = form.querySelector('.igc-buyer-fields');
+          const feeField = form.querySelector('.field-igc-assignment-fee');
+          const contractDateField = form.querySelector('.field-igc-contract-date');
+          
+          const toggle = () => {
+            const type = typeSelect.value;
+            if (type === 'assignment') {
+              buyerFields.style.display = 'grid';
+              feeField.style.display = 'block';
+              contractDateField.style.display = 'block';
+              form.querySelector('.igc-buyer-name').required = true;
+              form.querySelector('.igc-buyer-email').required = true;
+              form.querySelector('.igc-buyer-phone').required = true;
+              form.querySelector('.igc-buyer-address').required = true;
+            } else {
+              buyerFields.style.display = 'none';
+              feeField.style.display = 'none';
+              contractDateField.style.display = 'none';
+              form.querySelector('.igc-buyer-name').required = false;
+              form.querySelector('.igc-buyer-email').required = false;
+              form.querySelector('.igc-buyer-phone').required = false;
+              form.querySelector('.igc-buyer-address').required = false;
+            }
+          };
+          
+          typeSelect.addEventListener('change', toggle);
+          toggle();
+          
+          form.onsubmit = async (e) => {
+            e.preventDefault();
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Generating...';
+            
+            const dealId = form.getAttribute('data-deal-id');
+            const contractType = typeSelect.value;
+            const state = form.querySelector('.igc-state').value;
+            const purchasePrice = parseFloat(form.querySelector('.igc-purchase-price').value);
+            const earnestMoney = parseFloat(form.querySelector('.igc-earnest-money').value);
+            const assignmentFee = parseFloat(form.querySelector('.igc-assignment-fee').value) || null;
+            const closingDate = form.querySelector('.igc-closing-date').value;
+            const originalContractDate = form.querySelector('.igc-contract-date').value || null;
+            const inspectionPeriod = parseInt(form.querySelector('.igc-inspection-period').value) || 15;
+            const contractTerms = form.querySelector('.igc-terms').value.trim();
+            
+            const dealData = {
+              purchase_price: purchasePrice,
+              earnest_money: earnestMoney,
+              assignment_fee: assignmentFee,
+              closing_date: closingDate,
+              original_contract_date: originalContractDate,
+              inspection_period: inspectionPeriod,
+              contract_terms: contractTerms
+            };
+            
+            let buyerInfo = null;
+            if (contractType === 'assignment') {
+              buyerInfo = {
+                legal_name: form.querySelector('.igc-buyer-name').value.trim(),
+                entity_name: form.querySelector('.igc-buyer-entity').value.trim() || null,
+                email: form.querySelector('.igc-buyer-email').value.trim(),
+                phone: form.querySelector('.igc-buyer-phone').value.trim(),
+                mailing_address: form.querySelector('.igc-buyer-address').value.trim(),
+                proof_of_funds_url: form.querySelector('.igc-buyer-pof').value.trim() || null
+              };
+            }
+            
+            try {
+              const { data: { session } } = await supabaseClient.auth.getSession();
+              const createRes = await fetch('/api/contracts', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${session?.access_token || ''}`
+                },
+                body: JSON.stringify({
+                  dealId,
+                  contractType,
+                  state,
+                  dealData,
+                  buyerInfo
+                })
+              });
+              
+              const result = await createRes.json();
+              if (!createRes.ok) throw new Error(result.error || 'Failed to generate contract');
+              
+              alert('Contract generated and link created successfully!');
+              App.state.expandedWholesaleId = dealId;
+              await loadWholesaleLeads();
+            } catch (err) {
+              console.error('Error generating contract:', err);
+              alert('Failed to generate contract: ' + err.message);
+            } finally {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Generate Contract';
+            }
+          };
         });
         
         container.querySelectorAll('.edit-wholesale-form').forEach(form => {
@@ -5532,6 +5716,7 @@ function bindHandlers(route) {
                 .eq('id', id);
                 
               if (error) throw error;
+              App.state.expandedWholesaleId = id;
               await loadWholesaleLeads();
               alert('Changes saved successfully!');
             } catch (err) {
@@ -5546,259 +5731,6 @@ function bindHandlers(route) {
       } catch (err) {
         console.error('Error loading wholesale leads:', err);
         container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load requests</strong><br>${esc(err.message)}</div>`;
-      }
-    }
-
-    async function loadContractsTab() {
-      const dealSelect = document.getElementById('gc-deal-id');
-      const typeSelect = document.getElementById('gc-type');
-      const buyerFields = document.getElementById('gc-buyer-fields');
-      const fieldAssignmentFee = document.getElementById('field-gc-assignment-fee');
-      const fieldContractDate = document.getElementById('field-gc-contract-date');
-      const form = document.getElementById('generate-contract-form');
-      const listContainer = document.getElementById('contracts-list');
-      
-      if (!listContainer) return;
-      listContainer.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading contracts from database...</div>';
-
-      // 1. Setup Form Toggles
-      const toggleFields = () => {
-        const type = typeSelect.value;
-        if (type === 'assignment') {
-          buyerFields.style.display = 'grid';
-          fieldAssignmentFee.style.display = 'block';
-          fieldContractDate.style.display = 'block';
-          document.getElementById('gc-buyer-name').required = true;
-          document.getElementById('gc-buyer-email').required = true;
-          document.getElementById('gc-buyer-phone').required = true;
-          document.getElementById('gc-buyer-address').required = true;
-        } else {
-          buyerFields.style.display = 'none';
-          fieldAssignmentFee.style.display = 'none';
-          fieldContractDate.style.display = 'none';
-          document.getElementById('gc-buyer-name').required = false;
-          document.getElementById('gc-buyer-email').required = false;
-          document.getElementById('gc-buyer-phone').required = false;
-          document.getElementById('gc-buyer-address').required = false;
-        }
-      };
-      typeSelect?.addEventListener('change', toggleFields);
-      toggleFields();
-
-      try {
-        // 2. Load Leads for Dropdown
-        const { data: leads, error: leadsErr } = await supabaseClient
-          .from('wholesale_leads')
-          .select('id, tracking_id, full_name, property_address, offer_amount, deposit_amount, contract_terms, governing_state')
-          .order('created_at', { ascending: false });
-          
-        if (leadsErr) throw leadsErr;
-        
-        if (dealSelect) {
-          dealSelect.innerHTML = '<option value="">-- Select a Lead --</option>';
-          leads.forEach(l => {
-            dealSelect.innerHTML += `<option value="${l.id}">${esc(l.tracking_id)} - ${esc(l.full_name)} (${esc(l.property_address)})</option>`;
-          });
-          
-          dealSelect.addEventListener('change', (e) => {
-            const selectedId = e.target.value;
-            const lead = leads.find(l => l.id === selectedId);
-            if (lead) {
-              document.getElementById('gc-purchase-price').value = lead.offer_amount || '';
-              document.getElementById('gc-earnest-money').value = lead.deposit_amount || '';
-              document.getElementById('gc-terms').value = lead.contract_terms || '';
-              document.getElementById('gc-state').value = lead.governing_state || 'TX';
-            }
-          });
-        }
-
-        // 3. Load Contracts List
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        const res = await fetch('/api/contracts', {
-          headers: {
-            'Authorization': `Bearer ${session?.access_token || ''}`
-          }
-        });
-        
-        if (!res.ok) throw new Error('Failed to load contracts from API');
-        const result = await res.json();
-        
-        if (!result.success || !result.contracts || result.contracts.length === 0) {
-          listContainer.innerHTML = '<p style="color:var(--ink-mute); font-style:italic; padding:1rem; text-align:center;">No contracts found in the database.</p>';
-        } else {
-          let html = `
-            <table class="agreement-table admin-table" style="width:100%; font-size:0.9rem; border-collapse:collapse; margin-top:1rem;">
-              <thead>
-                <tr style="background:var(--ink); color:var(--paper); text-align:left;">
-                  <th style="padding:0.75rem;">Deal Ref</th>
-                  <th style="padding:0.75rem;">Contract Type</th>
-                  <th style="padding:0.75rem;">State</th>
-                  <th style="padding:0.75rem;">Status</th>
-                  <th style="padding:0.75rem;">Date Generated</th>
-                  <th style="padding:0.75rem;">Signed Date</th>
-                  <th style="padding:0.75rem; text-align:center;">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-          
-          result.contracts.forEach(c => {
-            const lead = c.wholesale_leads || {};
-            const typeLabel = c.contract_type === 'purchase' ? 'Purchase Agreement' : 'Assignment Agreement';
-            const statusColors = {
-              'sent': 'var(--gold-soft)',
-              'signed': 'var(--moss)',
-              'void': 'var(--rust)'
-            };
-            const color = statusColors[c.status] || 'var(--ink-mute)';
-            const createdDate = new Date(c.created_at).toLocaleDateString();
-            const signedDate = c.signed_at ? new Date(c.signed_at).toLocaleDateString() : '—';
-            
-            const contractLink = `${window.location.origin}${window.location.pathname}#/${c.contract_type === 'purchase' ? 'wholesale-agreement' : 'assignment'}?token=${c.secure_token}`;
-            
-            html += `
-              <tr style="border-bottom:1px solid var(--rule-soft);">
-                <td style="padding:0.75rem;">
-                  <span style="font-family:var(--mono); font-weight:bold;">${esc(lead.tracking_id || '—')}</span><br/>
-                  <small style="color:var(--ink-mute);">${esc(lead.full_name || '—')}</small>
-                </td>
-                <td style="padding:0.75rem;"><strong>${typeLabel}</strong></td>
-                <td style="padding:0.75rem; font-family:var(--mono);">${c.state}</td>
-                <td style="padding:0.75rem;"><span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${c.status}</span></td>
-                <td style="padding:0.75rem;">${createdDate}</td>
-                <td style="padding:0.75rem;">${signedDate}</td>
-                <td style="padding:0.75rem; text-align:center; display:flex; gap:0.5rem; justify-content:center; align-items:center;">
-                  <a href="${contractLink}" target="_blank" class="btn btn--small btn--ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem; text-decoration:none;">Preview</a>
-                  <button class="btn btn--small btn--ghost btn-copy-contract-link" data-link="${contractLink}" style="padding:0.25rem 0.6rem; font-size:0.75rem;">Copy Link</button>
-                  ${c.status !== 'void' ? `<button class="btn btn--small btn--ghost btn-void-contract" data-id="${c.id}" style="padding:0.25rem 0.6rem; font-size:0.75rem; color:var(--rust); border-color:var(--rust);">Void</button>` : ''}
-                </td>
-              </tr>
-            `;
-          });
-          
-          html += '</tbody></table>';
-          listContainer.innerHTML = html;
-          
-          // Copy link handlers
-          listContainer.querySelectorAll('.btn-copy-contract-link').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              const link = e.currentTarget.getAttribute('data-link');
-              navigator.clipboard.writeText(link);
-              const origText = e.currentTarget.textContent;
-              e.currentTarget.textContent = 'Copied!';
-              setTimeout(() => e.currentTarget.textContent = origText, 1500);
-            });
-          });
-          
-          // Void contract handlers
-          listContainer.querySelectorAll('.btn-void-contract').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-              const id = e.currentTarget.getAttribute('data-id');
-              if (!confirm('Are you sure you want to VOID this contract? This will permanently disable the signature link.')) return;
-              
-              e.currentTarget.disabled = true;
-              e.currentTarget.textContent = 'Voiding...';
-              
-              try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                const voidRes = await fetch(`/api/contracts/void`, {
-                  method: 'PATCH',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session?.access_token || ''}`
-                  },
-                  body: JSON.stringify({ contractId: id })
-                });
-                
-                if (!voidRes.ok) throw new Error('Failed to void contract');
-                alert('Contract voided successfully!');
-                await loadContractsTab();
-              } catch (err) {
-                alert('Error voiding contract: ' + err.message);
-                e.currentTarget.disabled = false;
-                e.currentTarget.textContent = 'Void';
-              }
-            });
-          });
-        }
-      } catch (err) {
-        console.error('Error loading contracts tab:', err);
-        listContainer.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load contracts</strong><br>${esc(err.message)}</div>`;
-      }
-
-      // 4. Handle Form Submit
-      if (form) {
-        form.onsubmit = async (e) => {
-          e.preventDefault();
-          const submitBtn = form.querySelector('button[type="submit"]');
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'Generating...';
-          
-          const dealId = document.getElementById('gc-deal-id').value;
-          const contractType = document.getElementById('gc-type').value;
-          const state = document.getElementById('gc-state').value;
-          const purchasePrice = parseFloat(document.getElementById('gc-purchase-price').value);
-          const earnestMoney = parseFloat(document.getElementById('gc-earnest-money').value);
-          const assignmentFee = parseFloat(document.getElementById('gc-assignment-fee').value) || null;
-          const closingDate = document.getElementById('gc-closing-date').value;
-          const originalContractDate = document.getElementById('gc-contract-date').value || null;
-          const inspectionPeriod = parseInt(document.getElementById('gc-inspection-period').value) || 15;
-          const contractTerms = document.getElementById('gc-terms').value.trim();
-          
-          const dealData = {
-            purchase_price: purchasePrice,
-            earnest_money: earnestMoney,
-            assignment_fee: assignmentFee,
-            closing_date: closingDate,
-            original_contract_date: originalContractDate,
-            inspection_period: inspectionPeriod,
-            contract_terms: contractTerms
-          };
-          
-          let buyerInfo = null;
-          if (contractType === 'assignment') {
-            buyerInfo = {
-              legal_name: document.getElementById('gc-buyer-name').value.trim(),
-              entity_name: document.getElementById('gc-buyer-entity').value.trim() || null,
-              email: document.getElementById('gc-buyer-email').value.trim(),
-              phone: document.getElementById('gc-buyer-phone').value.trim(),
-              mailing_address: document.getElementById('gc-buyer-address').value.trim(),
-              proof_of_funds_url: document.getElementById('gc-buyer-pof').value.trim() || null
-            };
-          }
-          
-          try {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            const createRes = await fetch('/api/contracts', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session?.access_token || ''}`
-              },
-              body: JSON.stringify({
-                dealId,
-                contractType,
-                state,
-                dealData,
-                buyerInfo
-              })
-            });
-            
-            const result = await createRes.json();
-            if (!createRes.ok) throw new Error(result.error || 'Failed to generate contract');
-            
-            alert('Contract generated and link created successfully!');
-            form.reset();
-            toggleFields();
-            await loadContractsTab();
-          } catch (err) {
-            console.error('Error generating contract:', err);
-            alert('Failed to generate contract: ' + err.message);
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Generate & Send Contract Link';
-          }
-        };
       }
     }
 
