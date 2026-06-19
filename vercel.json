@@ -15,6 +15,64 @@
     "api/contracts.js": {
       "memory": 512,
       "maxDuration": 30
+    },
+    "api/capture-payment.js": {
+      "memory": 256,
+      "maxDuration": 30
+    },
+    "api/refund-payment.js": {
+      "memory": 256,
+      "maxDuration": 30
+    },
+    "api/send-sms.js": {
+      "memory": 256,
+      "maxDuration": 30
+    },
+    "api/admin/analytics.js": {
+      "memory": 512,
+      "maxDuration": 60
+    },
+    "api/admin/export.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "api/webhooks/stripe.js": {
+      "memory": 256,
+      "maxDuration": 30
+    },
+    "api/cron/payment-reminders.js": {
+      "memory": 512,
+      "maxDuration": 300
+    },
+    "api/cron/quote-expiration.js": {
+      "memory": 512,
+      "maxDuration": 300
+    },
+    "api/cron/status-updates.js": {
+      "memory": 512,
+      "maxDuration": 300
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/payment-reminders",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/quote-expiration",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/status-updates",
+      "schedule": "0 8 * * *"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, must-revalidate" }
+      ]
+    }
+  ]
 }
