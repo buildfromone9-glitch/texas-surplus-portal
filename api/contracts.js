@@ -401,6 +401,29 @@ export default async function handler(req) {
 
       const contract = contracts[0];
 
+      // Load signer info if signed
+      if (contract.status === 'signed') {
+        const signerRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/contract_signers?contract_id=eq.${contract.id}&select=*`,
+          {
+            headers: {
+              'apikey': SERVICE_ROLE_KEY,
+              'Authorization': `Bearer ${SERVICE_ROLE_KEY}`
+            }
+          }
+        );
+        if (signerRes.ok) {
+          const signers = await signerRes.json();
+          if (signers && signers.length > 0) {
+            const signer = signers[0];
+            contract.signer_name = signer.signer_name;
+            contract.signature_data = signer.signature_data;
+            contract.ip_address = signer.ip_address;
+            contract.user_agent = signer.user_agent;
+          }
+        }
+      }
+
       // Load associated lead
       const leadRes = await fetch(
         `${SUPABASE_URL}/rest/v1/wholesale_leads?id=eq.${contract.deal_id}&select=*`,
@@ -481,11 +504,7 @@ export default async function handler(req) {
       // Update contract status
       const contractUpdatePayload = {
         status: 'signed',
-        signed_at: signedAt,
-        signer_name: signerName,
-        signature_data: signatureData,
-        ip_address: ipAddress || 'unknown',
-        user_agent: userAgent || 'unknown'
+        signed_at: signedAt
       };
 
       if (buyerInfo) {
@@ -493,7 +512,14 @@ export default async function handler(req) {
       }
 
       // Regenerate and save the updated contract HTML with signature populated!
-      const finalContract = { ...contract, ...contractUpdatePayload };
+      const finalContract = { 
+        ...contract, 
+        ...contractUpdatePayload,
+        signer_name: signerName,
+        signature_data: signatureData,
+        ip_address: ipAddress || 'unknown',
+        user_agent: userAgent || 'unknown'
+      };
       const finalLead = { ...lead };
       contractUpdatePayload.generated_html = generateContractHTML(finalContract, finalLead);
 
