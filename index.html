@@ -5360,9 +5360,13 @@ function bindHandlers(route) {
                     <option value="Other" ${q.governing_state === 'Other' ? 'selected' : ''}>Other State</option>
                   </select>
                 </div>
-                <div class="field" style="margin:0;">
+                <div class="field field-igc-purchase-price" style="margin:0;">
                   <label style="font-size:0.7rem;">Purchase Price ($)</label>
                   <input type="number" class="igc-purchase-price" required step="0.01" value="${q.offer_amount || q.asking_price || ''}" placeholder="e.g. 150000.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                </div>
+                <div class="field field-igc-total-price" style="margin:0; display:none;">
+                  <label style="font-size:0.7rem;">Total Acquisition Price ($)</label>
+                  <input type="number" class="igc-total-price" step="0.01" value="${q.offer_amount || ''}" placeholder="e.g. 225000.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
                 </div>
                 <div class="field" style="margin:0;">
                   <label style="font-size:0.7rem;">Earnest Money ($)</label>
@@ -5370,11 +5374,11 @@ function bindHandlers(route) {
                 </div>
                 <div class="field field-igc-assignment-fee" style="margin:0; display:none;">
                   <label style="font-size:0.7rem;">Assignment Fee ($)</label>
-                  <input type="number" class="igc-assignment-fee" step="0.01" placeholder="e.g. 10000.00" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  <input type="number" class="igc-assignment-fee" readonly step="0.01" value="${(q.offer_amount && q.asking_price) ? Math.max(0, q.offer_amount - q.asking_price) : ''}" placeholder="Auto-calculated" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper-deep); color:var(--gold-soft); font-size:0.8rem; font-weight:bold;" />
                 </div>
                 <div class="field" style="margin:0;">
                   <label style="font-size:0.7rem;">Closing Date</label>
-                  <input type="date" class="igc-closing-date" required style="width:100%; padding:0.35rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  <input type="date" class="igc-closing-date" required value="${q.closing_date || ''}" style="width:100%; padding:0.35rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
                 </div>
                 <div class="field field-igc-contract-date" style="margin:0; display:none;">
                   <label style="font-size:0.7rem;">Original Contract Date</label>
@@ -5481,6 +5485,10 @@ function bindHandlers(route) {
                     <label style="font-size:0.75rem;">Earnest Deposit ($)</label>
                     <input type="number" class="ew-deposit" step="0.01" value="${q.deposit_amount || ''}" placeholder="e.g., 1000.00" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
                   </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.75rem;">Closing Date</label>
+                    <input type="date" class="ew-closing-date" value="${q.closing_date || ''}" style="width:100%; padding:0.45rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink);" />
+                  </div>
                   <div class="field" style="margin:0; grid-column: span 2;">
                     <label style="font-size:0.75rem;">Custom Contract Terms</label>
                     <input type="text" class="ew-terms" value="${q.contract_terms || ''}" placeholder="e.g., Subject to 15-day inspection. Closing on or before June 30." style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
@@ -5560,7 +5568,7 @@ function bindHandlers(route) {
             
             try {
               const { data: { session } } = await supabaseClient.auth.getSession();
-              const voidRes = await fetch(`/api/contracts/void`, {
+              const voidRes = await fetch(`/api/contracts?action=void`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
@@ -5594,21 +5602,42 @@ function bindHandlers(route) {
           const buyerFields = form.querySelector('.igc-buyer-fields');
           const feeField = form.querySelector('.field-igc-assignment-fee');
           const contractDateField = form.querySelector('.field-igc-contract-date');
+          const totalPriceField = form.querySelector('.field-igc-total-price');
+          
+          const purchasePriceInput = form.querySelector('.igc-purchase-price');
+          const totalPriceInput = form.querySelector('.igc-total-price');
+          const assignmentFeeInput = form.querySelector('.igc-assignment-fee');
+          
+          const updateAssignmentFee = () => {
+            const originalPrice = parseFloat(purchasePriceInput.value) || 0;
+            const totalAcquisition = parseFloat(totalPriceInput.value) || 0;
+            if (assignmentFeeInput) {
+              assignmentFeeInput.value = Math.max(0, totalAcquisition - originalPrice).toFixed(2);
+            }
+          };
+          
+          purchasePriceInput?.addEventListener('input', updateAssignmentFee);
+          totalPriceInput?.addEventListener('input', updateAssignmentFee);
           
           const toggle = () => {
             const type = typeSelect.value;
-            const purchasePriceInput = form.querySelector('.igc-purchase-price');
-            const earnestMoneyInput = form.querySelector('.igc-earnest-money');
             const purchasePriceLabel = purchasePriceInput ? purchasePriceInput.previousElementSibling : null;
+            const earnestMoneyInput = form.querySelector('.igc-earnest-money');
             const earnestMoneyLabel = earnestMoneyInput ? earnestMoneyInput.previousElementSibling : null;
 
             if (type === 'assignment') {
               buyerFields.style.display = 'grid';
               feeField.style.display = 'block';
               contractDateField.style.display = 'block';
+              if (totalPriceField) totalPriceField.style.display = 'block';
               
               if (purchasePriceLabel) purchasePriceLabel.textContent = 'Original Purchase Price ($)';
               if (earnestMoneyLabel) earnestMoneyLabel.textContent = 'Earnest Deposit ($)';
+              
+              // Pre-fill fields for assignment
+              if (purchasePriceInput) purchasePriceInput.value = q.asking_price || '';
+              if (totalPriceInput) totalPriceInput.value = q.offer_amount || '';
+              updateAssignmentFee();
               
               form.querySelector('.igc-buyer-name').required = true;
               form.querySelector('.igc-buyer-email').required = true;
@@ -5618,9 +5647,13 @@ function bindHandlers(route) {
               buyerFields.style.display = 'none';
               feeField.style.display = 'none';
               contractDateField.style.display = 'none';
+              if (totalPriceField) totalPriceField.style.display = 'none';
               
               if (purchasePriceLabel) purchasePriceLabel.textContent = 'Purchase Price ($)';
               if (earnestMoneyLabel) earnestMoneyLabel.textContent = 'Earnest Money ($)';
+              
+              // Reset fields for purchase
+              if (purchasePriceInput) purchasePriceInput.value = q.offer_amount || q.asking_price || '';
               
               form.querySelector('.igc-buyer-name').required = false;
               form.querySelector('.igc-buyer-email').required = false;
@@ -5720,6 +5753,7 @@ function bindHandlers(route) {
             const estimatedValue = parseFloat(formDiv.querySelector('.ew-value').value) || null;
             const offerAmount = parseFloat(formDiv.querySelector('.ew-offer').value) || null;
             const depositAmount = parseFloat(formDiv.querySelector('.ew-deposit').value) || null;
+            const closingDate = formDiv.querySelector('.ew-closing-date').value || null;
             const contractTerms = formDiv.querySelector('.ew-terms').value.trim() || null;
             const internalNotes = formDiv.querySelector('.ew-notes').value.trim() || null;
             
@@ -5733,6 +5767,7 @@ function bindHandlers(route) {
                   estimated_value: estimatedValue,
                   offer_amount: offerAmount,
                   deposit_amount: depositAmount,
+                  closing_date: closingDate,
                   contract_terms: contractTerms,
                   internal_notes: internalNotes
                 })
@@ -6755,7 +6790,7 @@ function setupWholesaleSignSubmit() {
     if (App.state.contract) {
       // Use the new contracts API
       try {
-        const res = await fetch('/api/contracts/sign', {
+        const res = await fetch('/api/contracts?action=sign', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -7174,7 +7209,7 @@ function setupAssignmentSignSubmit() {
     };
 
     try {
-      const res = await fetch('/api/contracts/sign', {
+      const res = await fetch('/api/contracts?action=sign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -95,7 +95,8 @@ function generateContractHTML(contract, lead) {
 <meta charset="UTF-8"/>
 <style>
   body { font-family: Georgia, serif; color: #111111; line-height: 1.6; margin: 0; padding: 40px; background: #ffffff; }
-  .contract-container { max-width: 800px; margin: 0 auto; }
+  .contract-container { max-width: 800px; margin: 0 auto; color: #111111 !important; }
+  .contract-container, .contract-container * { color: #111111 !important; }
   .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #111111; padding-bottom: 20px; }
   .title { font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 10px 0; }
   .subtitle { font-size: 14px; font-style: italic; color: #555555; margin: 0; }
@@ -190,7 +191,7 @@ function generateContractHTML(contract, lead) {
           ${contract.status === 'signed' ? `<img src="${contract.signature_data}" class="sig-img" alt="Seller Signature" />` : '<em>Awaiting Seller Signature</em>'}
         </div>
         <div>Name: ${esc(contract.signer_name || lead.full_name)}</div>
-        <div>Date: ${contract.signed_at ? new Date(contract.signed_at).toLocaleDateString() : '—'}</div>
+        <div>Date: ${contract.signed_at ? new Date(contract.signed_at).toLocaleDateString('en-US', { timeZone: 'America/Chicago', year: 'numeric', month: 'long', day: 'numeric' }) : '—'}</div>
         ${contract.ip_address ? `<div style="font-size:10px; color:#777777;">IP: ${contract.ip_address}</div>` : ''}
       </div>
       <div class="sig-box">
@@ -219,7 +220,8 @@ function generateContractHTML(contract, lead) {
 <meta charset="UTF-8"/>
 <style>
   body { font-family: Georgia, serif; color: #111111; line-height: 1.6; margin: 0; padding: 40px; background: #ffffff; }
-  .contract-container { max-width: 800px; margin: 0 auto; }
+  .contract-container { max-width: 800px; margin: 0 auto; color: #111111 !important; }
+  .contract-container, .contract-container * { color: #111111 !important; }
   .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #111111; padding-bottom: 20px; }
   .title { font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 10px 0; }
   .subtitle { font-size: 14px; font-style: italic; color: #555555; margin: 0; }
@@ -258,17 +260,17 @@ function generateContractHTML(contract, lead) {
       <td class="label">Original Contract Date</td>
       <td>${contractDate}</td>
       <td class="label">Original Purchase Price</td>
-      <td>${formatMoney(lead.asking_price)}</td>
+      <td>${formatMoney(deal.purchase_price || lead.asking_price)}</td>
     </tr>
     <tr>
       <td class="label">Assignment Fee</td>
       <td><strong>${formatMoney(deal.assignment_fee)}</strong></td>
       <td class="label">Earnest Deposit</td>
-      <td>${formatMoney(lead.deposit_amount || 0)}</td>
+      <td>${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))}</td>
     </tr>
     <tr>
       <td class="label">Total Acquisition Price</td>
-      <td><strong>${formatMoney(lead.asking_price + (deal.assignment_fee || 0))}</strong></td>
+      <td><strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong></td>
       <td class="label">Closing Date</td>
       <td>${closingDate}</td>
     </tr>
@@ -286,7 +288,7 @@ function generateContractHTML(contract, lead) {
   <h3>2. Financial Terms &amp; Assignment Fee</h3>
   <p>Assignee agrees to pay Assignor a non-refundable Assignment Fee of <strong>${formatMoney(deal.assignment_fee)}</strong>. This Assignment Fee shall be paid as follows:</p>
   <ol>
-    <li>An Earnest Money Deposit of ${formatMoney(lead.deposit_amount || 0)} shall be deposited by Assignee with the designated escrow agent/title company within twenty-four (24) hours of execution of this Assignment Agreement.</li>
+    <li>An Earnest Money Deposit of ${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))} shall be deposited by Assignee with the designated escrow agent/title company within twenty-four (24) hours of execution of this Assignment Agreement.</li>
     <li>The remaining balance of the Assignment Fee shall be paid to Assignor in cash or wire transfer at the time of closing.</li>
   </ol>
 
@@ -327,7 +329,7 @@ function generateContractHTML(contract, lead) {
         </div>
         <div>Name: ${esc(contract.signer_name || buyer.legal_name)}</div>
         ${buyer.entity_name ? `<div>Entity: ${esc(buyer.entity_name)}</div>` : ''}
-        <div>Date: ${contract.signed_at ? new Date(contract.signed_at).toLocaleDateString() : '—'}</div>
+        <div>Date: ${contract.signed_at ? new Date(contract.signed_at).toLocaleDateString('en-US', { timeZone: 'America/Chicago', year: 'numeric', month: 'long', day: 'numeric' }) : '—'}</div>
         ${contract.ip_address ? `<div style="font-size:10px; color:#777777;">IP: ${contract.ip_address}</div>` : ''}
       </div>
     </div>
@@ -371,6 +373,7 @@ export default async function handler(req) {
     const url = new URL(req.url);
     const method = req.method;
     const tokenParam = url.searchParams.get('token');
+    const actionParam = url.searchParams.get('action');
 
     // ==========================================
     // 1. PUBLIC GET: Load contract by token
@@ -429,7 +432,7 @@ export default async function handler(req) {
     // ==========================================
     // 2. PUBLIC POST: Sign contract
     // ==========================================
-    if (method === 'POST' && url.pathname.endsWith('/sign')) {
+    if (method === 'POST' && (url.pathname.endsWith('/sign') || actionParam === 'sign')) {
       const body = await req.json();
       const { token, signerName, signerEmail, signatureData, ipAddress, userAgent, buyerInfo } = body;
 
@@ -488,6 +491,11 @@ export default async function handler(req) {
       if (buyerInfo) {
         contractUpdatePayload.buyer_info = buyerInfo;
       }
+
+      // Regenerate and save the updated contract HTML with signature populated!
+      const finalContract = { ...contract, ...contractUpdatePayload };
+      const finalLead = { ...lead };
+      contractUpdatePayload.generated_html = generateContractHTML(finalContract, finalLead);
 
       const contractUpdateRes = await fetch(
         `${SUPABASE_URL}/rest/v1/contracts?id=eq.${contract.id}`,
@@ -726,7 +734,7 @@ export default async function handler(req) {
     // ==========================================
     // 5. ADMIN POST: Void contract
     // ==========================================
-    if (method === 'PATCH' && url.pathname.endsWith('/void')) {
+    if (method === 'PATCH' && (url.pathname.endsWith('/void') || actionParam === 'void')) {
       const body = await req.json();
       const { contractId } = body;
 
