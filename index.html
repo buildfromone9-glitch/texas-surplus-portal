@@ -6428,12 +6428,9 @@ function copyToClipboard(text, btn) {
 document.addEventListener('DOMContentLoaded', () => App.init());
 
 function generateAccessToken() {
-  const chars = 'abcdefghijkmnpqrstuvwxyz23456789';
-  let token = '';
-  for (let i = 0; i < 24; i++) {
-    token += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return token;
+  // Generate VRV-CTR-###### format (random 6-digit number)
+  const randomNum = Math.floor(Math.random() * 900000) + 100000; // 100000-999999
+  return 'VRV-CTR-' + randomNum.toString().padStart(6, '0');
 }
 
 

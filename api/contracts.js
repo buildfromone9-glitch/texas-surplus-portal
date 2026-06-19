@@ -697,8 +697,9 @@ export default async function handler(req) {
         return new Response(JSON.stringify({ error: 'Missing required contract fields' }), { status: 400, headers });
       }
 
-      // Generate clean cryptographically secure token
-      const secureToken = 'ct_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      // Generate VRV-CTR-###### format token (random 6-digit number)
+      const randomNum = Math.floor(Math.random() * 900000) + 100000; // 100000-999999
+      const secureToken = 'VRV-CTR-' + randomNum.toString().padStart(6, '0');
 
       const contractPayload = {
         deal_id: dealId,
