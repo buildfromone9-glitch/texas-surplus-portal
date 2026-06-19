@@ -5598,6 +5598,9 @@ function bindHandlers(route) {
 
         // Setup inline contract form toggles and submission
         container.querySelectorAll('.inline-generate-contract-form').forEach(form => {
+          const dealId = form.getAttribute('data-deal-id');
+          const q = data.find(item => item.id === dealId);
+          if (!q) return;
           const typeSelect = form.querySelector('.igc-type');
           const buyerFields = form.querySelector('.igc-buyer-fields');
           const feeField = form.querySelector('.field-igc-assignment-fee');
