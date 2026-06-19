@@ -3803,9 +3803,13 @@ function setupSignaturePad() {
   let drawing = false;
   let hasInk = false;
 
+  let lastWidth = 0;
   function resize() {
+    const currentWidth = pad.offsetWidth;
+    if (currentWidth === lastWidth) return;
+    lastWidth = currentWidth;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    canvas.width = pad.offsetWidth * ratio;
+    canvas.width = currentWidth * ratio;
     canvas.height = pad.offsetHeight * ratio;
     ctx.scale(ratio, ratio);
     ctx.strokeStyle = '#15172b';
@@ -4413,9 +4417,13 @@ function bindHandlers(route) {
       let drawing = false;
       let hasInk = false;
 
+      let lastWidth = 0;
       const resizeCanvas = () => {
         const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width;
+        const currentWidth = rect.width;
+        if (currentWidth === lastWidth) return;
+        lastWidth = currentWidth;
+        canvas.width = currentWidth;
         canvas.height = rect.height;
         ctx.strokeStyle = '#15172b';
         ctx.lineWidth = 2.5;
@@ -4988,15 +4996,20 @@ function bindHandlers(route) {
                   }
                 });
 
+                let lastWidth = 0;
                 const resizeCanvas = () => {
                   const rect = canvas.getBoundingClientRect();
-                  canvas.width = rect.width;
+                  const currentWidth = rect.width;
+                  if (currentWidth === lastWidth) return;
+                  lastWidth = currentWidth;
+                  canvas.width = currentWidth;
                   canvas.height = rect.height;
                   ctx.strokeStyle = '#15172b';
                   ctx.lineWidth = 2.5;
                   ctx.lineCap = 'round';
                 };
                 resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
                 
                 const getPos = (e) => {
                   const rect = canvas.getBoundingClientRect();
@@ -7060,9 +7073,13 @@ function setupAssignmentSignaturePad() {
   const ctx = canvas.getContext('2d');
   let drawing = false;
 
+  let lastWidth = 0;
   function resize() {
+    const currentWidth = pad.offsetWidth;
+    if (currentWidth === lastWidth) return;
+    lastWidth = currentWidth;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    canvas.width = pad.offsetWidth * ratio;
+    canvas.width = currentWidth * ratio;
     canvas.height = pad.offsetHeight * ratio;
     ctx.scale(ratio, ratio);
     ctx.strokeStyle = '#15172b';
@@ -7071,6 +7088,7 @@ function setupAssignmentSignaturePad() {
     ctx.lineJoin = 'round';
   }
   resize();
+  window.addEventListener('resize', resize);
 
   const getPos = (e) => {
     const rect = canvas.getBoundingClientRect();
