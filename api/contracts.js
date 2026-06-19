@@ -257,22 +257,16 @@ function generateContractHTML(contract, lead) {
       <td colspan="3">${esc(lead.property_address)}</td>
     </tr>
     <tr>
-      <td class="label">Original Contract Date</td>
-      <td>${contractDate}</td>
-      <td class="label">Original Purchase Price</td>
-      <td>${formatMoney(deal.purchase_price || lead.asking_price)}</td>
+      <td class="label">Governing State</td>
+      <td>${state}</td>
+      <td class="label">Closing Date</td>
+      <td><strong>${closingDate}</strong></td>
     </tr>
     <tr>
-      <td class="label">Assignment Fee</td>
-      <td><strong>${formatMoney(deal.assignment_fee)}</strong></td>
-      <td class="label">Earnest Deposit</td>
+      <td class="label">Earnest Money Requirement</td>
       <td>${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))}</td>
-    </tr>
-    <tr>
       <td class="label">Total Acquisition Price</td>
       <td><strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong></td>
-      <td class="label">Closing Date</td>
-      <td>${closingDate}</td>
     </tr>
   </table>
 
@@ -285,11 +279,11 @@ function generateContractHTML(contract, lead) {
   <h3>1. Assignment of Rights and Obligations</h3>
   <p>For valuable consideration, the receipt and sufficiency of which are hereby acknowledged, Assignor hereby transfers, assigns, and conveys to Assignee all of Assignor's rights, benefits, privileges, and obligations under the Original Contract. Assignee hereby completely assumes all obligations, covenants, and closing requirements of the Buyer under the Original Contract.</p>
 
-  <h3>2. Financial Terms &amp; Assignment Fee</h3>
-  <p>Assignee agrees to pay Assignor a non-refundable Assignment Fee of <strong>${formatMoney(deal.assignment_fee)}</strong>. This Assignment Fee shall be paid as follows:</p>
+  <h3>2. Financial Terms &amp; Total Consideration Payable by Assignee</h3>
+  <p>Assignee agrees to pay Assignor a non-refundable Total Consideration Payable by Assignee of <strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong>. This Total Consideration shall be paid as follows:</p>
   <ol>
     <li>An Earnest Money Deposit of ${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))} shall be deposited by Assignee with the designated escrow agent/title company within twenty-four (24) hours of execution of this Assignment Agreement.</li>
-    <li>The remaining balance of the Assignment Fee shall be paid to Assignor in cash or wire transfer at the time of closing.</li>
+    <li>The remaining balance of the Total Consideration shall be paid to Assignor in cash or wire transfer at the time of closing.</li>
   </ol>
 
   <h3>3. Due Diligence and Inspection Disclaimer</h3>
@@ -337,7 +331,6 @@ function generateContractHTML(contract, lead) {
 
   <div class="footer">
     <p>Vorvo Services LLC · help@vorvoservices.com · (832) 735-0603</p>
-    <p>Tracking ID: ${lead.tracking_id} · Secure Token: ${contract.secure_token}</p>
   </div>
 </div>
 </body>
