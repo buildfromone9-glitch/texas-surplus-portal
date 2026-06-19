@@ -5428,7 +5428,7 @@ function bindHandlers(route) {
             </tr>
             <tr id="edit-wholesale-row-${q.id}" class="edit-wholesale-row" style="display:none; background:var(--paper-deep); border-bottom:2px solid var(--rule);">
               <td colspan="7" style="padding:1.5rem;">
-                <form class="edit-wholesale-form" data-id="${q.id}" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; align-items:flex-end;">
+                <div class="edit-wholesale-form" data-id="${q.id}" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; align-items:flex-end;">
                   <div class="field" style="margin:0;">
                     <label style="font-size:0.75rem;">Lead Status</label>
                     <select class="ew-status" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);">
@@ -5487,11 +5487,9 @@ function bindHandlers(route) {
                   
                   <div style="display:flex; gap:0.5rem; justify-content:flex-end; grid-column: span 3; margin-top:0.5rem;">
                     <button type="button" class="btn btn--small btn--ghost btn-cancel-edit-wholesale" data-id="${q.id}" style="background:none; border:1px solid var(--rule); color:var(--ink-mute);">Cancel</button>
-                    <button type="submit" class="btn btn--small btn--gold">Save Changes</button>
+                    <button type="button" class="btn btn--small btn--gold btn-save-wholesale" data-id="${q.id}">Save Changes</button>
                   </div>
-                </form>
-              </td>
-            </tr>
+                </div>
           `;
         });
         
@@ -5683,22 +5681,24 @@ function bindHandlers(route) {
           };
         });
         
-        container.querySelectorAll('.edit-wholesale-form').forEach(form => {
-          form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        container.querySelectorAll('.btn-save-wholesale').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            const submitBtn = e.currentTarget.querySelector('button[type="submit"]');
+            const formDiv = container.querySelector(`.edit-wholesale-form[data-id="${id}"]`);
+            if (!formDiv) return;
+            
+            const submitBtn = e.currentTarget;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Saving...';
             
-            const status = e.currentTarget.querySelector('.ew-status').value;
-            const governingState = e.currentTarget.querySelector('.ew-state').value;
-            const askingPrice = parseFloat(e.currentTarget.querySelector('.ew-asking').value) || null;
-            const estimatedValue = parseFloat(e.currentTarget.querySelector('.ew-value').value) || null;
-            const offerAmount = parseFloat(e.currentTarget.querySelector('.ew-offer').value) || null;
-            const depositAmount = parseFloat(e.currentTarget.querySelector('.ew-deposit').value) || null;
-            const contractTerms = e.currentTarget.querySelector('.ew-terms').value.trim() || null;
-            const internalNotes = e.currentTarget.querySelector('.ew-notes').value.trim() || null;
+            const status = formDiv.querySelector('.ew-status').value;
+            const governingState = formDiv.querySelector('.ew-state').value;
+            const askingPrice = parseFloat(formDiv.querySelector('.ew-asking').value) || null;
+            const estimatedValue = parseFloat(formDiv.querySelector('.ew-value').value) || null;
+            const offerAmount = parseFloat(formDiv.querySelector('.ew-offer').value) || null;
+            const depositAmount = parseFloat(formDiv.querySelector('.ew-deposit').value) || null;
+            const contractTerms = formDiv.querySelector('.ew-terms').value.trim() || null;
+            const internalNotes = formDiv.querySelector('.ew-notes').value.trim() || null;
             
             try {
               const { error } = await supabaseClient
