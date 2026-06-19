@@ -1405,8 +1405,18 @@ const App = {
 
     // Listen for auth state changes
     supabaseClient.auth.onAuthStateChange((_event, session) => {
-      this.state.adminUser = session?.user || null;
-      this.render();
+      const newUser = session?.user || null;
+      const oldUser = this.state.adminUser;
+      
+      // Only re-render if the actual authentication status changed!
+      const statusChanged = (newUser === null && oldUser !== null) || 
+                            (newUser !== null && oldUser === null) || 
+                            (newUser && oldUser && newUser.id !== oldUser.id);
+                            
+      if (statusChanged) {
+        this.state.adminUser = newUser;
+        this.render();
+      }
     });
 
     // Only load agreement data on agreement route (not admin)
