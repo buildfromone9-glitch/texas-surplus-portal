@@ -199,7 +199,7 @@ function generateContractHTML(contract, lead) {
         <div style="height:60px; line-height:60px; font-size:20px; font-family:'Brush Script MT', cursive; color:#15172b;">
           D. S. &nbsp;·&nbsp; J. V.
         </div>
-        <div>Name: Dennis S. / Jose V.</div>
+        <div>Name: Dennis S. / Joel V.</div>
         <div>Title: Authorized Co-Operators</div>
         <div>Date: ${createdDate}</div>
       </div>
@@ -318,7 +318,7 @@ function generateContractHTML(contract, lead) {
         <div style="height:60px; line-height:60px; font-size:20px; font-family:'Brush Script MT', cursive; color:#15172b;">
           D. S. &nbsp;·&nbsp; J. V.
         </div>
-        <div>Name: Dennis S. / Jose V.</div>
+        <div>Name: Dennis S. / Joel V.</div>
         <div>Title: Authorized Assignors</div>
         <div>Date: ${createdDate}</div>
       </div>
