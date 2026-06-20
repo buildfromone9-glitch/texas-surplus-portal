@@ -75,96 +75,30 @@
 
 <style>
   /* ============================================================
-     DESIGN TOKENS - Premium Property Services
+     DESIGN TOKENS
      ============================================================ */
   :root {
-    /* Premium Gold Palette */
-    --gold: #B08D57;
-    --gold-dark: #8C6A3B;
-    --gold-light: #D4C09A;
-    
-    /* Text Colors - High Contrast for Accessibility */
     --ink: #FFFFFF;
     --ink-soft: #D8D8D8;
     --ink-mute: #888888;
-    --charcoal: #1F1F1F;
-    --charcoal-soft: #2A2A2A;
-    
-    /* Background Colors */
     --paper: #181818;
     --paper-deep: #111111;
     --paper-edge: #222222;
-    --cream: #F7F4ED;
-    --cream-dark: #EDE8DD;
-    
-    /* Legacy compatibility */
-    --rule: var(--gold);
-    --rule-soft: #333333;
-    --gold-deep: var(--gold-dark);
-    --gold-soft: var(--gold-light);
-    
-    /* Status Colors */
-    --rust: #C75050;
-    --moss: #4A9B6E;
-    
-    /* Shadows - More Subtle */
-    --shadow: 0 4px 24px rgba(0,0,0,0.12);
-    --shadow-lift: 0 12px 40px rgba(0,0,0,0.16);
-    --shadow-soft: 0 2px 12px rgba(0,0,0,0.08);
-    
-    /* Typography */
-    --serif: 'Fraunces', Georgia, serif;
+    --cream: #141414;
+    --rule: #FFCC00;
+    --rule-soft: #222222;
+    --gold: #FFCC00;
+    --gold-deep: #B88A00;
+    --gold-soft: #FFE066;
+    --rust: #FF3333;
+    --moss: #00CC66;
+    --shadow: 0 4px 20px rgba(0,0,0,0.5);
+    --shadow-lift: 0 8px 32px rgba(0,0,0,0.8);
+    --serif: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
-    
-    /* Layout */
     --content-w: 720px;
-    --wide-w: 1200px;
-    --ultra-w: 1400px;
-    
-    /* Spacing Scale */
-    --space-xs: 0.25rem;
-    --space-sm: 0.5rem;
-    --space-md: 1rem;
-    --space-lg: 1.5rem;
-    --space-xl: 2rem;
-    --space-2xl: 3rem;
-    --space-3xl: 4rem;
-    --space-4xl: 6rem;
-    
-    /* Transitions */
-    --transition-fast: 150ms ease;
-    --transition-base: 250ms ease;
-    --transition-slow: 400ms ease;
-    --transition-hero: 1.2s ease-in-out;
-  }
-  
-  /* ============================================================
-     LIGHT MODE (for pages like Track Status)
-     ============================================================ */
-  .light-mode {
-    --paper: #FFFFFF;
-    --paper-deep: #F7F4ED;
-    --paper-edge: #EDE8DD;
-    --ink: #1F1F1F;
-    --ink-soft: #4A4A4A;
-    --ink-mute: #6B6B6B;
-    --rule-soft: #E0D8CC;
-  }
-  
-  /* ============================================================
-     DARK MODE AUTO-DETECTION
-     ============================================================ */
-  @media (prefers-color-scheme: light) {
-    :root:not(.force-dark) {
-      --paper: #FFFFFF;
-      --paper-deep: #F7F4ED;
-      --paper-edge: #EDE8DD;
-      --ink: #1F1F1F;
-      --ink-soft: #4A4A4A;
-      --ink-mute: #6B6B6B;
-      --rule-soft: #E0D8CC;
-    }
+    --wide-w: 1100px;
   }
 
   /* ============================================================
@@ -2299,131 +2233,76 @@ function renderTrack() {
    ============================================================ */
 function renderPortal() {
   return `
-    <section class="hero" id="hero-carousel">
-      <div class="hero__carousel">
-        <div class="hero__slide active" style="background-image: url('/images/property/24ca312436af583a7a0b52c3bc9bf333.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/property/57bc71be69953c1bf1d4a6c892801478.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/property/d7312e86ed62287bbc549c1786ad3b22.jpg');"></div>
-      </div>
-      <div class="hero__overlay"></div>
-      <div class="hero__inner">
-        <div class="hero__eyebrow">Vorvo Services</div>
-        <h1 class="hero__title">A coordination &amp; recovery <em>ecosystem.</em></h1>
-        <p class="hero__lede">
-          Helping property owners find, compare, and coordinate qualified service providers nationwide.
+    <section class="hero" style="text-align:center; padding:5rem 1.5rem;">
+      <div class="hero__inner" style="max-width:800px; margin:0 auto;">
+        <div class="hero__eyebrow" style="justify-content:center; margin-bottom:1.5rem;">Vorvo Services</div>
+        <h1 class="hero__title" style="font-size:clamp(2.5rem, 6vw, 4.5rem); margin-bottom:1.5rem;">A coordination &amp; recovery ecosystem.</h1>
+        <p class="hero__lede" style="max-width:680px; margin:0 auto 3rem; font-size:1.2rem; color:var(--ink-soft);">
+          Vorvo Services helps property owners find, compare, and coordinate qualified service providers nationwide.
         </p>
-        <div class="hero__cta-row">
-          <a href="#/?scroll=property-services-section" class="btn btn--gold">Explore Property Services</a>
-          <a href="#/?scroll=labor-services-section" class="btn btn--ghost">Labor Coordination</a>
-        </div>
-      </div>
-      <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
       </div>
     </section>
 
-    <section class="section section--light" id="property-services-section">
-      <div class="split">
-        <div class="split__image-wrap">
-          <img src="/images/property/0dd26eed0cc68659a73ee6380a0990a5.jpg" class="split__image" alt="Property Services" loading="lazy">
-        </div>
-        <div class="split__content">
-          <div class="section__eyebrow">Strategic Asset Solutions</div>
-          <h2 class="section__title">Property Services</h2>
-          <p class="text-body mb-4">Specialized public-records research, financial recovery, and strategic property wholesale coordination.</p>
-          <div style="display:grid; gap:1.5rem;">
-            <a href="#/surplus" class="btn btn--gold">Surplus Fund Recovery →</a>
-            <a href="#/wholesale" class="btn btn--ghost">Wholesale Solutions →</a>
+    <section class="section" style="padding-top:0;">
+      <div class="container-wide">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:2.5rem; margin-bottom:4rem;">
+          
+          <!-- Category 1: Property Services -->
+          <div id="property-services-section" class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category A — Property Services</div>
+            <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Property Services</h2>
+            <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
+              Specialized public-records research, financial recovery, and strategic property wholesale coordination.
+            </p>
+            
+            <div style="display:grid; grid-template-columns:1fr; gap:1.5rem; margin-top:1rem;">
+              <!-- Sub-service: Surplus Property Recovery -->
+              <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:1.5rem; border-radius:3px;">
+                <h3 style="font-family:var(--serif); font-size:1.3rem; margin-bottom:0.5rem; color:var(--gold);">01. Surplus Fund Recovery</h3>
+                <p style="color:var(--ink-soft); font-size:0.9rem; margin-bottom:1rem;">
+                  Recover unclaimed mortgage foreclosure surplus funds from the State. 10% contingency fee — no upfront costs.
+                </p>
+                <a href="#/surplus" class="btn btn--small btn--gold" style="width:100%; justify-content:center;">Enter Surplus Portal →</a>
+              </div>
+              
+              <!-- Sub-service: Wholesale Property Solutions -->
+              <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:1.5rem; border-radius:3px;">
+                <h3 style="font-family:var(--serif); font-size:1.3rem; margin-bottom:0.5rem; color:var(--gold);">02. Wholesale Property Solutions</h3>
+                <p style="color:var(--ink-soft); font-size:0.9rem; margin-bottom:1rem;">
+                  Sell your property fast for cash or access off-market investor deals. No repairs, no cleaning, closed in days.
+                </p>
+                <a href="#/wholesale" class="btn btn--small btn--gold" style="width:100%; justify-content:center;">Enter Wholesale Portal →</a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="section">
-      <div class="split split--rev">
-        <div class="split__image-wrap">
-          <img src="/images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="split__image" alt="Wholesale Property" loading="lazy">
-        </div>
-        <div class="split__content">
-          <div class="section__eyebrow">Real Estate Liquidity</div>
-          <h2 class="section__title">Wholesale Property</h2>
-          <p class="text-body mb-4">Sell your property fast for cash or access off-market investor deals. No repairs, no cleaning, closed in days.</p>
-          <a href="#/wholesale" class="btn btn--gold">Get Cash Offer →</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--light" id="labor-services-section">
-      <div class="section__head">
-        <div class="section__eyebrow">Nationwide Network</div>
-        <h2 class="section__title">Labor Coordination</h2>
-        <p class="section__subtitle">Fast, reliable local labor coordinated same-week.</p>
-      </div>
-      <div class="card-grid">
-        <div class="service-card">
-          <img src="/images/labor/1a1e67b22f41be5c6aa3bd6f327016e5.jpg" class="service-card__img" alt="Moving Help">
-          <div class="service-card__body">
-            <div class="service-card__cat">Category 01</div>
-            <h3 class="service-card__title">Moving Help</h3>
-            <p class="service-card__text">Small moves, furniture pickups, and loading assistance.</p>
-            <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
+          <!-- Category 2: Labor Coordination Services -->
+          <div id="labor-services-section" class="step-card" style="display:flex; flex-direction:column; gap:1.5rem; padding:2.5rem; background:var(--paper); border:2px solid var(--rule); border-radius:4px; height:100%;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem; margin-bottom:0.5rem;">Category B — Labor Coordination Services</div>
+            <h2 style="font-family:var(--serif); font-size:2.2rem; margin-bottom:0.5rem;">Labor Coordination</h2>
+            <p style="color:var(--ink-soft); line-height:1.6; font-size:1rem; margin-bottom:1.5rem;">
+              Nationwide coordination layer identifying, researching, and coordinating with independent third-party service providers on behalf of clients.
+            </p>
+            
+            <div style="display:grid; grid-template-columns:1fr; gap:1.5rem; margin-top:1rem; height:100%; justify-content:space-between;">
+              <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:1.5rem; border-radius:3px; display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+                <div>
+                  <h3 style="font-family:var(--serif); font-size:1.3rem; margin-bottom:0.5rem; color:var(--gold);">03. Labor Coordination</h3>
+                  <p style="color:var(--ink-soft); font-size:0.9rem; margin-bottom:1rem;">
+                    Fast, reliable local labor coordinated same-week. Moving help, junk removal, pressure washing, and yard cleanups.
+                  </p>
+                  <ul style="padding-left:1.25rem; color:var(--ink-mute); line-height:1.8; font-size:0.85rem; margin-bottom:1.5rem;">
+                    <li>Moving help &amp; furniture pickup</li>
+                    <li>Junk removal &amp; hauling</li>
+                    <li>Pressure washing (driveways, patios, fences)</li>
+                    <li>Yard work, mowing &amp; cleanups</li>
+                  </ul>
+                </div>
+                <a href="#/vorvo" class="btn btn--small btn--gold" style="width:100%; justify-content:center; margin-top:auto;">Enter Labor Portal →</a>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="service-card">
-          <img src="/images/labor/ae0c0c30ca635c2ca453baa751e1cd55.jpg" class="service-card__img" alt="Junk Removal">
-          <div class="service-card__body">
-            <div class="service-card__cat">Category 02</div>
-            <h3 class="service-card__title">Junk Removal</h3>
-            <p class="service-card__text">Attic cleanouts, yard waste, and general hauling.</p>
-            <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
-          </div>
-        </div>
-        <div class="service-card">
-          <img src="/images/labor/8a08591365d30d05fcfc070c34131e4d.jpg" class="service-card__img" alt="Pressure Washing">
-          <div class="service-card__body">
-            <div class="service-card__cat">Category 03</div>
-            <h3 class="service-card__title">Pressure Washing</h3>
-            <p class="service-card__text">Driveways, sidewalks, and exterior cleaning.</p>
-            <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="section">
-      <div class="section__head">
-        <div class="section__eyebrow">Reliability</div>
-        <h2 class="section__title">Trust Indicators</h2>
-      </div>
-      <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
-        <div class="feature-block" style="padding:2rem; background:var(--paper); border:1px solid var(--rule-soft); border-radius:4px;">
-          <h4 class="text-gold mb-3">Fast Response</h4>
-          <p class="text-body">Quotes delivered within 24 hours.</p>
-        </div>
-        <div class="feature-block" style="padding:2rem; background:var(--paper); border:1px solid var(--rule-soft); border-radius:4px;">
-          <h4 class="text-gold mb-3">Nationwide</h4>
-          <p class="text-body">Coordination layer available in all 50 states.</p>
-        </div>
-        <div class="feature-block" style="padding:2rem; background:var(--paper); border:1px solid var(--rule-soft); border-radius:4px;">
-          <h4 class="text-gold mb-3">Verified Network</h4>
-          <p class="text-body">Independent third-party providers vetted for quality.</p>
-        </div>
-        <div class="feature-block" style="padding:2rem; background:var(--paper); border:1px solid var(--rule-soft); border-radius:4px;">
-          <h4 class="text-gold mb-3">Real-time Tracking</h4>
-          <p class="text-body">Monitor your project status 24/7.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--light" style="text-align:center; background-image: url('/images/property/ff74425c3ac14fd7c7602bcd3a6cd547.jpg'); background-size: cover; background-position: center; position: relative;">
-      <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); z-index:1;"></div>
-      <div style="position:relative; z-index:2;">
-        <h2 class="text-display text-white mb-5">Ready to <em>get started?</em></h2>
-        <div class="hero__cta-row">
-          <a href="#/surplus" class="btn btn--gold">Recover Assets</a>
-          <a href="#/vorvo" class="btn btn--ghost">Coordinate Labor</a>
         </div>
       </div>
     </section>
@@ -2435,147 +2314,309 @@ function renderPortal() {
    ============================================================ */
 function renderVorvoLanding() {
   return `
-    <section class="hero" id="hero-carousel">
-      <div class="hero__carousel">
-        <div class="hero__slide active" style="background-image: url('/images/labor/996e61ace4cd5d1a710ae3bcf1e70422.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/labor/b1a685116cc6acb7c83b9e53e743e708.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/labor/d094076acf96fe7746ebac5e0c356198.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/labor/cbcd982375b9bd0482e5363ed1b464db.jpg');"></div>
-      </div>
-      <div class="hero__overlay"></div>
+    <section class="hero">
       <div class="hero__inner">
         <div class="hero__eyebrow">Vorvo Coordination Services</div>
         <h1 class="hero__title">Local Workers. Same Week. <em>Done Right.</em></h1>
         <p class="hero__lede">Vorvo Services helps property owners find, compare, and coordinate qualified service providers nationwide.</p>
         <div class="hero__cta-row">
-          <a href="javascript:void(0)" onclick="document.getElementById('vorvo-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Request a Quote <span class="btn__arrow">→</span></a>
+          <a href="javascript:void(0)" onclick="document.getElementById('vorvo-form')?.scrollIntoView({behavior: 'smooth'})" class="btn">Request a Quote <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
         </div>
       </div>
-      <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
-        <button class="hero__indicator" data-slide="3"></button>
-      </div>
     </section>
 
-    <section class="section section--light">
+    <!-- Services Grid -->
+    <section class="section section--alt">
       <div class="section__head">
         <div class="section__eyebrow">Our Services</div>
-        <h2 class="section__title">Coordination for Essential Local Services Nationwide</h2>
-        <p class="section__subtitle">We identify, research, and coordinate with independent third-party service providers on behalf of clients.</p>
+        <h2>Coordination for Essential Local Services Nationwide</h2>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">We identify, research, and coordinate with independent third-party service providers on behalf of clients for quick-turnaround home and property services. No complex negotiations, no hidden fees.</p>
       </div>
       
-      <div class="card-grid">
-        <div class="service-card">
-          <img src="/images/labor/1a1e67b22f41be5c6aa3bd6f327016e5.jpg" alt="Moving Help" class="service-card__img" loading="lazy" />
-          <div class="service-card__body">
-            <div class="service-card__cat">Category 01</div>
-            <h3 class="service-card__title">Moving Help</h3>
-            <p class="service-card__text">Small moves, furniture pickups, loading/unloading assistance, or moving items around your local area.</p>
-            <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:2rem; margin-top:3rem;">
+        
+        <!-- Moving Help -->
+        <div class="step-card" style="padding:2rem; background:var(--paper); border:1px solid var(--rule); display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+          <div>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:var(--gold-deep); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">Category 01</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:0.75rem;">Moving Help</h3>
+            <p style="font-size:0.95rem; color:var(--ink-soft); line-height:1.5; margin-bottom:1.5rem;">Small moves, furniture pickups, loading/unloading assistance, or moving items around your local area.</p>
           </div>
+          <div style="font-family:var(--mono); font-size:0.8rem; color:var(--ink-mute);">Call/Text: (832) 735-0603</div>
         </div>
 
-        <div class="service-card">
-          <img src="/images/labor/ae0c0c30ca635c2ca453baa751e1cd55.jpg" alt="Junk Removal" class="service-card__img" loading="lazy" />
-          <div class="service-card__body">
-            <div class="service-card__cat">Category 02</div>
-            <h3 class="service-card__title">Junk Removal</h3>
-            <p class="service-card__text">Attic cleanouts, yard waste, appliance disposal, estate cleanups, or general hauling nationwide.</p>
-            <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
+        <!-- Junk Removal -->
+        <div class="step-card" style="padding:2rem; background:var(--paper); border:1px solid var(--rule); display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+          <div>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:var(--gold-deep); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">Category 02</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:0.75rem;">Junk Removal</h3>
+            <p style="font-size:0.95rem; color:var(--ink-soft); line-height:1.5; margin-bottom:1.5rem;">Attic cleanouts, yard waste, appliance disposal, estate cleanups, or general hauling nationwide.</p>
           </div>
+          <div style="font-family:var(--mono); font-size:0.8rem; color:var(--ink-mute);">Call/Text: (832) 735-0603</div>
         </div>
 
-        <div class="service-card">
-          <img src="/images/labor/8a08591365d30d05fcfc070c34131e4d.jpg" alt="Pressure Washing" class="service-card__img" loading="lazy" />
-          <div class="service-card__body">
-            <div class="service-card__cat">Category 03</div>
-            <h3 class="service-card__title">Pressure Washing</h3>
-            <p class="service-card__text">Driveways, sidewalks, patios, fences, exterior walls, or decks looking refreshed and clean.</p>
-            <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
+        <!-- Pressure Washing -->
+        <div class="step-card" style="padding:2rem; background:var(--paper); border:1px solid var(--rule); display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+          <div>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:var(--gold-deep); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">Category 03</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:0.75rem;">Pressure Washing</h3>
+            <p style="font-size:0.95rem; color:var(--ink-soft); line-height:1.5; margin-bottom:1.5rem;">Driveways, sidewalks, patios, fences, exterior walls, or decks looking refreshed and clean in your city.</p>
           </div>
+          <div style="font-family:var(--mono); font-size:0.8rem; color:var(--ink-mute);">Call/Text: (832) 735-0603</div>
         </div>
 
-        <div class="service-card">
-          <img src="/images/labor/cbcd982375b9bd0482e5363ed1b464db.jpg" alt="Yard Work" class="service-card__img" loading="lazy" />
-          <div class="service-card__body">
-            <div class="service-card__cat">Category 04</div>
-            <h3 class="service-card__title">Yard Work &amp; Cleanup</h3>
-            <p class="service-card__text">Mowing, trimming, edging, weeding, leaf removal, or seasonal yard cleanups in your neighborhood.</p>
-            <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
+        <!-- Yard Work -->
+        <div class="step-card" style="padding:2rem; background:var(--paper); border:1px solid var(--rule); display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+          <div>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:var(--gold-deep); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.1em;">Category 04</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:0.75rem;">Yard Work &amp; Cleanup</h3>
+            <p style="font-size:0.95rem; color:var(--ink-soft); line-height:1.5; margin-bottom:1.5rem;">Mowing, trimming, edging, weeding, leaf removal, or seasonal yard cleanups in your neighborhood.</p>
           </div>
+          <div style="font-family:var(--mono); font-size:0.8rem; color:var(--ink-mute);">Call/Text: (832) 735-0603</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section">
+      <div class="section__head">
+        <div class="section__eyebrow">How It Works</div>
+        <h2>Simple, Streamlined Coordination Flow</h2>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">We eliminate the back-and-forth of finding, researching, and coordinating with independent third-party service providers.</p>
+      </div>
+      
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">01</div>
+          <h3 class="step__title">Submit Request</h3>
+          <p class="step__body">Tell us what you need done. Provide the location, details, and optional photos of the job site.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">02</div>
+          <h3 class="step__title">Coordination</h3>
+          <p class="step__body">We review the details and identify, research, and coordinate with independent third-party service providers.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">03</div>
+          <h3 class="step__title">Clear Quote</h3>
+          <p class="step__body">We deliver a transparent, clear quote for the coordination services before any work begins.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">04</div>
+          <h3 class="step__title">Done Right</h3>
+          <p class="step__body">Independent third-party service providers complete the work. You review the work and pay upon satisfactory completion.</p>
         </div>
       </div>
     </section>
 
-    <section class="section" id="vorvo-form">
-      <div class="split">
-        <div class="split__content">
-          <div class="section__eyebrow">Get Started</div>
-          <h2 class="section__title">Request a Free Quote</h2>
-          <p class="text-body mb-5">Submit your details. We coordinate with providers and deliver an estimate within 24 hours.</p>
-          <div style="display:grid; gap:1.5rem;">
+    <!-- Pricing Checklist Section -->
+    <section class="section" id="pricing-section">
+      <div class="section__head">
+        <div class="section__eyebrow">Configurable Pricing</div>
+        <h2>Select Your Coordination Services</h2>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">
+          Build your own custom service package. Select only the coordination tasks you need, or choose our full-service option for end-to-end support.
+        </p>
+      </div>
+
+      <div class="container" style="max-width: var(--content-w); margin: 0 auto; padding: 0 1.5rem;">
+        <!-- Full Service Option Card -->
+        <div id="full-service-card" style="border: 2px solid var(--gold); background: rgba(255, 204, 0, 0.05); padding: 1.5rem; margin-bottom: 2rem; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <input type="checkbox" id="chk-full-service" style="width: 1.5rem; height: 1.5rem; accent-color: var(--gold); cursor: pointer;" />
             <div>
-              <h4 class="text-gold mb-1">Direct Line</h4>
-              <p class="text-body">Call or Text: <strong>(832) 735-0603</strong></p>
-            </div>
-            <div>
-              <h4 class="text-gold mb-1">Support</h4>
-              <p class="text-body">Email: <strong>help@vorvoservices.com</strong></p>
+              <h3 style="margin: 0; font-size: 1.25rem; color: var(--gold-soft);">Full Service Bundle</h3>
+              <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft); text-transform: none;">Select all coordination and procurement services for complete, hassle-free project management.</p>
             </div>
           </div>
+          <div style="font-family: var(--mono); font-size: 1.25rem; font-weight: bold; color: var(--gold); white-space: nowrap;">$343</div>
         </div>
-        <div class="split__form">
-          <div class="form">
-            <form id="vorvo-quote-form" action="https://formspree.io/f/xqejewzo" method="POST">
-              <div class="field">
-                <label for="v-name">Full Name</label>
-                <input type="text" id="v-name" name="fullName" required />
+
+        <!-- Individual Services Checklist -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
+          
+          <!-- Contractor Research -->
+          <div class="service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="49" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Contractor Research</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Identify and provide up to 3 relevant contractors.</p>
               </div>
-              <div class="field--row">
-                <div class="field">
-                  <label for="v-email">Email</label>
-                  <input type="email" id="v-email" name="email" required />
-                </div>
-                <div class="field">
-                  <label for="v-phone">Phone</label>
-                  <input type="tel" id="v-phone" name="phone" required />
-                </div>
-              </div>
-              <div class="field">
-                <label for="v-service">Service</label>
-                <select id="v-service" name="serviceCategory" required>
-                  <option value="" disabled selected hidden>-- Please Select --</option>
-                  <option value="moving">Moving Help</option>
-                  <option value="junk">Junk Removal</option>
-                  <option value="pressure">Pressure Washing</option>
-                  <option value="yard">Yard Work</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="v-location">Address</label>
-                <input type="text" id="v-location" name="location" required />
-              </div>
-              <div class="field">
-                <label for="v-details">Job Details</label>
-                <textarea id="v-details" name="jobDetails" required></textarea>
-              </div>
-              <div class="field">
-                <label>Job Site Photos</label>
-                <div id="v-dropzone" style="border:1px dashed var(--rule-soft); padding:2rem; text-align:center; background:var(--paper-deep); cursor:pointer;">
-                  <span id="v-dropzone-text" class="text-small">Drag photos or click to browse</span>
-                  <input type="file" id="v-photos" accept="image/*" multiple style="display:none;" />
-                  <div id="v-preview-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(60px, 1fr)); gap:0.5rem; margin-top:1rem;"></div>
-                </div>
-              </div>
-              <button type="submit" class="btn btn--gold" style="width:100%;">Submit Request →</button>
-            </form>
-            <div id="vorvo-success" class="form__success" style="display:none;"></div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$49</div>
           </div>
+
+          <!-- Quote Collection -->
+          <div class="service-item-card" data-price="79" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="79" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Quote Collection</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Contact contractors and obtain quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$79</div>
+          </div>
+
+          <!-- Quote Comparison -->
+          <div class="service-item-card" data-price="39" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="39" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Quote Comparison</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Summarize and compare contractor quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$39</div>
+          </div>
+
+          <!-- Contractor Recommendation -->
+          <div class="service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="29" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Contractor Recommendation</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Provide recommendation based on responsiveness and submitted quotes.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$29</div>
+          </div>
+
+          <!-- Scheduling Coordination -->
+          <div class="service-item-card" data-price="69" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="69" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Scheduling Coordination</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Coordinate scheduling between client and contractor.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$69</div>
+          </div>
+
+          <!-- Communication Assistance -->
+          <div class="service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="49" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Communication Assistance</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Assist with communications and follow-ups.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$49</div>
+          </div>
+
+          <!-- Completion Confirmation -->
+          <div class="service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1.25rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+              <input type="checkbox" class="chk-service" data-price="29" style="width: 1.25rem; height: 1.25rem; accent-color: var(--gold); margin-top: 0.25rem; cursor: pointer;" />
+              <div>
+                <h4 style="margin: 0; font-size: 1.05rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700; letter-spacing: normal;">Completion Confirmation</h4>
+                <p style="margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--ink-soft);">Confirm work completion with client.</p>
+              </div>
+            </div>
+            <div style="font-family: var(--mono); font-size: 1rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.25rem;">$29</div>
+          </div>
+
         </div>
+
+        <!-- Running Total Display -->
+        <div style="border-top: 2px solid var(--rule); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+          <div id="pricing-running-total" style="font-family: var(--serif); font-size: 2rem; font-weight: bold; color: var(--gold);">Base Total: $0</div>
+        </div>
+
+        <!-- How Payment Works Explanation -->
+        <div style="background: var(--cream); border-left: 3px solid var(--gold); padding: 1.5rem; margin-bottom: 1rem; border-radius: 3px;">
+          <h3 style="font-family: var(--serif); font-size: 1.2rem; margin-top: 0; margin-bottom: 0.75rem; color: var(--gold-soft); text-transform: uppercase;">How Payment Works</h3>
+          <p style="margin: 0 0 0.75rem; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+            Clients pay Vorvo separately for research, procurement, and coordination services.
+          </p>
+          <p style="margin: 0 0 0.75rem; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+            Contractors are paid directly by clients for any work performed.
+          </p>
+          <p style="margin: 0; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+            Vorvo does not perform contracting work and does not collect payments on behalf of contractors.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Quote Request Form -->
+    <section class="section section--alt" id="vorvo-form">
+      <div class="form">
+        <h2 class="form__title">Request a Free Service Quote</h2>
+        <p class="form__intro">Submit your details below. We will coordinate with independent third-party service providers and contact you with a clear estimate within 24 hours.</p>
+        
+        <form id="vorvo-quote-form" action="https://formspree.io/f/xqejewzo" method="POST">
+          <div class="field">
+            <label for="v-name">Your Full Name</label>
+            <input type="text" id="v-name" name="fullName" required />
+          </div>
+          
+          <div class="field--row">
+            <div class="field">
+              <label for="v-email">Email Address</label>
+              <input type="email" id="v-email" name="email" required />
+            </div>
+            <div class="field">
+              <label for="v-phone">Phone Number</label>
+              <input type="tel" id="v-phone" name="phone" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="v-service">Service Requested</label>
+            <select id="v-service" name="serviceCategory" required style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-family:var(--sans); font-size:0.95rem; box-sizing:border-box;">
+              <option value="" disabled selected hidden>-- Please Select --</option>
+              <option value="moving">Moving Help &amp; Furniture Pickup</option>
+              <option value="junk">Junk Removal &amp; Hauling</option>
+              <option value="pressure">Pressure Washing</option>
+              <option value="yard">Yard Work &amp; Cleanup</option>
+              <option value="other">Other Service</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="v-location">Service Location Address</label>
+            <input type="text" id="v-location" name="location" required placeholder="Street, City, State, ZIP (Available Nationwide)" />
+          </div>
+
+          <div class="field">
+            <label for="v-details">Describe the Job</label>
+            <textarea id="v-details" name="jobDetails" required placeholder="e.g., items to move, driveway size, preferred timing, access notes, or other details..." style="width:100%; min-height:120px; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-family:var(--sans); font-size:0.95rem; box-sizing:border-box; line-height:1.5; resize:vertical;"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Upload Job Site Photos (Optional)</label>
+            <div id="v-dropzone" style="border: 2px dashed var(--rule); padding: 2rem; text-align: center; background: var(--paper); cursor: pointer; transition: border-color 0.2s; position: relative;">
+              <span id="v-dropzone-text" style="color: var(--ink-soft); font-size: 0.95rem; font-family: var(--sans);">Drag &amp; drop photos here or click to browse</span>
+              <input type="file" id="v-photos" accept="image/*" multiple style="display: none;" />
+              <div id="v-preview-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.75rem; margin-top: 1rem; justify-content: center;"></div>
+            </div>
+          </div>
+
+          <div class="form__submit">
+            <button type="submit" class="btn btn--gold">Submit Quote Request <span class="btn__arrow">→</span></button>
+          </div>
+        </form>
+
+        <div id="vorvo-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:var(--cream); border-left:3px solid var(--moss); font-size:0.95rem; line-height:1.6;"></div>
+
+        <!-- Alternative Contact Info -->
+        <div style="margin-top:3rem; padding-top:2rem; border-top:1px solid var(--rule); text-align:center;">
+          <h4 style="margin-bottom:0.75rem; font-size:0.9rem; color:var(--gold-deep);">Direct Contact Options</h4>
+          <p style="font-size:0.95rem; color:var(--ink-soft); margin-bottom:0.5rem;">
+            Call or Text: <strong>(832) 735-0603</strong>
+          </p>
+          <p style="font-size:0.95rem; color:var(--ink-soft);">
+            Email: <strong>help@vorvoservices.com</strong>
+          </p>
+        </div>
+
       </div>
     </section>
   `;
@@ -2586,110 +2627,84 @@ function renderVorvoLanding() {
    ============================================================ */
 function renderWholesaleLanding() {
   return `
-    <section class="hero" id="hero-carousel">
-      <div class="hero__carousel">
-        <div class="hero__slide active" style="background-image: url('/images/property/24ca312436af583a7a0b52c3bc9bf333.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/property/cd1607eef39ce41a4ccd20642949b7df.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/property/e3017aa5d5df6a6a6400e536d4d6ed0d.jpg');"></div>
-      </div>
-      <div class="hero__overlay"></div>
+    <section class="hero">
       <div class="hero__inner">
         <div class="hero__eyebrow">Vorvo Wholesale Property Solutions</div>
         <h1 class="hero__title">Sell Your Property Fast. <em>Cash Offer.</em> No Repairs.</h1>
-        <p class="hero__lede">Vorvo is your direct route to hassle-free property sales. We connect you directly with wholesale buyers and real estate investors nationwide.</p>
+        <p class="hero__lede">Vorvo is your direct route to hassle-free property sales. Whether you're looking to liquidate quickly, sell an inherited estate, or offload a distressed property, we connect you directly with wholesale buyers and real estate investors nationwide.</p>
         <div class="hero__cta-row">
-          <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Get Cash Offer <span class="btn__arrow">→</span></a>
+          <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn">Get Cash Offer <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
         </div>
       </div>
-      <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
-      </div>
     </section>
 
-    <section class="section section--light">
-      <div class="section__head">
-        <div class="section__eyebrow">The Vorvo Advantage</div>
-        <h2 class="section__title">Why Choose Wholesale?</h2>
-      </div>
-      
-      <div class="card-grid">
-        <div class="service-card">
-          <img src="/images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="service-card__img" alt="As-Is Purchase" loading="lazy">
-          <div class="service-card__body">
-            <div class="service-card__cat">Benefit 01</div>
-            <h3 class="service-card__title">As-Is Purchase</h3>
-            <p class="service-card__text">No cleaning, no staging, and absolutely no repairs required. We buy properties in any condition.</p>
+    <section class="section">
+      <div class="container-wide">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:2.5rem; margin-bottom:4rem;">
+          <div class="step-card" style="padding:2rem; background:var(--cream); border:1px solid var(--rule); border-radius:3px;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">Benefit 01</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">As-Is Purchase</h3>
+            <p style="color:var(--ink-soft); font-size:0.95rem; line-height:1.6;">No cleaning, no staging, and absolutely no repairs required. We buy properties in any condition, saving you thousands in upfront costs.</p>
           </div>
-        </div>
-        <div class="service-card">
-          <img src="/images/property/f71ee5d9410576b1bdfecbac29326959.jpg" class="service-card__img" alt="Zero Commission" loading="lazy">
-          <div class="service-card__body">
-            <div class="service-card__cat">Benefit 02</div>
-            <h3 class="service-card__title">Zero Commission</h3>
-            <p class="service-card__text">Avoid traditional real estate agent commissions, hidden fees, and listing costs.</p>
+          <div class="step-card" style="padding:2rem; background:var(--cream); border:1px solid var(--rule); border-radius:3px;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">Benefit 02</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">Zero Commission</h3>
+            <p style="color:var(--ink-soft); font-size:0.95rem; line-height:1.6;">Avoid traditional real estate agent commissions, hidden fees, and listing costs. The offer you receive is the amount you keep.</p>
           </div>
-        </div>
-        <div class="service-card">
-          <img src="/images/property/ff74425c3ac14fd7c7602bcd3a6cd547.jpg" class="service-card__img" alt="Fast Closings" loading="lazy">
-          <div class="service-card__body">
-            <div class="service-card__cat">Benefit 03</div>
-            <h3 class="service-card__title">Fast Closings</h3>
-            <p class="service-card__text">We match your property with verified cash buyers, allowing us to close in as little as 7 to 14 days.</p>
+          <div class="step-card" style="padding:2rem; background:var(--cream); border:1px solid var(--rule); border-radius:3px;">
+            <div style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem;">Benefit 03</div>
+            <h3 style="font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem;">Fast Closings</h3>
+            <p style="color:var(--ink-soft); font-size:0.95rem; line-height:1.6;">We match your property with verified cash buyers, allowing us to close transactions in as little as 7 to 14 days.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="wholesale-form">
-      <div class="split">
-        <div class="split__content">
-          <div class="section__eyebrow">Request Offer</div>
-          <h2 class="section__title">Request a Cash Offer</h2>
-          <p class="text-body mb-5">Submit details below. Our team will deliver an offer within 24 hours.</p>
-          <div class="callout" style="background:var(--paper-edge);">
-            <strong>Simple process</strong>
-            1. Submit Details<br>
-            2. Property Analysis<br>
-            3. Receive Cash Offer
+    <!-- Wholesale Lead Form -->
+    <section class="section section--alt" id="wholesale-form">
+      <div class="form" style="max-width: var(--content-w); margin: 0 auto;">
+        <h2 class="form__title">Request a Cash Offer</h2>
+        <p class="form__intro">Submit your property details below. Our team will analyze the public records, market comparables, and coordinate with our investor network to deliver an offer within 24 hours.</p>
+        
+        <form id="vorvo-wholesale-form" action="https://formspree.io/f/xqejewzo" method="POST">
+          <div class="field">
+            <label for="w-name">Your Full Name</label>
+            <input type="text" id="w-name" name="fullName" required />
           </div>
-        </div>
-        <div class="split__form">
-          <div class="form">
-            <form id="vorvo-wholesale-form" action="https://formspree.io/f/xqejewzo" method="POST">
-              <div class="field">
-                <label for="w-name">Full Name</label>
-                <input type="text" id="w-name" name="fullName" required />
-              </div>
-              <div class="field--row">
-                <div class="field">
-                  <label for="w-email">Email</label>
-                  <input type="email" id="w-email" name="email" required />
-                </div>
-                <div class="field">
-                  <label for="w-phone">Phone</label>
-                  <input type="tel" id="w-phone" name="phone" required />
-                </div>
-              </div>
-              <div class="field">
-                <label for="w-location">Property Address</label>
-                <input type="text" id="w-location" name="location" required placeholder="Street, City, State, ZIP" />
-              </div>
-              <div class="field">
-                <label for="w-asking">Desired Asking Price (Optional)</label>
-                <input type="number" id="w-asking" name="askingPrice" placeholder="e.g., 180000" />
-              </div>
-              <div class="field">
-                <label for="w-details">Property Condition &amp; Details</label>
-                <textarea id="w-details" name="propertyDetails" required placeholder="roof, foundation, occupancy, repairs..."></textarea>
-              </div>
-              <button type="submit" class="btn btn--gold" style="width:100%;">Submit Property Details →</button>
-            </form>
-            <div id="wholesale-success" class="form__success" style="display:none;"></div>
+          
+          <div class="field--row">
+            <div class="field">
+              <label for="w-email">Email Address</label>
+              <input type="email" id="w-email" name="email" required />
+            </div>
+            <div class="field">
+              <label for="w-phone">Phone Number</label>
+              <input type="tel" id="w-phone" name="phone" required />
+            </div>
           </div>
-        </div>
+
+          <div class="field">
+            <label for="w-location">Property Address</label>
+            <input type="text" id="w-location" name="location" required placeholder="Street, City, State, ZIP" />
+          </div>
+
+          <div class="field">
+            <label for="w-asking">Desired Asking Price (Optional)</label>
+            <input type="number" id="w-asking" name="askingPrice" placeholder="e.g., 180000" style="width:100%;" />
+          </div>
+
+          <div class="field">
+            <label for="w-details">Describe Property Condition &amp; Details</label>
+            <textarea id="w-details" name="propertyDetails" required placeholder="e.g., roof age, foundation condition, occupancy status, repairs needed, or other details..." style="width:100%; min-height:120px; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-family:var(--sans); font-size:0.95rem; box-sizing:border-box; line-height:1.5; resize:vertical;"></textarea>
+          </div>
+
+          <div class="form__submit">
+            <button type="submit" class="btn btn--gold">Submit Property Details <span class="btn__arrow">→</span></button>
+          </div>
+        </form>
+
+        <div id="wholesale-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:var(--cream); border-left:3px solid var(--moss); font-size:0.95rem; line-height:1.6;"></div>
       </div>
     </section>
   `;
@@ -2701,116 +2716,107 @@ function renderWholesaleLanding() {
 function renderLanding() {
   const c = App.state.client;
   const personalBanner = c ? `
-    <div class="personal-banner" style="margin: 0 auto 2.5rem;">
+    <div class="personal-banner">
       <div class="personal-banner__icon">✦</div>
       <div class="personal-banner__text">
-        Welcome, <strong>${esc(c.claimantName || 'Claimant')}</strong>. Your personalized packet is ready. Tracking <span style="font-family:var(--mono);">${esc(c.trackingId || '—')}</span>.
+        Welcome, <strong>${esc(c.claimantName || 'Claimant')}</strong>. Your personalized service packet is ready for review. Tracking <span style="font-family:var(--mono); font-size:0.85em;">${esc(c.trackingId || '—')}</span>.
       </div>
     </div>
   ` : '';
 
-  const ctaText = c ? 'Review Your Agreement' : 'Request a Free Search';
+  const ctaText = c ? 'Review Your Agreement' : 'Request a Free Surplus Search';
   const ctaHref = c ? '#/agreement' : 'javascript:void(0)';
   const ctaOnClick = c ? '' : `onclick="document.getElementById('search-form')?.scrollIntoView({behavior: 'smooth'}); return false;"`;
 
   return `
-    <section class="hero" id="hero-carousel">
-      <div class="hero__carousel">
-        <div class="hero__slide active" style="background-image: url('/images/property/4087066dfb33bb53e7a88d575c5d1775.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/property/57bc71be69953c1bf1d4a6c892801478.jpg');"></div>
-        <div class="hero__slide" style="background-image: url('/images/property/a8ff3c078cc91829bfb7551b5b893ee9.jpg');"></div>
-      </div>
-      <div class="hero__overlay"></div>
+    <section class="hero">
       <div class="hero__inner">
         ${personalBanner}
         <div class="hero__eyebrow">Texas Foreclosure Surplus Recovery</div>
-        <h1 class="hero__title">Did your Texas home sell for <em>more</em> than you owed?</h1>
-        <p class="hero__lede">If your property was sold at auction, the surplus funds belong to you. We locate these assets held by the State and provide a roadmap to claim them.</p>
+        <h1 class="hero__title">Did your Texas home sell at foreclosure for <em>more</em> than you owed?</h1>
+        <p class="hero__lede">If your property was sold at a mortgage or bank foreclosure auction in Texas, the sale price may have exceeded what you owed. Any leftover money — the surplus — belongs to you. After a waiting period, unclaimed surplus is transferred to the Texas Comptroller, where it waits for the rightful owner to claim it.</p>
         <div class="hero__cta-row">
-          <a href="${ctaHref}" ${ctaOnClick} class="btn btn--gold">${ctaText} <span class="btn__arrow">→</span></a>
+          <a href="${ctaHref}" ${ctaOnClick} class="btn">${ctaText} <span class="btn__arrow">→</span></a>
           <a href="#/guide" class="btn btn--ghost">Read the Claims Guide</a>
         </div>
       </div>
-      <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
-      </div>
     </section>
 
-    <section class="section section--light">
-      <div class="split">
-        <div class="split__image-wrap">
-          <img src="/images/property/f24b2b893ee540a52956f61a699e7bef.jpg" class="split__image" alt="Public Records Research" loading="lazy">
+    <section class="section section--alt">
+      <div class="section__head">
+        <div class="section__eyebrow">How It Works</div>
+        <h2>A research service, not a representative.</h2>
+        <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">Vorvo Asset Solutions is an educational public-records research firm. We don't represent you, file claims, or give legal advice. We locate funds the State of Texas is already holding for former property owners and provide a step-by-step roadmap so you can file the claim yourself — directly with the State, for free.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">01</div>
+          <h3 class="step__title">Request a free search</h3>
+          <p class="step__body">Submit your foreclosed-property address using the form below. No fee, no obligation.</p>
         </div>
-        <div class="split__content">
-          <div class="section__eyebrow">Our Role</div>
-          <h2 class="section__title">Research, Not Representation.</h2>
-          <p class="text-body mb-4">Vorvo Asset Solutions is an educational public-records research firm. We identify funds the State is holding and provide a step-by-step roadmap so you can file the claim yourself.</p>
-          <div class="steps" style="border:none; background:transparent;">
-            <div class="step" style="border:none; padding:1.5rem 0;">
-              <div class="step__num">01</div>
-              <h3 class="step__title">Request Search</h3>
-              <p class="step__body">Submit your address below. No fee, no obligation.</p>
-            </div>
-            <div class="step" style="border:none; padding:1.5rem 0;">
-              <div class="step__num">02</div>
-              <h3 class="step__title">Review Packet</h3>
-              <p class="step__body">If we find a match, we'll send your research packet.</p>
-            </div>
-          </div>
+        <div class="step">
+          <div class="step__num">02</div>
+          <h3 class="step__title">Review the agreement</h3>
+          <p class="step__body">If we identify funds the State is holding that match your information, we'll send you the service agreement. No upfront fee.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">03</div>
+          <h3 class="step__title">Receive your claims kit</h3>
+          <p class="step__body">After signing, you'll get the Property ID and a public-process roadmap to file your claim with the Comptroller.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">04</div>
+          <h3 class="step__title">Claim your funds</h3>
+          <p class="step__body">You file directly through claimittexas.gov. When the State pays you, our 10% contingency service fee is due.</p>
         </div>
       </div>
     </section>
 
     <section class="section">
-      <div class="container">
-        <div class="disclosure" style="border:none; background:var(--paper-edge); box-shadow:none;">
-          <h3 class="upper ls-wide fw-bold text-gold mb-3">Required Consumer Disclosure</h3>
-          <p class="text-body">Unclaimed property can be claimed by the rightful owner directly from the State <strong>at no cost</strong>. You have the legal right to search for, and claim, these funds yourself, for free, without hiring a third-party research service.</p>
-          <p class="text-body">Search the official database at <a href="https://claimittexas.gov" target="_blank" rel="noopener">claimittexas.gov</a>.</p>
-        </div>
+      <div class="disclosure">
+        <h3>Required Consumer Disclosure</h3>
+        <p>Unclaimed property held by the Texas Comptroller of Public Accounts can be claimed by the rightful owner directly from the State <strong>at no cost</strong>. The State of Texas does not charge a fee to return unclaimed property. You have the legal right to search for, and claim, these funds yourself, for free, without hiring a third-party research service and without signing any agreement.</p>
+        <p>You can search the official state database at any time at <a href="https://claimittexas.gov" target="_blank" rel="noopener">claimittexas.gov</a>.</p>
+        <p><strong>You are not required to use our service to recover funds the State of Texas is holding for you.</strong></p>
       </div>
     </section>
 
-    <!-- Search Form Section -->
-    <section class="section section--light" id="search-form">
-      <div class="split split--rev">
-        <div class="split__image-wrap">
-          <img src="/images/property/0dd26eed0cc68659a73ee6380a0990a5.jpg" class="split__image" alt="Foreclosed Property" loading="lazy">
-        </div>
-        <div class="split__content">
-          <div class="form">
-            <h2 class="form__title">Free Surplus Search</h2>
-            <p class="form__intro">No charge, no obligation. If we find a match, we'll send you the agreement and research packet.</p>
-            <form id="search-form-el" action="https://formspree.io/f/xqejewzo" method="POST">
-              <div class="field">
-                <label for="full-name">Full Legal Name</label>
-                <input type="text" id="full-name" name="fullName" required />
-              </div>
-              <div class="field--row">
-                <div class="field">
-                  <label for="email">Email</label>
-                  <input type="email" id="email" name="email" required />
-                </div>
-                <div class="field">
-                  <label for="phone">Phone</label>
-                  <input type="tel" id="phone" name="phone" />
-                </div>
-              </div>
-              <div class="field">
-                <label for="address">Property Address</label>
-                <input type="text" id="address" name="address" required placeholder="Street, City, County, ZIP" />
-              </div>
-              <div class="field">
-                <label for="year">Year of Foreclosure</label>
-                <input type="text" id="year" name="year" placeholder="e.g., 2019" />
-              </div>
-              <button type="submit" class="btn btn--gold" style="width:100%;">Submit Search Request →</button>
-              <div id="form-success" class="form__success" style="display:none;"></div>
-            </form>
+    <section class="section section--alt" id="search-form">
+      <div class="form">
+        <h2 class="form__title">Free Surplus Search Request</h2>
+        <p class="form__intro">No charge, no obligation. If we find a match, we'll send you the agreement and a research packet.</p>
+        <form
+          id="search-form-el"
+          action="https://formspree.io/f/xqejewzo"
+          method="POST"
+        >
+          <div class="field">
+            <label for="full-name">Full Legal Name</label>
+            <input type="text" id="full-name" name="fullName" required />
           </div>
-        </div>
+          <div class="field--row">
+            <div class="field">
+              <label for="email">Best Contact Email</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+            <div class="field">
+              <label for="phone">Contact Phone</label>
+              <input type="tel" id="phone" name="phone" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="address">Foreclosed Property Address</label>
+            <input type="text" id="address" name="address" required placeholder="Street, City, County, ZIP" />
+          </div>
+          <div class="field">
+            <label for="year">Approximate Year of Foreclosure</label>
+            <input type="text" id="year" name="year" placeholder="e.g., 2019" />
+          </div>
+          <div class="form__submit">
+            <button type="submit" class="btn">Submit Search Request <span class="btn__arrow">→</span></button>
+          </div>
+          <div id="form-success" class="form__success" style="display:none;"></div>
+        </form>
       </div>
     </section>
   `;
