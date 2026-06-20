@@ -158,32 +158,55 @@ function generateContractHTML(contract, lead) {
   <p>Seller agrees to sell and convey, and Buyer agrees to purchase, all of Seller's right, title, and interest in and to the real property located at the address specified above, together with all improvements, fixtures, and appurtenances thereto.</p>
 
   <h3>2. Purchase Price &amp; Escrow Deposit</h3>
-  <p>The total Purchase Price to be paid by Buyer at closing shall be ${formatMoney(lead.asking_price)}. Buyer shall deposit the Earnest Money of ${formatMoney(lead.deposit_amount || 0)} with a mutually agreeable licensed title company or escrow agent within three (3) business days of the fully executed Agreement. The balance of the Purchase Price shall be paid in cash or certified funds at Closing.</p>
+  <p>The total Purchase Price to be paid by Buyer at closing shall be ${formatMoney(lead.asking_price)}. Buyer shall deposit the Earnest Money of ${formatMoney(lead.deposit_amount || 0)} with a mutually agreeable licensed title company or escrow agent within <strong>five (5) business days</strong> following execution of the Agreement. The balance of the Purchase Price shall be paid in cash or certified funds at Closing.</p>
 
-  <h3>3. Due Diligence &amp; Access</h3>
+  <h3>3. Buyer's Obligations</h3>
+  <p>Buyer's obligations under this Agreement are limited to:</p>
+  <ol>
+    <li>Execute this Purchase Agreement;</li>
+    <li>Deposit the Earnest Money Deposit within the timeframe specified above;</li>
+    <li>Conduct due diligence during the Inspection Period;</li>
+    <li>Coordinate access to the Property with Seller;</li>
+    <li>Open title with a licensed title company;</li>
+    <li>Close on or before the Closing Date (either directly or through a valid assignee); and</li>
+    <li>Comply with all obligations contained within this Agreement.</li>
+  </ol>
+  <p>No additional obligations are implied beyond those expressly stated herein.</p>
+
+  <h3>4. Due Diligence &amp; Access</h3>
   <div class="clause-box">${clauses.inspection}</div>
   <p>If Buyer determines, in its sole and absolute discretion, that the Property is not suitable for Buyer's investment purposes, Buyer shall have the absolute right to terminate this Agreement by providing written notice to Seller at any time prior to the expiration of the Inspection Period, in which case the Earnest Money Deposit shall be immediately returned to Buyer in full, and neither party shall have any further obligations hereunder.</p>
 
-  <h3>4. Assignment &amp; Wholesaling Rights</h3>
+  <h3>5. Assignment &amp; Wholesaling Rights</h3>
   <div class="clause-box"><strong>${clauses.assignment}</strong></div>
 
-  <h3>5. State-Specific Disclosures &amp; Disclaimers</h3>
+  <h3>6. State-Specific Disclosures &amp; Disclaimers</h3>
   <div class="clause-box" style="background:#fff9e6; border-left-color:#b88a00;">
     <strong>LEGAL DISCLOSURES:</strong><br/><br/>
     ${clauses.disclosures}
   </div>
 
-  <h3>6. Title, Conveyance, and Closing</h3>
+  <h3>7. Title, Conveyance, and Closing</h3>
   <p>Seller warrants that Seller holds good, marketable, and insurable title to the Property, free and clear of all liens, encumbrances, and clouds, except for standard utility easements and zoning restrictions. Conveyance shall be by General Warranty Deed. Closing shall take place on or before the Closing Date specified above. All standard closing costs, including title search, title insurance, escrow fees, and transfer taxes, shall be allocated according to standard local real estate customs.</p>
+  <p><strong>TITLE COMPANY DISCLAIMER:</strong> The title company is an independent third party. Vorvo Services LLC does not act as escrow agent, title company, or closing agent. All escrow officer information, wire instructions, deposit instructions, and escrow account information is provided by the title company, not by Vorvo Services LLC.</p>
 
-  <h3>7. As-Is Condition</h3>
+  <h3>8. As-Is Condition</h3>
   <p>Buyer acknowledges that it is purchasing the Property in its current "AS-IS, WHERE-IS" physical condition, with all faults. Seller makes no warranties, express or implied, regarding the structural, mechanical, or environmental condition of the Property, except as explicitly set forth in this Agreement.</p>
+  <p><strong>NO IMPLIED RESPONSIBILITIES:</strong> Vorvo Services LLC does not inspect the property for any party, verify property condition, guarantee title quality, guarantee value, guarantee repairs, provide appraisals, provide contractor estimates, provide financing, act as escrow agent, act as title company, or hold earnest money on behalf of any party. All inspections and due diligence are the sole responsibility of Buyer and/or its assigns.</p>
 
-  <h3>8. Default Provisions</h3>
+  <h3>9. Default Provisions</h3>
   <p>In the event of a default by Buyer, Seller's sole and exclusive remedy shall be to retain the Earnest Money Deposit as liquidated damages, and Seller hereby waives any right to seek specific performance or additional damages. In the event of a default by Seller, Buyer shall have the right to seek return of its Earnest Money Deposit, sue for specific performance, or pursue any other remedies available at law or in equity.</p>
 
-  <h3>9. Governing Law</h3>
+  <h3>10. Governing Law</h3>
   <p>${clauses.governingLaw}</p>
+
+  <h3>11. Role Definitions</h3>
+  <p><strong>For clarity, the parties acknowledge the following:</strong></p>
+  <ul style="margin-top:10px;">
+    <li><strong>Seller:</strong> Property Owner</li>
+    <li><strong>Buyer:</strong> Vorvo Services LLC and/or Assigns</li>
+    <li><strong>Title Company:</strong> Independent Third Party (not affiliated with Vorvo Services LLC)</li>
+  </ul>
 
   <div class="signature-section">
     <h3>Electronic Signatures &amp; Execution</h3>
@@ -275,10 +298,6 @@ function generateContractHTML(contract, lead) {
       <td class="label">Total Acquisition Price</td>
       <td><strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong></td>
     </tr>
-    <tr>
-      <td class="label">Earnest Money Deadline</td>
-      <td colspan="3"><strong>${emdDeadlineStr}</strong></td>
-    </tr>
     ${deal.title_company ? `
     <tr>
       <td class="label">Title Company</td>
@@ -288,7 +307,12 @@ function generateContractHTML(contract, lead) {
     </tr>
     ${deal.title_address ? `<tr><td class="label">Title Company Address</td><td colspan="3">${esc(deal.title_address)}</td></tr>` : ''}
     ${deal.escrow_phone || deal.escrow_email ? `<tr><td class="label">Escrow Phone</td><td>${esc(deal.escrow_phone || '—')}</td><td class="label">Escrow Email</td><td>${esc(deal.escrow_email || '—')}</td></tr>` : ''}
-    ` : ''}
+    ` : `
+    <tr>
+      <td class="label">Title Company</td>
+      <td colspan="3"><em>Title Company Information Pending</em></td>
+    </tr>
+    `}
   </table>
 
   <p>This Assignment of Real Estate Purchase Contract ("Assignment Agreement") is made and executed on this ${createdDate}, by and between <strong>Vorvo Services, LLC</strong> ("Assignor"), and the Assignee listed above ("Assignee").</p>
@@ -300,22 +324,47 @@ function generateContractHTML(contract, lead) {
   <h3>1. Assignment of Rights and Obligations</h3>
   <p>For valuable consideration, the receipt and sufficiency of which are hereby acknowledged, Assignor hereby transfers, assigns, and conveys to Assignee all of Assignor's rights, benefits, privileges, and obligations under the Original Contract. Assignee hereby completely assumes all obligations, covenants, and closing requirements of the Buyer under the Original Contract.</p>
 
-  <h3>2. Financial Terms &amp; Total Consideration Payable by Assignee</h3>
+  <h3>2. Assignor's Obligations</h3>
+  <p>Assignor's obligations under this Assignment Agreement are limited to:</p>
+  <ol>
+    <li>Possess a valid assignable purchase agreement;</li>
+    <li>Transfer contractual rights to Assignee;</li>
+    <li>Cooperate with the title company during closing;</li>
+    <li>Deliver all assignment documentation required by the title company; and</li>
+    <li>Honor the assignment terms once executed.</li>
+  </ol>
+  <p>No additional obligations are implied beyond those expressly stated herein.</p>
+
+  <h3>3. Assignee's Obligations</h3>
+  <p>Assignee is solely responsible for:</p>
+  <ol>
+    <li>Signing this Assignment Agreement;</li>
+    <li>Providing proof of funds;</li>
+    <li>Conducting all inspections and due diligence;</li>
+    <li>Depositing the Earnest Money Deposit;</li>
+    <li>Closing on or before the Closing Date;</li>
+    <li>Paying all acquisition funds; and</li>
+    <li>Performing all obligations assumed under the original purchase agreement.</li>
+  </ol>
+
+  <h3>4. Financial Terms &amp; Total Consideration Payable by Assignee</h3>
   <p>Assignee agrees to pay a non-refundable Total Consideration Payable by Assignee of <strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong>. This Total Consideration shall be paid as follows:</p>
   <ol>
-    <li><strong>Earnest Money Deposit:</strong> Assignee shall deposit ${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))} with the designated escrow agent/title company no later than <strong>${emdDeadlineStr}</strong>. Earnest Money shall not be considered received until confirmed by the designated title company or escrow agent. Proof of transmission alone shall not satisfy this requirement.</li>
+    <li><strong>Earnest Money Deposit:</strong> Assignee shall deposit ${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))} with the designated escrow agent/title company within <strong>one (1) business day</strong> following execution of this Assignment Agreement. Earnest Money shall not be considered received until confirmed by the designated title company or escrow agent. Proof of transmission alone shall not satisfy this requirement.</li>
     <li><strong>Balance at Closing:</strong> The remaining balance of the Total Consideration Payable by Assignee shall be paid in cash or wire transfer at the time of closing.</li>
   </ol>
 
-  <h3>3. Due Diligence and Inspection Disclaimer</h3>
+  <h3>5. Due Diligence and Inspection Disclaimer</h3>
   <div class="clause-box"><strong>${clauses.dueDiligence}</strong></div>
   <div class="clause-box">${clauses.disclosures}</div>
   <p><strong>NO RELIANCE:</strong> Assignee acknowledges they are relying solely upon their own inspections, investigations, contractors, advisors, and due diligence. Assignee is not relying upon statements, projections, repair estimates, valuations, or marketing materials provided by Assignor.</p>
+  <p><strong>NO IMPLIED RESPONSIBILITIES:</strong> Assignor does not inspect the property for Assignee, verify property condition, guarantee title quality, guarantee value, guarantee repairs, provide appraisals, provide contractor estimates, provide financing, act as escrow agent, act as title company, or hold earnest money on behalf of any party. All inspections and due diligence are the sole responsibility of Assignee.</p>
 
-  <h3>4. Closing &amp; Title</h3>
+  <h3>6. Closing &amp; Title</h3>
   <p>Closing shall take place on or before the Closing Date specified above. Assignee shall be solely responsible for all of Assignee's closing costs, title insurance premiums, and transfer taxes. Assignor shall cooperate with the title company to facilitate a simultaneous or double-closing as required.</p>
+  <p><strong>TITLE COMPANY DISCLAIMER:</strong> The title company is an independent third party. Vorvo Services LLC does not act as escrow agent, title company, or closing agent. All escrow officer information, wire instructions, deposit instructions, and escrow account information is provided by the title company, not by Vorvo Services LLC. If title company information is not yet available, it will be provided by the title company after title has been opened.</p>
 
-  <h3>5. Assignee Default &amp; Remedies</h3>
+  <h3>7. Assignee Default &amp; Remedies</h3>
   <p>If Assignee fails to:</p>
   <ol style="margin-top:10px;">
     <li>Deposit the Earnest Money by the deadline specified above;</li>
@@ -329,23 +378,31 @@ function generateContractHTML(contract, lead) {
     <li><strong>Remarketing Rights:</strong> Assignor may immediately remarket, reassign, or otherwise transfer its contractual rights to any third party without further notice to Assignee.</li>
   </ol>
 
-  <h3>6. State-Specific Clauses &amp; Disclosures</h3>
+  <h3>8. State-Specific Clauses &amp; Disclosures</h3>
   <div class="clause-box" style="background:#fff9e6; border-left-color:#b88a00;">
     <strong>LEGAL NOTICE:</strong><br/><br/>
     ${clauses.specialLanguage}
   </div>
 
-  <h3>7. Governing Law</h3>
+  <h3>9. Governing Law</h3>
   <p>${clauses.governingLaw}</p>
 
-  <h3>8. Entire Agreement</h3>
+  <h3>10. Entire Agreement</h3>
   <p>This Assignment Agreement constitutes the entire agreement between the parties and supersedes all prior discussions, negotiations, representations, and understandings, whether oral or written, relating to the subject matter hereof.</p>
 
-  <h3>9. Notices</h3>
+  <h3>11. Notices</h3>
   <p>All notices under this Agreement may be delivered by email, electronic signature platform, or certified mail. Notice shall be deemed delivered when transmitted. Notices to Assignor should be sent to help@vorvoservices.com.</p>
 
-  <h3>10. Electronic Record Retention</h3>
-  <p>Electronic records, audit logs, timestamps, and signatures shall constitute admissible business records and evidence of execution. This Agreement and all related documents may be stored electronically and reproduced in paper form upon request.
+  <h3>12. Electronic Record Retention</h3>
+  <p>Electronic records, audit logs, timestamps, and signatures shall constitute admissible business records and evidence of execution. This Agreement and all related documents may be stored electronically and reproduced in paper form upon request.</p>
+
+  <h3>13. Role Definitions</h3>
+  <p><strong>For clarity, the parties acknowledge the following:</strong></p>
+  <ul style="margin-top:10px;">
+    <li><strong>Assignor:</strong> Vorvo Services LLC</li>
+    <li><strong>Assignee:</strong> End Cash Buyer</li>
+    <li><strong>Title Company:</strong> Independent Third Party (not affiliated with Vorvo Services LLC)</li>
+  </ul>
 
   <div class="signature-section">
     <h3>Electronic Signatures &amp; Execution</h3>
