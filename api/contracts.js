@@ -86,7 +86,12 @@ function generateContractHTML(contract, lead) {
   
   const createdDate = new Date(contract.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const closingDate = deal.closing_date ? new Date(deal.closing_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Closing Date Pending]';
-  const contractDate = deal.original_contract_date ? new Date(deal.original_contract_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Original Contract Date Pending]';
+  const contractDate = deal.original_contract_date ? new Date(deal.original_contract_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : null;
+  
+  // Calculate EMD deadline (24 hours from contract creation)
+  const emdDeadline = new Date(contract.created_at);
+  emdDeadline.setHours(emdDeadline.getHours() + 24);
+  const emdDeadlineStr = emdDeadline.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + emdDeadline.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
 
   if (type === 'purchase') {
     return `<!DOCTYPE html>
@@ -246,11 +251,14 @@ function generateContractHTML(contract, lead) {
 
   <table class="meta-table">
     <tr>
-      <td class="label">Assignor (Wholesaler)</td>
+      <td class="label">Assignor</td>
       <td>Vorvo Services, LLC</td>
       <td class="label">Assignee (Cash Buyer)</td>
-      <td>${esc(buyer.legal_name || '[Assignee Pending]')} ${buyer.entity_name ? `(${esc(buyer.entity_name)})` : ''}</td>
+      <td>${esc(buyer.legal_name || '[Assignee Pending]')}</td>
     </tr>
+    ${buyer.entity_name ? `<tr><td class="label">Assignee Entity</td><td colspan="3">${esc(buyer.entity_name)}</td></tr>` : ''}
+    ${buyer.email ? `<tr><td class="label">Assignee Email</td><td>${esc(buyer.email)}</td><td class="label">Assignee Phone</td><td>${esc(buyer.phone || '—')}</td></tr>` : ''}
+    ${buyer.mailing_address ? `<tr><td class="label">Assignee Mailing Address</td><td colspan="3">${esc(buyer.mailing_address)}</td></tr>` : ''}
     <tr>
       <td class="label">Property Address</td>
       <td colspan="3">${esc(lead.property_address)}</td>
@@ -267,12 +275,26 @@ function generateContractHTML(contract, lead) {
       <td class="label">Total Acquisition Price</td>
       <td><strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong></td>
     </tr>
+    <tr>
+      <td class="label">Earnest Money Deadline</td>
+      <td colspan="3"><strong>${emdDeadlineStr}</strong></td>
+    </tr>
+    ${deal.title_company ? `
+    <tr>
+      <td class="label">Title Company</td>
+      <td>${esc(deal.title_company)}</td>
+      <td class="label">Escrow Officer</td>
+      <td>${esc(deal.escrow_officer || '—')}</td>
+    </tr>
+    ${deal.title_address ? `<tr><td class="label">Title Company Address</td><td colspan="3">${esc(deal.title_address)}</td></tr>` : ''}
+    ${deal.escrow_phone || deal.escrow_email ? `<tr><td class="label">Escrow Phone</td><td>${esc(deal.escrow_phone || '—')}</td><td class="label">Escrow Email</td><td>${esc(deal.escrow_email || '—')}</td></tr>` : ''}
+    ` : ''}
   </table>
 
   <p>This Assignment of Real Estate Purchase Contract ("Assignment Agreement") is made and executed on this ${createdDate}, by and between <strong>Vorvo Services, LLC</strong> ("Assignor"), and the Assignee listed above ("Assignee").</p>
 
   <h3>Recitals</h3>
-  <p>WHEREAS, Assignor entered into a certain Real Estate Purchase &amp; Sale Agreement dated ${contractDate} ("Original Contract") as Buyer, with the legal owner of the Property as Seller, for the purchase of the real property located at the address specified above; and</p>
+  <p>WHEREAS, Assignor entered into a certain Real Estate Purchase &amp; Sale Agreement dated ${contractDate || '[ORIGINAL CONTRACT DATE REQUIRED]'} ("Original Contract") as Buyer, with the legal owner of the Property as Seller, for the purchase of the real property located at the address specified above; and</p>
   <p>WHEREAS, Assignor desires to assign, transfer, and convey all of its rights, title, interest, and obligations under said Original Contract to Assignee, and Assignee desires to accept said assignment under the terms and conditions set forth herein.</p>
 
   <h3>1. Assignment of Rights and Obligations</h3>
@@ -281,25 +303,49 @@ function generateContractHTML(contract, lead) {
   <h3>2. Financial Terms &amp; Total Consideration Payable by Assignee</h3>
   <p>Assignee agrees to pay a non-refundable Total Consideration Payable by Assignee of <strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong>. This Total Consideration shall be paid as follows:</p>
   <ol>
-    <li>An Earnest Money Deposit of ${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))} shall be deposited by Assignee with the designated escrow agent/title company within twenty-four (24) hours of execution of this Assignment Agreement.</li>
-    <li>The remaining balance of the Total Consideration Payable by Assignee shall be paid in cash or wire transfer at the time of closing.</li>
+    <li><strong>Earnest Money Deposit:</strong> Assignee shall deposit ${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))} with the designated escrow agent/title company no later than <strong>${emdDeadlineStr}</strong>. Earnest Money shall not be considered received until confirmed by the designated title company or escrow agent. Proof of transmission alone shall not satisfy this requirement.</li>
+    <li><strong>Balance at Closing:</strong> The remaining balance of the Total Consideration Payable by Assignee shall be paid in cash or wire transfer at the time of closing.</li>
   </ol>
 
   <h3>3. Due Diligence and Inspection Disclaimer</h3>
   <div class="clause-box"><strong>${clauses.dueDiligence}</strong></div>
   <div class="clause-box">${clauses.disclosures}</div>
+  <p><strong>NO RELIANCE:</strong> Assignee acknowledges they are relying solely upon their own inspections, investigations, contractors, advisors, and due diligence. Assignee is not relying upon statements, projections, repair estimates, valuations, or marketing materials provided by Assignor.</p>
 
   <h3>4. Closing &amp; Title</h3>
-  <p>Closing shall take place on or before the Closing Date specified above. Assignee shall be solely responsible for all of Assignee's closing costs, title insurance premiums, and transfer taxes. Assignor shall cooperate with the title company to facilitate a simultaneous or double-closing as required. Any default by Assignee under this Assignment Agreement or the Original Contract shall result in the immediate forfeiture of the Earnest Money Deposit to Assignor as liquidated damages.</p>
+  <p>Closing shall take place on or before the Closing Date specified above. Assignee shall be solely responsible for all of Assignee's closing costs, title insurance premiums, and transfer taxes. Assignor shall cooperate with the title company to facilitate a simultaneous or double-closing as required.</p>
 
-  <h3>5. State-Specific Clauses &amp; Disclosures</h3>
+  <h3>5. Assignee Default &amp; Remedies</h3>
+  <p>If Assignee fails to:</p>
+  <ol style="margin-top:10px;">
+    <li>Deposit the Earnest Money by the deadline specified above;</li>
+    <li>Close on or before the Closing Date;</li>
+    <li>Perform any other material obligation under this Assignment Agreement or the Original Contract;</li>
+  </ol>
+  <p>then the following shall apply:</p>
+  <ol style="margin-top:10px;">
+    <li><strong>Forfeiture:</strong> The Earnest Money Deposit shall be immediately forfeited to Assignor as liquidated damages;</li>
+    <li><strong>Termination:</strong> Assignor may terminate this Assignment Agreement immediately upon notice to Assignee;</li>
+    <li><strong>Remarketing Rights:</strong> Assignor may immediately remarket, reassign, or otherwise transfer its contractual rights to any third party without further notice to Assignee.</li>
+  </ol>
+
+  <h3>6. State-Specific Clauses &amp; Disclosures</h3>
   <div class="clause-box" style="background:#fff9e6; border-left-color:#b88a00;">
     <strong>LEGAL NOTICE:</strong><br/><br/>
     ${clauses.specialLanguage}
   </div>
 
-  <h3>6. Governing Law</h3>
+  <h3>7. Governing Law</h3>
   <p>${clauses.governingLaw}</p>
+
+  <h3>8. Entire Agreement</h3>
+  <p>This Assignment Agreement constitutes the entire agreement between the parties and supersedes all prior discussions, negotiations, representations, and understandings, whether oral or written, relating to the subject matter hereof.</p>
+
+  <h3>9. Notices</h3>
+  <p>All notices under this Agreement may be delivered by email, electronic signature platform, or certified mail. Notice shall be deemed delivered when transmitted. Notices to Assignor should be sent to help@vorvoservices.com.</p>
+
+  <h3>10. Electronic Record Retention</h3>
+  <p>Electronic records, audit logs, timestamps, and signatures shall constitute admissible business records and evidence of execution. This Agreement and all related documents may be stored electronically and reproduced in paper form upon request.
 
   <div class="signature-section">
     <h3>Electronic Signatures &amp; Execution</h3>
@@ -307,23 +353,23 @@ function generateContractHTML(contract, lead) {
     
     <div class="sig-grid">
       <div class="sig-box">
-        <strong>ASSIGNOR (Vorvo Services, LLC):</strong><br/><br/>
-        <div style="height:60px; line-height:60px; font-size:20px; font-family:'Brush Script MT', cursive; color:#15172b;">
-          D. S. &nbsp;·&nbsp; J. V.
+        <strong>ASSIGNOR:</strong><br/><br/>
+        <div style="height:60px;">
+          <em>Vorvo Services LLC</em>
         </div>
-        <div>Name: Dennis S. / Joel V.</div>
-        <div>Title: Authorized Assignors</div>
+        <div>Authorized Representative</div>
         <div>Date: ${createdDate}</div>
       </div>
       <div class="sig-box">
-        <strong>ASSIGNEE (Cash Buyer):</strong><br/><br/>
+        <strong>ASSIGNEE:</strong><br/><br/>
         <div style="height:60px;">
           ${contract.status === 'signed' ? `<img src="${contract.signature_data}" class="sig-img" alt="Buyer Signature" />` : '<em>Awaiting Assignee Signature</em>'}
         </div>
         <div>Name: ${esc(contract.signer_name || buyer.legal_name)}</div>
         ${buyer.entity_name ? `<div>Entity: ${esc(buyer.entity_name)}</div>` : ''}
+        ${buyer.email ? `<div>Email: ${esc(buyer.email)}</div>` : ''}
+        ${buyer.phone ? `<div>Phone: ${esc(buyer.phone)}</div>` : ''}
         <div>Date: ${contract.signed_at ? new Date(contract.signed_at).toLocaleDateString('en-US', { timeZone: 'America/Chicago', year: 'numeric', month: 'long', day: 'numeric' }) : '—'}</div>
-        ${contract.ip_address ? `<div style="font-size:10px; color:#777777;">IP: ${contract.ip_address}</div>` : ''}
       </div>
     </div>
   </div>
@@ -687,6 +733,11 @@ export default async function handler(req) {
 
       if (!dealId || !contractType || !state || !dealData) {
         return new Response(JSON.stringify({ error: 'Missing required contract fields' }), { status: 400, headers });
+      }
+
+      // Validate Original Contract Date for Assignment Agreements
+      if (contractType === 'assignment' && !dealData.original_contract_date) {
+        return new Response(JSON.stringify({ error: 'Original Contract Date Required' }), { status: 400, headers });
       }
 
       // Generate VRV-CTR-###### format token (random 6-digit number)

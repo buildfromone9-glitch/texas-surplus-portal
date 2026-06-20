@@ -5381,7 +5381,7 @@ function bindHandlers(route) {
                   <input type="date" class="igc-closing-date" required value="${q.closing_date || ''}" style="width:100%; padding:0.35rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
                 </div>
                 <div class="field field-igc-contract-date" style="margin:0; display:none;">
-                  <label style="font-size:0.7rem;">Original Contract Date</label>
+                  <label style="font-size:0.7rem;">Original Contract Date <span style="color:var(--rust);">*</span></label>
                   <input type="date" class="igc-contract-date" style="width:100%; padding:0.35rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
                 </div>
                 <div class="field" style="margin:0;">
@@ -5418,6 +5418,30 @@ function bindHandlers(route) {
                   <div class="field" style="margin:0; grid-column:span 2;">
                     <label style="font-size:0.7rem;">Proof of Funds URL</label>
                     <input type="url" class="igc-buyer-pof" placeholder="e.g. https://dropbox.com/... (optional)" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                </div>
+                
+                <!-- Title Company Fields (for Assignment) -->
+                <div class="igc-title-fields" style="display:none; grid-column:span 2; grid-template-columns:1fr 1fr; gap:0.75rem; border-top:1px solid var(--rule-soft); padding-top:0.75rem; margin-top:0.25rem;">
+                  <div class="field" style="margin:0; grid-column:span 2;">
+                    <label style="font-size:0.7rem;">Title Company Name</label>
+                    <input type="text" class="igc-title-company" placeholder="e.g. Stewart Title" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0; grid-column:span 2;">
+                    <label style="font-size:0.7rem;">Title Company Address</label>
+                    <input type="text" class="igc-title-address" placeholder="e.g. 123 Main St, Houston, TX 77002" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.7rem;">Escrow Officer</label>
+                    <input type="text" class="igc-escrow-officer" placeholder="e.g. Jane Smith" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0;">
+                    <label style="font-size:0.7rem;">Escrow Phone</label>
+                    <input type="tel" class="igc-escrow-phone" placeholder="e.g. 713-555-0199" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
+                  </div>
+                  <div class="field" style="margin:0; grid-column:span 2;">
+                    <label style="font-size:0.7rem;">Escrow Email</label>
+                    <input type="email" class="igc-escrow-email" placeholder="e.g. escrow@titleco.com" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
                   </div>
                 </div>
                 
@@ -5603,6 +5627,7 @@ function bindHandlers(route) {
           if (!q) return;
           const typeSelect = form.querySelector('.igc-type');
           const buyerFields = form.querySelector('.igc-buyer-fields');
+          const titleFields = form.querySelector('.igc-title-fields');
           const feeField = form.querySelector('.field-igc-assignment-fee');
           const contractDateField = form.querySelector('.field-igc-contract-date');
           const totalPriceField = form.querySelector('.field-igc-total-price');
@@ -5610,6 +5635,7 @@ function bindHandlers(route) {
           const purchasePriceInput = form.querySelector('.igc-purchase-price');
           const totalPriceInput = form.querySelector('.igc-total-price');
           const assignmentFeeInput = form.querySelector('.igc-assignment-fee');
+          const contractDateInput = form.querySelector('.igc-contract-date');
           
           const updateAssignmentFee = () => {
             const originalPrice = parseFloat(purchasePriceInput.value) || 0;
@@ -5630,6 +5656,7 @@ function bindHandlers(route) {
 
             if (type === 'assignment') {
               buyerFields.style.display = 'grid';
+              if (titleFields) titleFields.style.display = 'grid';
               feeField.style.display = 'block';
               contractDateField.style.display = 'block';
               if (totalPriceField) totalPriceField.style.display = 'block';
@@ -5642,12 +5669,16 @@ function bindHandlers(route) {
               if (totalPriceInput) totalPriceInput.value = q.offer_amount || '';
               updateAssignmentFee();
               
+              // Make contract date required for assignment
+              if (contractDateInput) contractDateInput.required = true;
+              
               form.querySelector('.igc-buyer-name').required = true;
               form.querySelector('.igc-buyer-email').required = true;
               form.querySelector('.igc-buyer-phone').required = true;
               form.querySelector('.igc-buyer-address').required = true;
             } else {
               buyerFields.style.display = 'none';
+              if (titleFields) titleFields.style.display = 'none';
               feeField.style.display = 'none';
               contractDateField.style.display = 'none';
               if (totalPriceField) totalPriceField.style.display = 'none';
@@ -5657,6 +5688,9 @@ function bindHandlers(route) {
               
               // Reset fields for purchase
               if (purchasePriceInput) purchasePriceInput.value = q.offer_amount || q.asking_price || '';
+              
+              // Make contract date not required for purchase
+              if (contractDateInput) contractDateInput.required = false;
               
               form.querySelector('.igc-buyer-name').required = false;
               form.querySelector('.igc-buyer-email').required = false;
@@ -5685,6 +5719,14 @@ function bindHandlers(route) {
             const inspectionPeriod = parseInt(form.querySelector('.igc-inspection-period').value) || 15;
             const contractTerms = form.querySelector('.igc-terms').value.trim();
             
+            // Validate Original Contract Date for Assignment Agreements
+            if (contractType === 'assignment' && !originalContractDate) {
+              alert('Original Contract Date Required. Please enter the date of the original Purchase Agreement.');
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Generate Contract';
+              return;
+            }
+            
             const dealData = {
               purchase_price: purchasePrice,
               earnest_money: earnestMoney,
@@ -5705,6 +5747,21 @@ function bindHandlers(route) {
                 mailing_address: form.querySelector('.igc-buyer-address').value.trim(),
                 proof_of_funds_url: form.querySelector('.igc-buyer-pof').value.trim() || null
               };
+              
+              // Add title company info if available
+              const titleCompany = form.querySelector('.igc-title-company')?.value.trim() || null;
+              const titleAddress = form.querySelector('.igc-title-address')?.value.trim() || null;
+              const escrowOfficer = form.querySelector('.igc-escrow-officer')?.value.trim() || null;
+              const escrowPhone = form.querySelector('.igc-escrow-phone')?.value.trim() || null;
+              const escrowEmail = form.querySelector('.igc-escrow-email')?.value.trim() || null;
+              
+              if (titleCompany || escrowOfficer) {
+                dealData.title_company = titleCompany;
+                dealData.title_address = titleAddress;
+                dealData.escrow_officer = escrowOfficer;
+                dealData.escrow_phone = escrowPhone;
+                dealData.escrow_email = escrowEmail;
+              }
             }
             
             try {
