@@ -208,7 +208,6 @@ function generateContractHTML(contract, lead) {
 
   <div class="footer">
     <p>Vorvo Services LLC · help@vorvoservices.com · (832) 735-0603</p>
-    <p>Tracking ID: ${lead.tracking_id} · Secure Token: ${contract.secure_token}</p>
   </div>
 </div>
 </body>
@@ -280,10 +279,10 @@ function generateContractHTML(contract, lead) {
   <p>For valuable consideration, the receipt and sufficiency of which are hereby acknowledged, Assignor hereby transfers, assigns, and conveys to Assignee all of Assignor's rights, benefits, privileges, and obligations under the Original Contract. Assignee hereby completely assumes all obligations, covenants, and closing requirements of the Buyer under the Original Contract.</p>
 
   <h3>2. Financial Terms &amp; Total Consideration Payable by Assignee</h3>
-  <p>Assignee agrees to pay Assignor a non-refundable Total Consideration Payable by Assignee of <strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong>. This Total Consideration shall be paid as follows:</p>
+  <p>Assignee agrees to pay a non-refundable Total Consideration Payable by Assignee of <strong>${formatMoney((deal.purchase_price || lead.asking_price) + (deal.assignment_fee || 0))}</strong>. This Total Consideration shall be paid as follows:</p>
   <ol>
     <li>An Earnest Money Deposit of ${formatMoney(deal.earnest_money !== undefined && deal.earnest_money !== null ? deal.earnest_money : (lead.deposit_amount || 0))} shall be deposited by Assignee with the designated escrow agent/title company within twenty-four (24) hours of execution of this Assignment Agreement.</li>
-    <li>The remaining balance of the Total Consideration shall be paid to Assignor in cash or wire transfer at the time of closing.</li>
+    <li>The remaining balance of the Total Consideration Payable by Assignee shall be paid in cash or wire transfer at the time of closing.</li>
   </ol>
 
   <h3>3. Due Diligence and Inspection Disclaimer</h3>
@@ -725,6 +724,25 @@ export default async function handler(req) {
       }
 
       const createdContracts = await createRes.json();
+      const createdContract = createdContracts[0];
+
+      // Load associated lead details
+      const leadRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/wholesale_leads?id=eq.${dealId}&select=*`,
+        {
+          headers: {
+            'apikey': SERVICE_ROLE_KEY,
+            'Authorization': `Bearer ${SERVICE_ROLE_KEY}`
+          }
+        }
+      );
+      let lead = null;
+      if (leadRes.ok) {
+        const leads = await leadRes.json();
+        if (leads && leads.length > 0) {
+          lead = leads[0];
+        }
+      }
       
       // If Purchase Agreement: generate access token in wholesale_leads
       if (contractType === 'purchase') {
@@ -748,7 +766,78 @@ export default async function handler(req) {
         );
       }
 
-      return new Response(JSON.stringify({ success: true, contract: createdContracts[0] }), { status: 200, headers });
+      // If Assignment Agreement: Send review & signature link to the end buyer (Assignee)
+      if (contractType === 'assignment' && lead && buyerInfo && buyerInfo.email) {
+        const host = req.headers.get('host') || 'www.vorvoservices.com';
+        const protocol = host.includes('localhost') ? 'http' : 'https';
+        const origin = `${protocol}://${host}`;
+        const signLink = `${origin}/#/assignment?token=${secureToken}`;
+
+        if (RESEND_KEY) {
+          try {
+            const emailHtml = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  body{font-family:Arial,sans-serif;color:#FFFFFF;background:#111111;margin:0;padding:0}
+  .wrap{max-width:650px;margin:0 auto;padding:40px 24px;background:#111111}
+  .card{background:#181818;border:1px solid #FFCC00;padding:30px;border-radius:4px}
+  .hdr{border-bottom:2px solid #FFCC00;padding-bottom:24px;margin-bottom:32px}
+  .hdr h1{font-size:22px;margin:0 0 4px;color:#FFCC00;text-transform:uppercase}
+  .hdr p{margin:0;color:#888888;font-size:14px}
+  p{font-size:15px;line-height:1.7;color:#D8D8D8}
+  .trk{background:#141414;border-left:3px solid #FFCC00;padding:16px 20px;margin:24px 0;font-size:14px;color:#D8D8D8}
+  .ftr{font-size:11px;color:#888888;border-top:1px solid #222222;padding-top:16px;margin-top:32px}
+  .btn{display:inline-block;background:#FFCC00;color:#111111;padding:12px 28px;text-decoration:none;font-weight:bold;font-size:13px;letter-spacing:.08em;border-radius:2px;margin:8px 0 32px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="hdr"><h1>Vorvo Services</h1><p>Wholesale Property Solutions</p></div>
+    <p>Dear ${esc(buyerInfo.legal_name || 'Assignee')},</p>
+    <p>An Assignment of Real Estate Purchase Contract has been generated for your review and signature regarding the property below.</p>
+    
+    <div class="trk">
+      <strong style="display:block;margin-bottom:6px;color:#FFCC00;font-size:15px;">Transaction Details:</strong>
+      • <strong>Property Address:</strong> ${esc(lead.property_address)}<br/>
+      • <strong>Earnest Money Requirement:</strong> ${formatMoney(dealData.earnest_money)}<br/>
+      • <strong>Total Consideration Payable by Assignee:</strong> ${formatMoney((dealData.purchase_price || lead.asking_price || 0) + (dealData.assignment_fee || 0))}<br/>
+      • <strong>Closing Date:</strong> ${dealData.closing_date ? new Date(dealData.closing_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}<br/>
+      • <strong>Governing State:</strong> ${state}
+    </div>
+
+    <p>Please click the button below to review the agreement and execute it electronically.</p>
+    
+    <a href="${signLink}" class="btn">Review & Sign Agreement</a>
+
+    <p>If you have any questions or need assistance, please reply directly to this email or contact us at help@vorvoservices.com.</p>
+
+    <p style="margin-top:32px;">Best regards,<br/><strong>Vorvo Services</strong><br/>Phone: (832) 735-0603<br/>Email: help@vorvoservices.com</p>
+  </div>
+</div>
+</body>
+</html>`;
+
+            await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                from: SENDER_EMAIL,
+                reply_to: 'help@vorvoservices.com',
+                to: buyerInfo.email,
+                subject: `Review & Sign: Assignment Agreement — ${lead.property_address}`,
+                html: emailHtml
+              })
+            });
+          } catch (emailErr) {
+            console.error('Failed to send assignment generation email:', emailErr);
+          }
+        }
+      }
+
+      return new Response(JSON.stringify({ success: true, contract: createdContract }), { status: 200, headers });
     }
 
     // ==========================================
