@@ -6,6 +6,14 @@ export const config = { runtime: 'edge' };
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 export default async function handler(req) {
+  if (req.method === 'GET') {
+    const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR';
+    return new Response(JSON.stringify({ publishableKey }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
@@ -50,7 +58,10 @@ export default async function handler(req) {
       throw new Error(data.error?.message || 'Stripe API error');
     }
 
-    return new Response(JSON.stringify({ clientSecret: data.client_secret }), {
+    return new Response(JSON.stringify({ 
+      clientSecret: data.client_secret,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR'
+    }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

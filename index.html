@@ -1420,6 +1420,8 @@ const App = {
     ipLocation: null,
     adminUser: null,
     adminDraft: {},
+    expandedWholesaleId: null,
+    expandedPropertyQuoteId: null,
   },
 
   logAudit(event) {
@@ -4940,33 +4942,49 @@ function bindHandlers(route) {
                   });
                 });
 
-                // Initialize Stripe
-                const stripe = Stripe('pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR');
-                const elements = stripe.elements();
-                const cardElement = elements.create('card', {
-                  style: {
-                    base: {
-                      color: '#FFFFFF',
-                      fontFamily: 'DM Sans, sans-serif',
-                      fontSize: '15px',
-                      '::placeholder': { color: '#888888' }
-                    },
-                    invalid: { color: '#FF3333' }
-                  }
-                });
-                cardElement.mount('#stripe-card-element');
+                // Initialize Stripe dynamically from backend configuration
+                let stripe;
+                let elements;
+                let cardElement;
                 
-                // Handle real-time validation errors from the card Element
-                cardElement.on('change', (event) => {
-                  const displayError = document.getElementById('stripe-card-errors');
-                  if (event.error) {
-                    displayError.textContent = event.error.message;
-                    displayError.style.display = 'block';
-                  } else {
-                    displayError.textContent = '';
-                    displayError.style.display = 'none';
+                const initStripe = async () => {
+                  try {
+                    const configRes = await fetch('/api/create-payment-intent');
+                    const configData = await configRes.json();
+                    const publishableKey = configData.publishableKey || 'pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR';
+                    
+                    stripe = Stripe(publishableKey);
+                    elements = stripe.elements();
+                    cardElement = elements.create('card', {
+                      style: {
+                        base: {
+                          color: '#FFFFFF',
+                          fontFamily: 'DM Sans, sans-serif',
+                          fontSize: '15px',
+                          '::placeholder': { color: '#888888' }
+                        },
+                        invalid: { color: '#FF3333' }
+                      }
+                    });
+                    cardElement.mount('#stripe-card-element');
+                    
+                    // Handle real-time validation errors from the card Element
+                    cardElement.on('change', (event) => {
+                      const displayError = document.getElementById('stripe-card-errors');
+                      if (event.error) {
+                        displayError.textContent = event.error.message;
+                        displayError.style.display = 'block';
+                      } else {
+                        displayError.textContent = '';
+                        displayError.style.display = 'none';
+                      }
+                    });
+                  } catch (err) {
+                    console.error('[Stripe] Initialization failed:', err);
                   }
-                });
+                };
+                
+                initStripe();
                 
                 // Show/hide Stripe card container based on selected payment method
                 const paymentMethodSelect = document.getElementById('contract-payment-method');
@@ -5047,6 +5065,11 @@ function bindHandlers(route) {
                   
                   // Stripe Credit Card Authorization Flow
                   if (paymentMethod === 'Credit/Debit Card') {
+                    if (!stripe || !cardElement) {
+                      submitBtn.disabled = false;
+                      submitBtn.textContent = 'Accept Quote & Sign Contract →';
+                      return alert('Stripe secure billing is still initializing. Please wait a moment and try again.');
+                    }
                     submitBtn.textContent = 'Authorizing card via Stripe...';
                     try {
                       const piRes = await fetch('/api/create-payment-intent', {
@@ -6169,6 +6192,12 @@ function bindHandlers(route) {
         html += '</tbody></table>';
         container.innerHTML = html;
         
+        // Re-expand previously open row if any
+        if (App.state.expandedPropertyQuoteId) {
+          const editRow = document.getElementById(`edit-row-${App.state.expandedPropertyQuoteId}`);
+          if (editRow) editRow.style.display = 'table-row';
+        }
+        
         // Bind inline edit handlers
         container.querySelectorAll('.btn-edit-quote').forEach(btn => {
           btn.addEventListener('click', (e) => {
@@ -6179,7 +6208,9 @@ function bindHandlers(route) {
               container.querySelectorAll('.edit-quote-row').forEach(row => {
                 if (row.id !== `edit-row-${id}`) row.style.display = 'none';
               });
-              editRow.style.display = editRow.style.display === 'none' ? 'table-row' : 'none';
+              const isShowing = editRow.style.display === 'table-row';
+              editRow.style.display = isShowing ? 'none' : 'table-row';
+              App.state.expandedPropertyQuoteId = isShowing ? null : id;
             }
           });
         });
@@ -6189,6 +6220,7 @@ function bindHandlers(route) {
             const id = e.currentTarget.getAttribute('data-id');
             const editRow = document.getElementById(`edit-row-${id}`);
             if (editRow) editRow.style.display = 'none';
+            App.state.expandedPropertyQuoteId = null;
           });
         });
 
@@ -6265,6 +6297,7 @@ function bindHandlers(route) {
                 .eq('id', id);
                 
               if (error) throw error;
+              App.state.expandedPropertyQuoteId = id;
               await loadPropertyQuotes();
               alert('Changes saved successfully!');
             } catch (err) {
