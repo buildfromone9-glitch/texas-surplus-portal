@@ -1042,6 +1042,41 @@
   .step-card__body p { margin-bottom: 0.8em; }
   .step-card__body p:last-child { margin-bottom: 0; }
 
+  /* Labor Services Grid Symmetrical Layout */
+  .labor-services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .labor-services-bottom {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .labor-services-bottom .step-card {
+    width: calc((100% - 3 * 2rem) / 4);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .labor-services-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .labor-services-bottom .step-card {
+      width: calc((100% - 1 * 2rem) / 2);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .labor-services-grid {
+      grid-template-columns: 1fr;
+    }
+    .labor-services-bottom .step-card {
+      width: 100%;
+    }
+  }
+
   /* Callout */
   .callout {
     margin: 1.5rem 0;
@@ -2336,7 +2371,7 @@ function renderVorvoLanding() {
         <p style="max-width:640px; color:var(--ink-soft); font-size:1.05rem;">We research independent providers with <strong>zero bias</strong>—we don't favor any contractor over another. Whether you need a simple yard cleanup or a specialized trade, we find the right fit for your specific job.</p>
       </div>
       
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:2rem; margin-top:3rem;">
+      <div class="labor-services-grid">
         
         <!-- Moving Help -->
         <div class="step-card" style="padding:2rem; background:var(--paper); border:1px solid var(--rule); display:flex; flex-direction:column; justify-content:space-between; height:100%;">
@@ -2378,6 +2413,9 @@ function renderVorvoLanding() {
           <div style="font-family:var(--mono); font-size:0.8rem; color:var(--ink-mute);">Call/Text: (832) 735-0603</div>
         </div>
 
+      </div>
+
+      <div class="labor-services-bottom">
         <!-- Other Contracting Services -->
         <div class="step-card" style="padding:2rem; background:var(--paper); border:1px solid var(--rule); display:flex; flex-direction:column; justify-content:space-between; height:100%;">
           <div>
@@ -2387,7 +2425,6 @@ function renderVorvoLanding() {
           </div>
           <div style="font-family:var(--mono); font-size:0.8rem; color:var(--ink-mute);">Call/Text: (832) 735-0603</div>
         </div>
-
       </div>
     </section>
 
