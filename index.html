@@ -842,6 +842,88 @@
   .btn--small { padding: 0.6rem 1.2rem; font-size: 0.75rem; }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
   .btn__arrow { font-family: var(--serif); font-size: 1.1rem; line-height: 1; }
+
+  /* ============================================================
+     SITE FOOTER - Premium & Clean Styling
+     ============================================================ */
+  .site-footer {
+    background: #111111;
+    color: var(--ink-soft);
+    padding: var(--space-3xl) 1.5rem var(--space-xl);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .site-footer__inner {
+    max-width: var(--wide-w);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 4rem;
+  }
+  @media (max-width: 760px) {
+    .site-footer__inner {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+  .site-footer h4 {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+  }
+  .site-footer p, .site-footer li {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .site-footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .site-footer ul li {
+    margin-bottom: 0.75rem;
+  }
+  .site-footer a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .site-footer a:hover {
+    color: var(--gold-light);
+    text-decoration: underline;
+  }
+  .site-footer__brand-col {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 2rem;
+    border-left: 3px solid var(--gold);
+    border-radius: 2px;
+  }
+  .site-footer__legal {
+    max-width: var(--wide-w);
+    margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.8rem;
+    color: var(--ink-mute);
+    line-height: 1.6;
+  }
+  .site-footer__legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  .site-footer__legal-links a {
+    color: var(--gold-soft);
+    text-decoration: underline;
+  }
+  .site-footer__legal-links a:hover {
+    color: #FFFFFF;
+  }
 </style>
 </head>
 <body id="vorvo-body">
@@ -1648,21 +1730,21 @@ function renderClientAgreement() {
 function renderFooter(route) {
   if (route === 'vorvo') {
     return `
-      <footer class="site-footer no-print" style="background:var(--ink); color:var(--cream);">
+      <footer class="site-footer no-print">
         <div class="site-footer__inner">
-          <div>
-            <h4 style="color:var(--gold-soft);">Vorvo Services</h4>
-            <p style="color:var(--paper-edge);">Vorvo is the nationwide coordination layer for property and asset solutions. We organize details, check trusted provider availability, and help you get clear quotes with zero hassle.</p>
+          <div class="site-footer__brand-col">
+            <h4>Vorvo Services</h4>
+            <p>Vorvo is the nationwide coordination layer for property and asset solutions. We organize details, check trusted provider availability, and help you get clear quotes with zero hassle.</p>
           </div>
           <div>
-            <h4 style="color:var(--gold-soft);">Contact Vorvo</h4>
+            <h4>Contact Vorvo</h4>
             <ul>
               <li>Call/Text: <a href="tel:8327350603" style="color:inherit;">(832) 735-0603</a></li>
               <li>Email: <a href="mailto:help@vorvoservices.com" style="color:inherit;">help@vorvoservices.com</a></li>
             </ul>
           </div>
           <div>
-            <h4 style="color:var(--gold-soft);">Our Services</h4>
+            <h4>Our Services</h4>
             <ul>
               <li>Moving Help</li>
               <li>Junk Removal</li>
@@ -1671,31 +1753,33 @@ function renderFooter(route) {
             </ul>
           </div>
         </div>
-        <div class="site-footer__legal" style="border-top:1px solid var(--ink-soft); color:var(--ink-mute);">
+        <div class="site-footer__legal">
           This site is an informational resource prepared by Vorvo Services. <strong>We are a coordination service, not a direct labor provider.</strong> All jobs are completed by independent, third-party service providers.
-          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
+          <div class="site-footer__legal-links">
+            <a href="#/client-agreement">Client Service Agreement</a>
+            <a href="#/terms">Terms of Service</a>
+            <a href="#/privacy">Privacy Policy</a>
+          </div>
         </div>
       </footer>
     `;
   } else if (route === 'wholesale') {
     return `
-      <footer class="site-footer no-print" style="background:var(--ink); color:var(--cream);">
+      <footer class="site-footer no-print">
         <div class="site-footer__inner">
-          <div>
-            <h4 style="color:var(--gold-soft);">Vorvo Services</h4>
-            <p style="color:var(--paper-edge);">Vorvo Wholesale Property Solutions connects property owners looking for fast cash sales with a national network of verified off-market real estate buyers and investors.</p>
+          <div class="site-footer__brand-col">
+            <h4>Vorvo Services</h4>
+            <p>Vorvo Wholesale Property Solutions connects property owners looking for fast cash sales with a national network of verified off-market real estate buyers and investors.</p>
           </div>
           <div>
-            <h4 style="color:var(--gold-soft);">Contact Vorvo</h4>
+            <h4>Contact Vorvo</h4>
             <ul>
               <li>Call/Text: <a href="tel:8327350603" style="color:inherit;">(832) 735-0603</a></li>
               <li>Email: <a href="mailto:help@vorvoservices.com" style="color:inherit;">help@vorvoservices.com</a></li>
             </ul>
           </div>
           <div>
-            <h4 style="color:var(--gold-soft);">Wholesale Benefits</h4>
+            <h4>Wholesale Benefits</h4>
             <ul>
               <li>As-Is Cash Offers</li>
               <li>No Agent Commissions</li>
@@ -1704,11 +1788,13 @@ function renderFooter(route) {
             </ul>
           </div>
         </div>
-        <div class="site-footer__legal" style="border-top:1px solid var(--ink-soft); color:var(--ink-mute);">
+        <div class="site-footer__legal">
           This site is an informational resource prepared by Vorvo Services. <strong>We are a real estate wholesale coordination layer, not a licensed brokerage or legal advisory firm.</strong>
-          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
+          <div class="site-footer__legal-links">
+            <a href="#/client-agreement">Client Service Agreement</a>
+            <a href="#/terms">Terms of Service</a>
+            <a href="#/privacy">Privacy Policy</a>
+          </div>
         </div>
       </footer>
     `;
@@ -1716,7 +1802,7 @@ function renderFooter(route) {
     return `
       <footer class="site-footer no-print">
         <div class="site-footer__inner">
-          <div>
+          <div class="site-footer__brand-col">
             <h4>Vorvo Services</h4>
             <p>A coordination and recovery ecosystem. We build public-records research systems, local coordination networks, and specialized tools to help property owners recover assets and get work done right.</p>
           </div>
@@ -1737,9 +1823,11 @@ function renderFooter(route) {
         </div>
         <div class="site-footer__legal">
           © 2026 Vorvo Services. All rights reserved.
-          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
+          <div class="site-footer__legal-links">
+            <a href="#/client-agreement">Client Service Agreement</a>
+            <a href="#/terms">Terms of Service</a>
+            <a href="#/privacy">Privacy Policy</a>
+          </div>
         </div>
       </footer>
     `;
@@ -1748,7 +1836,7 @@ function renderFooter(route) {
     return `
       <footer class="site-footer no-print">
         <div class="site-footer__inner">
-          <div>
+          <div class="site-footer__brand-col">
             <h4>Vorvo Services</h4>
             <p>Educational public-records research service. Not a law firm. Not your representative before the State. We help you understand the process — you do the filing.</p>
           </div>
@@ -1770,9 +1858,11 @@ function renderFooter(route) {
         </div>
         <div class="site-footer__legal">
           This site is an educational resource prepared by Vorvo Services. <strong>It is not legal advice and does not create an attorney-client relationship.</strong> Information is current as of the date of preparation; State procedures and document requirements may change without notice. Always follow the on-screen instructions on the official Comptroller portal. For case-specific legal questions, consult a licensed Texas attorney.
-          <span style="margin-left:1.5rem;"><a href="#/client-agreement" style="color:var(--gold-soft);text-decoration:underline;">Client Service Agreement</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/terms" style="color:var(--gold-soft);text-decoration:underline;">Terms of Service</a></span>
-          <span style="margin-left:1.5rem;"><a href="#/privacy" style="color:var(--gold-soft);text-decoration:underline;">Privacy Policy</a></span>
+          <div class="site-footer__legal-links">
+            <a href="#/client-agreement">Client Service Agreement</a>
+            <a href="#/terms">Terms of Service</a>
+            <a href="#/privacy">Privacy Policy</a>
+          </div>
         </div>
       </footer>
     `;
@@ -1922,17 +2012,6 @@ function renderPortal() {
         <div class="feature-block">
           <h4 class="text-gold mb-3">Real-time Tracking</h4>
           <p class="text-body">Monitor your project status 24/7.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--light" style="text-align:center; background-image: url('images/property/ff74425c3ac14fd7c7602bcd3a6cd547.jpg'); background-size: cover; background-position: center; position: relative;">
-      <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); z-index:1;"></div>
-      <div style="position:relative; z-index:2;">
-        <h2 class="text-display text-white mb-5">Ready to <em>get started?</em></h2>
-        <div class="hero__cta-row">
-          <a href="#/surplus" class="btn btn--gold">Recover Assets</a>
-          <a href="#/vorvo" class="btn btn--ghost">Coordinate Labor</a>
         </div>
       </div>
     </section>
