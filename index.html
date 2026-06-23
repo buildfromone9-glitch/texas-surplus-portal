@@ -1004,8 +1004,10 @@
     padding: 1.75rem 2rem;
     background: var(--cream);
     border: 1px solid var(--rule);
-    border-left: 4px solid var(--ink);
     position: relative;
+  }
+  .step-card--guide {
+    border-left: 4px solid var(--ink);
   }
   .step-card__header {
     display: flex;
@@ -1048,10 +1050,6 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     margin-top: 3rem;
-  }
-  .labor-services-grid .step-card,
-  .labor-services-bottom .step-card {
-    border-left: 1px solid var(--rule) !important;
   }
   .labor-services-bottom {
     display: flex;
@@ -3672,7 +3670,7 @@ function formatMoney(n) {
 function stepCard(num, title, time, body) {
   const n = String(num).padStart(2, '0');
   return `
-    <div class="step-card">
+    <div class="step-card step-card--guide">
       <div class="step-card__header">
         <span class="step-card__num">${n}</span>
         <h3 class="step-card__title">${title}</h3>
