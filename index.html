@@ -1244,7 +1244,7 @@ const App = {
       case 'admin':     html += renderAdmin(); break;
       case 'surplus':   html += renderLanding(); break;
       case 'vorvo':     html += renderVorvoLanding(); break;
-      case 'wholesale': html += renderWholesaleLanding(); break;
+      case 'property-management': html += renderPropertyManagementLanding(); break;
       case 'wholesale-agreement': {
         const _hash = window.location.hash;
         const _qs = _hash.includes('?') ? _hash.split('?')[1] : '';
@@ -1294,7 +1294,7 @@ function renderHeader(route) {
         </div>
       </header>
     `;
-  } else if (route === 'wholesale') {
+  } else if (route === 'property-management') {
     return `
       <header class="site-header no-print">
         <div class="site-header__inner">
@@ -1302,14 +1302,14 @@ function renderHeader(route) {
             <div class="brand__mark">V</div>
             <div class="brand__name">
               Vorvo Services
-              <small>Wholesale Property Solutions</small>
+              <small>Property Management Solutions</small>
             </div>
           </a>
           <nav class="nav-links" style="display:flex;">
             <a href="#/portal" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
-            <a href="#/wholesale" class="active">Wholesale</a>
+            <a href="#/wholesale" class="active">Property Management</a>
             <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
-            <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Get Cash Offer</a>
+            <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
           </nav>
         </div>
       </header>
@@ -1769,7 +1769,7 @@ function renderFooter(route) {
         <div class="site-footer__inner">
           <div class="site-footer__brand-col">
             <h4>Vorvo Services</h4>
-            <p>Vorvo Wholesale Property Solutions connects property owners looking for fast cash sales with a national network of verified off-market real estate buyers and investors.</p>
+            <p>Vorvo Property Management Solutions connects property owners with trusted local property managers, maintenance providers, and asset caretakers nationwide.</p>
           </div>
           <div>
             <h4>Contact Vorvo</h4>
@@ -1779,17 +1779,17 @@ function renderFooter(route) {
             </ul>
           </div>
           <div>
-            <h4>Wholesale Benefits</h4>
+            <h4>Management Benefits</h4>
             <ul>
-              <li>As-Is Cash Offers</li>
-              <li>No Agent Commissions</li>
-              <li>Zero Listing Fees</li>
-              <li>Close in 7-14 Days</li>
+              <li>Vetted Caretakers</li>
+              <li>Complete Coordination</li>
+              <li>Routine Oversight</li>
+              <li>Maximize Asset Value</li>
             </ul>
           </div>
         </div>
         <div class="site-footer__legal">
-          This site is an informational resource prepared by Vorvo Services. <strong>We are a real estate wholesale coordination layer, not a licensed brokerage or legal advisory firm.</strong>
+          This site is an informational resource prepared by Vorvo Services. <strong>We are a property management coordination layer, not a licensed brokerage, property management firm, or legal advisory firm.</strong>
           <div class="site-footer__legal-links">
             <a href="#/client-agreement">Client Service Agreement</a>
             <a href="#/terms">Terms of Service</a>
@@ -1810,7 +1810,7 @@ function renderFooter(route) {
             <h4>Our Affiliated Services</h4>
             <ul>
               <li><a href="#/surplus" style="color:inherit;">Surplus Property Recovery</a></li>
-              <li><a href="#/wholesale" style="color:inherit;">Wholesale Property Solutions</a></li>
+              <li><a href="#/wholesale" style="color:inherit;">Property Management Solutions</a></li>
               <li><a href="#/vorvo" style="color:inherit;">Vorvo Labor Services</a></li>
             </ul>
           </div>
@@ -1931,10 +1931,10 @@ function renderPortal() {
         <div class="split__content">
           <div class="section__eyebrow">Strategic Asset Solutions</div>
           <h2 class="section__title">Property Services</h2>
-          <p class="text-body mb-4">Specialized public-records research, financial recovery, and strategic property wholesale coordination.</p>
+          <p class="text-body mb-4">Specialized public-records research, financial recovery, and strategic property asset coordination.</p>
           <div style="display:grid; gap:1.5rem;">
             <a href="#/surplus" class="btn btn--gold">Surplus Fund Recovery →</a>
-            <a href="#/wholesale" class="btn btn--ghost">Wholesale Solutions →</a>
+            <a href="#/wholesale" class="btn btn--ghost">Property Management →</a>
           </div>
         </div>
       </div>
@@ -1943,13 +1943,13 @@ function renderPortal() {
     <section class="section">
       <div class="split split--rev">
         <div class="split__image-wrap">
-          <img src="images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="split__image" alt="Wholesale Property" loading="lazy">
+          <img src="images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="split__image" alt="Property Management" loading="lazy">
         </div>
         <div class="split__content">
-          <div class="section__eyebrow">Real Estate Liquidity</div>
-          <h2 class="section__title">Wholesale Property</h2>
-          <p class="text-body mb-4">Sell your property fast for cash or access off-market investor deals. No repairs, no cleaning, closed in days.</p>
-          <a href="#/wholesale" class="btn btn--gold">Get Cash Offer →</a>
+          <div class="section__eyebrow">Asset Stewardship</div>
+          <h2 class="section__title">Property Management</h2>
+          <p class="text-body mb-4">Professional coordination and oversight for your active real estate assets. We handle trusted provider matching, maintenance scheduling, and property stewardship to protect your investment.</p>
+          <a href="#/wholesale" class="btn btn--gold">Explore Management Solutions →</a>
         </div>
       </div>
     </section>
@@ -2172,7 +2172,7 @@ function renderVorvoLanding() {
 /* ============================================================
    VIEW: WHOLESALE LANDING
    ============================================================ */
-function renderWholesaleLanding() {
+function renderPropertyManagementLanding() {
   return `
     <section class="hero" id="hero-carousel">
       <div class="hero__carousel">
@@ -2182,11 +2182,11 @@ function renderWholesaleLanding() {
       </div>
       <div class="hero__overlay"></div>
       <div class="hero__inner">
-        <div class="hero__eyebrow">Vorvo Wholesale Property Solutions</div>
-        <h1 class="hero__title">Sell Your Property Fast. <em>Cash Offer.</em> No Repairs.</h1>
-        <p class="hero__lede">Vorvo is your direct route to hassle-free property sales. We connect you directly with wholesale buyers and real estate investors nationwide.</p>
+        <div class="hero__eyebrow">Vorvo Property Management Solutions</div>
+        <h1 class="hero__title">Professional Property Oversight. <em>Stewardship.</em> Less Stress.</h1>
+        <p class="hero__lede">Vorvo is your partner in premium property management and coordination. We connect you with top-tier local property managers, maintenance crews, and professional caretakers.</p>
         <div class="hero__cta-row">
-          <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Get Cash Offer <span class="btn__arrow">→</span></a>
+          <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Request Management Quote <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
         </div>
       </div>
@@ -2200,32 +2200,32 @@ function renderWholesaleLanding() {
     <section class="section section--light">
       <div class="section__head">
         <div class="section__eyebrow">The Vorvo Advantage</div>
-        <h2 class="section__title">Why Choose Wholesale?</h2>
+        <h2 class="section__title">Why Choose Property Management?</h2>
       </div>
       
       <div class="card-grid">
         <div class="service-card">
-          <img src="images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="service-card__img" alt="As-Is Purchase" loading="lazy">
+          <img src="images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="service-card__img" alt="Verified Caretakers" loading="lazy">
           <div class="service-card__body">
             <div class="service-card__cat">Benefit 01</div>
-            <h3 class="service-card__title">As-Is Purchase</h3>
-            <p class="service-card__text">No cleaning, no staging, and absolutely no repairs required. We buy properties in any condition.</p>
+            <h3 class="service-card__title">Verified Caretakers</h3>
+            <p class="service-card__text">We connect you with vetted, licensed, and highly rated local property managers and maintenance professionals.</p>
           </div>
         </div>
         <div class="service-card">
-          <img src="images/property/f71ee5d9410576b1bdfecbac29326959.jpg" class="service-card__img" alt="Zero Commission" loading="lazy">
+          <img src="images/property/f71ee5d9410576b1bdfecbac29326959.jpg" class="service-card__img" alt="Complete Coordination" loading="lazy">
           <div class="service-card__body">
             <div class="service-card__cat">Benefit 02</div>
-            <h3 class="service-card__title">Zero Commission</h3>
-            <p class="service-card__text">Avoid traditional real estate agent commissions, hidden fees, and listing costs.</p>
+            <h3 class="service-card__title">Complete Coordination</h3>
+            <p class="service-card__text">From tenant relations to regular maintenance, we handle the coordination layer so you can focus on what matters.</p>
           </div>
         </div>
         <div class="service-card">
-          <img src="images/property/ff74425c3ac14fd7c7602bcd3a6cd547.jpg" class="service-card__img" alt="Fast Closings" loading="lazy">
+          <img src="images/property/ff74425c3ac14fd7c7602bcd3a6cd547.jpg" class="service-card__img" alt="Asset Stewardship" loading="lazy">
           <div class="service-card__body">
             <div class="service-card__cat">Benefit 03</div>
-            <h3 class="service-card__title">Fast Closings</h3>
-            <p class="service-card__text">We match your property with verified cash buyers, allowing us to close in as little as 7 to 14 days.</p>
+            <h3 class="service-card__title">Asset Stewardship</h3>
+            <p class="service-card__text">We prioritize the long-term value, upkeep, and integrity of your real estate investments.</p>
           </div>
         </div>
       </div>
@@ -2234,14 +2234,14 @@ function renderWholesaleLanding() {
     <section class="section" id="wholesale-form">
       <div class="split">
         <div class="split__content">
-          <div class="section__eyebrow">Request Offer</div>
-          <h2 class="section__title">Request a Cash Offer</h2>
-          <p class="text-body mb-5">Submit details below. Our team will deliver an offer within 24 hours.</p>
+          <div class="section__eyebrow">Request Quote</div>
+          <h2 class="section__title">Request Property Management Quote</h2>
+          <p class="text-body mb-5">Submit details below. Our team will deliver a management quote within 24 hours.</p>
           <div class="callout" style="background:var(--paper-edge);">
             <strong>Simple process</strong>
             1. Submit Details<br>
             2. Property Analysis<br>
-            3. Receive Cash Offer
+            3. Receive Custom Quote
           </div>
         </div>
         <div class="split__form">
@@ -2266,14 +2266,14 @@ function renderWholesaleLanding() {
                 <input type="text" id="w-location" name="location" required placeholder="Street, City, State, ZIP" />
               </div>
               <div class="field">
-                <label for="w-asking">Desired Asking Price (Optional)</label>
-                <input type="number" id="w-asking" name="askingPrice" placeholder="e.g., 180000" />
+                <label for="w-asking">Desired Monthly Rent / Budget (Optional)</label>
+                <input type="number" id="w-asking" name="askingPrice" placeholder="e.g., 2500" />
               </div>
               <div class="field">
-                <label for="w-details">Property Condition &amp; Details</label>
-                <textarea id="w-details" name="propertyDetails" required placeholder="roof, foundation, occupancy, repairs..."></textarea>
+                <label for="w-details">Property Management Details</label>
+                <textarea id="w-details" name="propertyDetails" required placeholder="property type, number of units, current occupancy, specific management needs, or maintenance requests..."></textarea>
               </div>
-              <button type="submit" class="btn btn--gold" style="width:100%;">Submit Property Details →</button>
+              <button type="submit" class="btn btn--gold" style="width:100%;">Submit Management Request →</button>
             </form>
             <div id="wholesale-success" class="form__success" style="display:none;"></div>
           </div>
@@ -2781,7 +2781,7 @@ function renderAdmin() {
         <!-- Tab Switcher -->
         <div class="admin-tabs" style="display:flex; gap:1rem; margin-top:2rem; border-bottom:1px solid var(--rule); padding-bottom:1px;">
           <button id="tab-btn-assets" class="admin-tab-btn active" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid var(--gold); cursor:pointer; color:var(--ink); font-size:0.95rem;">Surplus Recovery</button>
-          <button id="tab-btn-wholesale" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Wholesale Property</button>
+          <button id="tab-btn-wholesale" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Property Management</button>
           <button id="tab-btn-property" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Labor Services</button>
         </div>
       </div>
@@ -2906,14 +2906,14 @@ function renderAdmin() {
         <div id="demand-result" style="display:none;margin-top:1rem;"></div>
       </div>
 
-      <!-- Tab 2: Wholesale Property -->
+      <!-- Tab 2: Property Management -->
       <div id="tab-content-wholesale" class="admin-tab-content" style="display:none; margin-top:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">
-          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Wholesale Property Leads</h2>
+          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Property Management Leads</h2>
           <button type="button" id="btn-refresh-wholesale" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
         </div>
-        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming wholesale real estate leads, analyze comparables, and set offer statuses.</p>
-        <div id="wholesale-leads-list" style="margin-bottom:2rem;">Loading leads...</div>
+        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming property management inquiries, review details, and set coordination statuses.</p>
+        <div id="property-management-leads-list" style="margin-bottom:2rem;">Loading leads...</div>
       </div>
 
       <!-- Tab 3: Labor Services (Contracting) -->
@@ -3830,19 +3830,19 @@ function bindHandlers(route) {
     }
   }
 
-  if (route === 'wholesale') {
-    const form = document.getElementById('vorvo-wholesale-form');
+  if (route === 'property-management') {
+    const form = document.getElementById('vorvo-property-management-form');
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
-      const successEl = document.getElementById('wholesale-success');
+      const successEl = document.getElementById('property-management-success');
       const submitBtn = form.querySelector('button[type="submit"]');
       
       submitBtn.disabled = true;
       submitBtn.innerHTML = 'Analyzing & submitting... <span class="btn__arrow">→</span>';
       
       const randomNum = Math.floor(100000 + Math.random() * 900000);
-      const clientGeneratedId = 'VRV-WHL-' + randomNum;
+      const clientGeneratedId = 'VRV-MGMT-' + randomNum;
 
       const payload = {
         tracking_id: clientGeneratedId,
@@ -3858,7 +3858,7 @@ function bindHandlers(route) {
       let trackingId = clientGeneratedId;
       try {
         const { data: insertedData, error } = await supabaseClient
-          .from('wholesale_leads')
+          .from('property_management_leads')
           .insert([payload])
           .select();
           
@@ -3866,7 +3866,7 @@ function bindHandlers(route) {
           trackingId = insertedData[0].tracking_id;
           data.append('trackingId', trackingId);
         } else if (error) {
-          console.error('Supabase wholesale insert error:', error);
+          console.error('Supabase property management insert error:', error);
         }
       } catch (err) {
         console.error('Supabase connection error:', err);
@@ -3878,11 +3878,11 @@ function bindHandlers(route) {
         headers: { 'Accept': 'application/json' }
       }).catch(err => console.warn('Formspree submission error:', err));
 
-      successEl.innerHTML = `<strong>Property details received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your wholesale request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>Our valuation team will analyze the property comparables and contact you within 24 hours. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
+      successEl.innerHTML = `<strong>Property details received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your property management request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>Our management coordination team will analyze your property details and contact you within 24 hours. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
       successEl.style.display = 'block';
       form.reset();
       submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Submit Property Details <span class="btn__arrow">→</span>';
+      submitBtn.innerHTML = 'Submit Management Request <span class="btn__arrow">→</span>';
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }
@@ -4459,7 +4459,7 @@ function bindHandlers(route) {
             }
             }
         } else {
-          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus), "VRV-WHL-" (Wholesale), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
+          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus), "VRV-MGMT-" (Property Management), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
         }
       } catch (err) {
         console.error('Tracking lookup error:', err);
@@ -4575,10 +4575,10 @@ function bindHandlers(route) {
       await loadPropertyQuotes();
     });
 
-    async function loadWholesaleLeads() {
-      const container = document.getElementById('wholesale-leads-list');
+    async function loadPropertyManagementLeads() {
+      const container = document.getElementById('property-management-leads-list');
       if (!container) return;
-      container.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading wholesale leads from database...</div>';
+      container.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading property management leads from database...</div>';
       
       try {
         const { data, error } = await supabaseClient
@@ -4609,7 +4609,7 @@ function bindHandlers(route) {
             }
           }
         } catch (cErr) {
-          console.error('Error fetching contracts for wholesale leads:', cErr);
+          console.error('Error fetching contracts for property management leads:', cErr);
         }
         
         let html = `
@@ -4913,7 +4913,7 @@ function bindHandlers(route) {
         container.innerHTML = html;
         
         // Re-expand previously open row if any
-        if (App.state.expandedWholesaleId) {
+        if (App.state.expandedPropertyManagementId) {
           const editRow = document.getElementById(`edit-wholesale-row-${App.state.expandedWholesaleId}`);
           if (editRow) editRow.style.display = 'table-row';
         }
@@ -4940,7 +4940,7 @@ function bindHandlers(route) {
             const id = e.currentTarget.getAttribute('data-id');
             const editRow = document.getElementById(`edit-wholesale-row-${id}`);
             if (editRow) editRow.style.display = 'none';
-            App.state.expandedWholesaleId = null;
+            App.state.expandedPropertyManagementId = null;
           });
         });
 
@@ -5208,7 +5208,7 @@ function bindHandlers(route) {
                 .eq('id', id);
                 
               if (error) throw error;
-              App.state.expandedWholesaleId = id;
+              App.state.expandedPropertyManagementId = id;
               await loadWholesaleLeads();
               alert('Changes saved successfully!');
             } catch (err) {
@@ -5915,7 +5915,7 @@ function generateAccessToken() {
 }
 
 
-async function loadWholesaleAgreement() {
+async function loadPropertyManagementAgreement() {
   const hash = window.location.hash;
   const queryString = hash.includes('?') ? hash.split('?')[1] : '';
   const params = new URLSearchParams(queryString);
@@ -6018,7 +6018,7 @@ async function loadWholesaleAgreement() {
   App.render();
 }
 
-function renderWholesaleAgreement() {
+function renderPropertyManagementAgreement() {
   const c = App.state.client || {};
   const contract = App.state.contract;
   const signed = App.hasSigned();
