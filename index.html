@@ -5361,7 +5361,7 @@ function bindHandlers(route) {
             }
             }
         } else {
-          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus), "VRV-WHL-" (Property Management), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
+          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "TRK-" or "VRV-AST-" (Surplus), "VRV-WHL-" (Property Management), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
         }
       } catch (err) {
         console.error('Tracking lookup error:', err);
