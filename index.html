@@ -1168,16 +1168,16 @@ const SITE_CONFIG = {
           ]
         },
         {
-          id: "wholesale",
-          title: "Wholesale Property Solutions",
-          description: "Looking to sell your property quickly for cash or find off-market real estate opportunities? We connect property sellers with wholesale buyers and investors nationwide.",
-          link: "#/wholesale",
-          ctaText: "Enter Wholesale Portal →",
+          id: "property-management",
+          title: "Property Management Solutions",
+          description: "Professional coordination and oversight for your active real estate assets. We handle trusted provider matching, maintenance scheduling, and property stewardship to protect your investment.",
+          link: "#/property-management",
+          ctaText: "Enter Property Management Portal →",
           bullets: [
-            "Hassle-free cash offers",
-            "No repairs or cleaning needed",
-            "Fast, transparent closings",
-            "Off-market investor catalog"
+            "Verified local caretakers",
+            "Complete coordination layer",
+            "Routine property oversight",
+            "Maximize asset value & longevity"
           ]
         }
       ]
@@ -1271,8 +1271,8 @@ const App = {
     if (currentRoute === 'agreement') {
       await loadAgreement();
       this.loadSignedState();
-    } else if (currentRoute === 'wholesale-agreement') {
-      await loadWholesaleAgreement();
+    } else if (currentRoute === 'property-management-agreement') {
+      await loadPropertyManagementAgreement();
       this.loadSignedState();
     } else if (currentRoute === 'assignment') {
       await loadAssignmentAgreement();
@@ -1284,8 +1284,8 @@ const App = {
       if (route === 'agreement') {
         await loadAgreement();
         this.loadSignedState();
-      } else if (route === 'wholesale-agreement') {
-        await loadWholesaleAgreement();
+      } else if (route === 'property-management-agreement') {
+        await loadPropertyManagementAgreement();
         this.loadSignedState();
       } else if (route === 'assignment') {
         await loadAssignmentAgreement();
@@ -1433,11 +1433,11 @@ const App = {
       case 'surplus':   html += renderLanding(); break;
       case 'vorvo':     html += renderVorvoLanding(); break;
       case 'property-management': html += renderPropertyManagementLanding(); break;
-      case 'wholesale-agreement': {
+      case 'property-management-agreement': {
         const _hash = window.location.hash;
         const _qs = _hash.includes('?') ? _hash.split('?')[1] : '';
         const _token = new URLSearchParams(_qs).get('token');
-        html += _token ? renderWholesaleAgreement() : renderUnauthorized();
+        html += _token ? renderPropertyManagementAgreement() : renderUnauthorized();
         break;
       }
       case 'assignment': {
@@ -1495,9 +1495,9 @@ function renderHeader(route) {
           </a>
           <nav class="nav-links" style="display:flex;">
             <a href="#/portal" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
-            <a href="#/wholesale" class="active">Property Management</a>
+            <a href="#/property-management" class="active">Property Management</a>
             <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
-            <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
+            <a href="javascript:void(0)" onclick="document.getElementById('property-management-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
           </nav>
         </div>
       </header>
@@ -1951,7 +1951,7 @@ function renderFooter(route) {
         </div>
       </footer>
     `;
-  } else if (route === 'wholesale') {
+  } else if (route === 'property-management') {
     return `
       <footer class="site-footer no-print">
         <div class="site-footer__inner">
@@ -1998,7 +1998,7 @@ function renderFooter(route) {
             <h4>Our Affiliated Services</h4>
             <ul>
               <li><a href="#/surplus" style="color:inherit;">Surplus Property Recovery</a></li>
-              <li><a href="#/wholesale" style="color:inherit;">Property Management Solutions</a></li>
+              <li><a href="#/property-management" style="color:inherit;">Property Management Solutions</a></li>
               <li><a href="#/vorvo" style="color:inherit;">Vorvo Labor Services</a></li>
             </ul>
           </div>
@@ -2122,7 +2122,7 @@ function renderPortal() {
           <p class="text-body mb-4">Specialized public-records research, financial recovery, and strategic property asset coordination.</p>
           <div style="display:grid; gap:1.5rem;">
             <a href="#/surplus" class="btn btn--gold">Surplus Fund Recovery →</a>
-            <a href="#/wholesale" class="btn btn--ghost">Property Management →</a>
+            <a href="#/property-management" class="btn btn--ghost">Property Management →</a>
           </div>
         </div>
       </div>
@@ -2137,7 +2137,7 @@ function renderPortal() {
           <div class="section__eyebrow">Asset Stewardship</div>
           <h2 class="section__title">Property Management</h2>
           <p class="text-body mb-4">Professional coordination and oversight for your active real estate assets. We handle trusted provider matching, maintenance scheduling, and property stewardship to protect your investment.</p>
-          <a href="#/wholesale" class="btn btn--gold">Explore Management Solutions →</a>
+          <a href="#/property-management" class="btn btn--gold">Explore Management Solutions →</a>
         </div>
       </div>
     </section>
@@ -2540,7 +2540,7 @@ function renderPropertyManagementLanding() {
         <h1 class="hero__title">Professional Property Oversight. <em>Stewardship.</em> Less Stress.</h1>
         <p class="hero__lede">Vorvo is your partner in premium property management and coordination. We connect you with top-tier local property managers, maintenance crews, and professional caretakers.</p>
         <div class="hero__cta-row">
-          <a href="javascript:void(0)" onclick="document.getElementById('wholesale-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Request Management Quote <span class="btn__arrow">→</span></a>
+          <a href="javascript:void(0)" onclick="document.getElementById('property-management-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Request Management Quote <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
         </div>
       </div>
@@ -2585,7 +2585,7 @@ function renderPropertyManagementLanding() {
       </div>
     </section>
 
-    <section class="section" id="wholesale-form">
+    <section class="section" id="property-management-form">
       <div class="split">
         <div class="split__content">
           <div class="section__eyebrow">Request Quote</div>
@@ -2600,7 +2600,7 @@ function renderPropertyManagementLanding() {
         </div>
         <div class="split__form">
           <div class="form">
-            <form id="vorvo-wholesale-form" action="https://formspree.io/f/xqejewzo" method="POST">
+            <form id="vorvo-property-management-form" action="https://formspree.io/f/xqejewzo" method="POST">
               <div class="field">
                 <label for="w-name">Full Name</label>
                 <input type="text" id="w-name" name="fullName" required />
@@ -2629,7 +2629,7 @@ function renderPropertyManagementLanding() {
               </div>
               <button type="submit" class="btn btn--gold" style="width:100%;">Submit Management Request →</button>
             </form>
-            <div id="wholesale-success" class="form__success" style="display:none;"></div>
+            <div id="property-management-success" class="form__success" style="display:none;"></div>
           </div>
         </div>
       </div>
@@ -3663,8 +3663,8 @@ function bindHandlers(route) {
     window.addEventListener('scroll', onScroll);
   }
 
-  if (route === 'wholesale-agreement' && !App.hasSigned()) {
-    initWholesaleSignatureArea();
+  if (route === 'property-management-agreement' && !App.hasSigned()) {
+    initPropertyManagementSignatureArea();
   }
 
   if (route === 'assignment' && !App.hasSigned()) {
@@ -4220,7 +4220,7 @@ function bindHandlers(route) {
       let trackingId = clientGeneratedId;
       try {
         const { data: insertedData, error } = await supabaseClient
-          .from('property_management_leads')
+          .from('wholesale_leads')
           .insert([payload])
           .select();
           
@@ -4329,9 +4329,9 @@ function bindHandlers(route) {
                 ${data.access_token ? `
                   <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--rule-soft);">
                     ${data.signed ? `
-                      <a href="#/wholesale-agreement?token=${data.access_token}" class="btn btn--ghost" style="width:100%; justify-content:center; text-decoration:none; border:1px solid var(--moss); color:var(--moss);">View Signed Agreement ✓</a>
+                      <a href="#/property-management-agreement?token=${data.access_token}" class="btn btn--ghost" style="width:100%; justify-content:center; text-decoration:none; border:1px solid var(--moss); color:var(--moss);">View Signed Agreement ✓</a>
                     ` : `
-                      <a href="#/wholesale-agreement?token=${data.access_token}" class="btn btn--gold" style="width:100%; justify-content:center; text-decoration:none;">Review &amp; Sign Purchase Agreement →</a>
+                      <a href="#/property-management-agreement?token=${data.access_token}" class="btn btn--gold" style="width:100%; justify-content:center; text-decoration:none;">Review &amp; Sign Management Agreement →</a>
                     `}
                   </div>
                 ` : ''}
@@ -5026,7 +5026,7 @@ function bindHandlers(route) {
                     <tbody>
             `;
             leadContracts.forEach(c => {
-              const typeLabel = c.contract_type === 'purchase' ? 'Purchase' : 'Assignment';
+              const typeLabel = c.contract_type === 'purchase' ? 'Management' : 'Assignment';
               const statusColors = {
                 'sent': 'var(--gold-soft)',
                 'signed': 'var(--moss)',
@@ -5034,7 +5034,7 @@ function bindHandlers(route) {
               };
               const color = statusColors[c.status] || 'var(--ink-mute)';
               const createdDate = new Date(c.created_at).toLocaleDateString();
-              const cLink = `${window.location.origin}${window.location.pathname}#/${c.contract_type === 'purchase' ? 'wholesale-agreement' : 'assignment'}?token=${c.secure_token}`;
+              const cLink = `${window.location.origin}${window.location.pathname}#/${c.contract_type === 'purchase' ? 'property-management-agreement' : 'assignment'}?token=${c.secure_token}`;
               
               contractsListHTML += `
                 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
@@ -6529,7 +6529,7 @@ function renderPropertyManagementAgreement() {
   `;
 }
 
-function initWholesaleSignatureArea() {
+function initPropertyManagementSignatureArea() {
   const area = document.getElementById('wholesale-signature-area');
   if (!area) return;
 
@@ -6657,7 +6657,7 @@ function setupWholesaleSignSubmit() {
         if (!res.ok) throw new Error(result.error || 'Failed to sign contract');
         
         // Refresh the page
-        await loadWholesaleAgreement();
+        await loadPropertyManagementAgreement();
         App.render();
       } catch (err) {
         console.error('Error signing contract:', err);
@@ -6706,7 +6706,7 @@ function setupWholesaleSignSubmit() {
 
         // SEND EMAIL — clean and simple, no PDF generation needed
         const accessToken = App.state.client?.accessToken;
-        const agreementPageUrl = `${window.location.origin}${window.location.pathname}#/wholesale-agreement?token=${accessToken}`;
+        const agreementPageUrl = `${window.location.origin}${window.location.pathname}#/property-management-agreement?token=${accessToken}`;
         try {
           const res = await fetch('/api/send-wholesale-agreement', {
             method: 'POST',
@@ -6735,7 +6735,7 @@ function setupWholesaleSignSubmit() {
         }
         
         alert('Agreement Signed successfully! Your property is now under contract.');
-        await loadWholesaleAgreement();
+        await loadPropertyManagementAgreement();
       }
     }
   });
