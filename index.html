@@ -1112,6 +1112,243 @@
   .disclosure a:hover {
     color: #FFFFFF !important;
   }
+
+  /* ============================================================
+     AGREEMENT & SIGNATURE PAGES (High Contrast & Luxury Styling)
+     ============================================================ */
+  .agreement-wrap {
+    background: #F7F4ED !important; /* Always light cream for pristine legal readability */
+    color: #111111 !important;
+    padding: 4rem 1.5rem !important;
+    min-height: 100vh !important;
+    box-sizing: border-box !important;
+  }
+  .agreement-wrap h1, .agreement-wrap h2, .agreement-wrap h3, .agreement-wrap h4, .agreement-wrap h5 {
+    color: #111111 !important;
+    font-family: var(--serif) !important;
+    text-transform: uppercase !important;
+    letter-spacing: -0.01em !important;
+  }
+  .agreement-wrap p, .agreement-wrap li, .agreement-wrap span, .agreement-wrap td, .agreement-wrap dt, .agreement-wrap dd {
+    color: #222222 !important;
+  }
+  .agreement-wrap .agreement-cover__label {
+    color: var(--gold-dark) !important;
+  }
+  .agreement-wrap .agreement-meta {
+    border-color: #E0D8CC !important;
+    background: #EDE8DD !important;
+  }
+  .agreement-wrap .agreement-meta__item dt {
+    color: #666666 !important;
+  }
+  .agreement-wrap .agreement-meta__item dd {
+    color: #111111 !important;
+  }
+  .agreement-wrap .notice-block {
+    background: #EDE8DD !important;
+    border-left: 4px solid var(--gold-dark) !important;
+    color: #222222 !important;
+    padding: 2rem !important;
+    border-radius: 4px !important;
+    margin-bottom: 2rem !important;
+  }
+  .agreement-wrap .notice-block h3 {
+    color: var(--gold-dark) !important;
+    margin-top: 0 !important;
+  }
+  .agreement-wrap .agreement-section {
+    border-bottom: 1px solid #E0D8CC !important;
+    padding-bottom: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+  .agreement-wrap .agreement-section h2 {
+    color: #111111 !important;
+  }
+  .agreement-wrap .agreement-section h2 .num {
+    color: var(--gold-dark) !important;
+  }
+  .agreement-wrap .agreement-table {
+    border: 1px solid #E0D8CC !important;
+    background: #FFFFFF !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 1rem !important;
+  }
+  .agreement-wrap .agreement-table th {
+    background: #EDE8DD !important;
+    color: #111111 !important;
+    padding: 0.75rem !important;
+    text-align: left !important;
+    border-bottom: 1px solid #E0D8CC !important;
+  }
+  .agreement-wrap .agreement-table td {
+    padding: 0.75rem !important;
+    border-bottom: 1px solid #E0D8CC !important;
+    color: #222222 !important;
+  }
+  .agreement-wrap .clause-box {
+    background: #EDE8DD !important;
+    border-left: 4px solid var(--gold-dark) !important;
+    color: #222222 !important;
+    padding: 1.5rem !important;
+    border-radius: 4px !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Signature Block & Fields inside Agreements */
+  .agreement-wrap .sig-grid {
+    background: #EDE8DD !important;
+    border: 1px solid rgba(176, 141, 87, 0.4) !important;
+    border-radius: 6px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important;
+    padding: 2.5rem !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2.5rem !important;
+    margin-top: 2rem !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+  @media (max-width: 720px) {
+    .agreement-wrap .sig-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+    }
+  }
+  .agreement-wrap .sig-block {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+  .agreement-wrap .sig-block h4 {
+    margin: 0 0 1rem !important;
+    font-family: var(--sans) !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: #111111 !important;
+  }
+  .agreement-wrap .field label {
+    color: #111111 !important;
+    font-weight: 700 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+  }
+  .agreement-wrap .field input, .agreement-wrap .field textarea, .agreement-wrap .field select {
+    background: #FFFFFF !important;
+    color: #111111 !important;
+    border: 1px solid rgba(176, 141, 87, 0.4) !important;
+    padding: 0.85rem 1rem !important;
+    border-radius: 4px !important;
+  }
+  .agreement-wrap .field input:focus, .agreement-wrap .field textarea:focus, .agreement-wrap .field select:focus {
+    border-color: var(--gold-dark) !important;
+    box-shadow: 0 0 8px rgba(140, 106, 59, 0.2) !important;
+  }
+  .agreement-wrap .field input::placeholder {
+    color: #888888 !important;
+  }
+  .agreement-wrap .agree-confirm {
+    display: flex !important;
+    gap: 0.75rem !important;
+    align-items: flex-start !important;
+    margin-top: 1.5rem !important;
+  }
+  .agreement-wrap .agree-confirm label {
+    color: #222222 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+  .agreement-wrap .agree-confirm label strong {
+    color: #111111 !important;
+  }
+
+  /* Signature Pad distinctive thin box */
+  .agreement-wrap .sig-pad {
+    border: 1.5px solid rgba(176, 141, 87, 0.5) !important;
+    background: #FFFFFF !important;
+    border-radius: 4px !important;
+    height: 160px !important;
+    position: relative !important;
+    cursor: crosshair !important;
+    touch-action: none !important;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.06) !important;
+    overflow: hidden !important;
+  }
+  .agreement-wrap .sig-pad canvas {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .agreement-wrap .sig-pad__placeholder {
+    position: absolute !important;
+    bottom: 12px !important;
+    left: 16px !important;
+    font-family: var(--serif) !important;
+    font-style: italic !important;
+    color: var(--ink-mute) !important;
+    pointer-events: none !important;
+    font-size: 0.9rem !important;
+    z-index: 10 !important;
+  }
+  .agreement-wrap .sig-pad.signed .sig-pad__placeholder {
+    display: none !important;
+  }
+  .agreement-wrap .sig-controls {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: 0.6rem !important;
+    font-size: 0.75rem !important;
+    color: #666666 !important;
+  }
+  .agreement-wrap .sig-clear {
+    background: none !important;
+    border: 1px solid rgba(176, 141, 87, 0.4) !important;
+    padding: 0.25rem 0.6rem !important;
+    font-size: 0.75rem !important;
+    color: #555555 !important;
+    cursor: pointer !important;
+    border-radius: 3px !important;
+    transition: all 120ms ease !important;
+  }
+  .agreement-wrap .sig-clear:hover {
+    background: rgba(176, 141, 87, 0.1) !important;
+    color: #111111 !important;
+  }
+
+  /* Static Countersigned display */
+  .agreement-wrap .sig-static {
+    border: 1.5px solid rgba(176, 141, 87, 0.3) !important;
+    padding: 1.5rem !important;
+    background: #FFFFFF !important;
+    border-radius: 4px !important;
+    height: 160px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .agreement-wrap .sig-static__sig {
+    font-family: 'Brush Script MT', cursive !important;
+    font-size: 2.2rem !important;
+    color: #B88A00 !important;
+    text-align: center !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .agreement-wrap .sig-static__line {
+    font-size: 0.75rem !important;
+    color: #555555 !important;
+    text-align: center !important;
+    border-top: 1px solid #E0D8CC !important;
+    padding-top: 0.5rem !important;
+    width: 100% !important;
+  }
 </style>
 </head>
 <body id="vorvo-body">
@@ -5167,18 +5404,6 @@ function bindHandlers(route) {
                     <label style="font-size:0.7rem;">Title Company Address</label>
                     <input type="text" class="igc-title-address" placeholder="e.g. 123 Main St, Houston, TX 77002" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
                   </div>
-                  <div class="field" style="margin:0;">
-                    <label style="font-size:0.7rem;">Escrow Officer</label>
-                    <input type="text" class="igc-escrow-officer" placeholder="e.g. Jane Smith" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
-                  </div>
-                  <div class="field" style="margin:0;">
-                    <label style="font-size:0.7rem;">Escrow Phone</label>
-                    <input type="tel" class="igc-escrow-phone" placeholder="e.g. 713-555-0199" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
-                  </div>
-                  <div class="field" style="margin:0; grid-column:span 2;">
-                    <label style="font-size:0.7rem;">Escrow Email</label>
-                    <input type="email" class="igc-escrow-email" placeholder="e.g. escrow@titleco.com" style="width:100%; padding:0.4rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink); font-size:0.8rem;" />
-                  </div>
                 </div>
                 
                 <div style="grid-column:1/-1; display:flex; justify-content:flex-end; margin-top:0.5rem;">
@@ -5487,16 +5712,10 @@ function bindHandlers(route) {
               // Add title company info if available
               const titleCompany = form.querySelector('.igc-title-company')?.value.trim() || null;
               const titleAddress = form.querySelector('.igc-title-address')?.value.trim() || null;
-              const escrowOfficer = form.querySelector('.igc-escrow-officer')?.value.trim() || null;
-              const escrowPhone = form.querySelector('.igc-escrow-phone')?.value.trim() || null;
-              const escrowEmail = form.querySelector('.igc-escrow-email')?.value.trim() || null;
               
-              if (titleCompany || escrowOfficer) {
+              if (titleCompany) {
                 dealData.title_company = titleCompany;
                 dealData.title_address = titleAddress;
-                dealData.escrow_officer = escrowOfficer;
-                dealData.escrow_phone = escrowPhone;
-                dealData.escrow_email = escrowEmail;
               }
             }
             
@@ -6833,35 +7052,35 @@ function initAssignmentSignatureArea() {
   const buyer = contract.buyer_info || {};
 
   area.innerHTML = `
-    <div class="sig-grid" style="max-width:800px; margin:2rem auto; padding:2rem; background:var(--cream); border:1px solid var(--rule); border-radius:4px;">
+    <div class="sig-grid">
       <div class="sig-block" style="grid-column: span 2;">
         <h3 style="font-family:var(--serif); font-size:1.4rem; color:var(--gold); margin-bottom:1.5rem; text-transform:uppercase; letter-spacing:0.1em; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">Assignee (Cash Buyer) Information &amp; Execution</h3>
         
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
           <div class="field">
             <label for="as-legal-name">Full Legal Name</label>
-            <input type="text" id="as-legal-name" value="${esc(buyer.legal_name || '')}" placeholder="e.g., John Doe" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+            <input type="text" id="as-legal-name" value="${esc(buyer.legal_name || '')}" placeholder="e.g., John Doe" />
           </div>
           <div class="field">
             <label for="as-entity-name">Purchasing Entity Name (optional)</label>
-            <input type="text" id="as-entity-name" value="${esc(buyer.entity_name || '')}" placeholder="e.g., JD Holdings LLC" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+            <input type="text" id="as-entity-name" value="${esc(buyer.entity_name || '')}" placeholder="e.g., JD Holdings LLC" />
           </div>
           <div class="field">
             <label for="as-email">Email Address</label>
-            <input type="email" id="as-email" value="${esc(buyer.email || '')}" placeholder="e.g., john@jdholdings.com" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+            <input type="email" id="as-email" value="${esc(buyer.email || '')}" placeholder="e.g., john@jdholdings.com" />
           </div>
           <div class="field">
             <label for="as-phone">Phone Number</label>
-            <input type="tel" id="as-phone" value="${esc(buyer.phone || '')}" placeholder="e.g., (832) 555-0199" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+            <input type="tel" id="as-phone" value="${esc(buyer.phone || '')}" placeholder="e.g., (832) 555-0199" />
           </div>
           <div class="field" style="grid-column: span 2;">
             <label for="as-address">Mailing / Notice Address</label>
-            <input type="text" id="as-address" value="${esc(buyer.mailing_address || '')}" placeholder="e.g., 123 Corporate Dr, Houston, TX 77002" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper);" />
+            <input type="text" id="as-address" value="${esc(buyer.mailing_address || '')}" placeholder="e.g., 123 Corporate Dr, Houston, TX 77002" />
           </div>
           <div class="field" style="grid-column: span 2;">
             <label for="as-pof">Proof of Funds (Upload or Link)</label>
-            <input type="text" id="as-pof" value="${esc(buyer.proof_of_funds_url || '')}" placeholder="Paste link to bank statement or upload file below" style="width:100%; padding:0.5rem; border:1px solid var(--rule); background:var(--paper); margin-bottom:0.5rem;" />
-            <input type="file" id="as-pof-file" style="font-family:var(--sans); font-size:0.8rem; color:var(--ink-soft);" />
+            <input type="text" id="as-pof" value="${esc(buyer.proof_of_funds_url || '')}" placeholder="Paste link to bank statement or upload file below" style="margin-bottom:0.5rem;" />
+            <input type="file" id="as-pof-file" style="font-family:var(--sans); font-size:0.8rem; color:#555555;" />
             <span id="as-pof-upload-status" style="font-size:0.75rem; color:var(--moss); margin-left:1rem; display:none;">✓ File attached</span>
           </div>
         </div>
@@ -6869,27 +7088,27 @@ function initAssignmentSignatureArea() {
       
       <div class="sig-block">
         <h4>Assignee Signature</h4>
-        <div class="sig-pad" id="as-sig-pad" style="border:1px solid var(--rule); background:#ffffff; height:160px; position:relative; cursor:crosshair;">
-          <canvas id="as-sig-canvas" style="position:absolute; inset:0; width:100%; height:100%; touch-action:none;"></canvas>
-          <div class="sig-pad__placeholder" style="position:absolute; bottom:12px; left:16px; color:var(--ink-mute); font-size:0.9rem; pointer-events:none; font-family:var(--serif); font-style:italic;">Sign here using mouse or finger</div>
+        <div class="sig-pad" id="as-sig-pad">
+          <canvas id="as-sig-canvas"></canvas>
+          <div class="sig-pad__placeholder">Sign here using mouse or finger</div>
         </div>
-        <div class="sig-controls" style="display:flex; justify-content:space-between; align-items:center; margin-top:0.6rem;">
-          <span style="font-size:0.75rem; color:var(--ink-mute);">Draw your signature above</span>
-          <button type="button" class="sig-clear" id="as-sig-clear" style="background:none; border:1px solid var(--rule); padding:0.25rem 0.6rem; font-size:0.75rem; color:var(--ink-mute); cursor:pointer;">Clear</button>
+        <div class="sig-controls">
+          <span>Draw your signature above</span>
+          <button type="button" class="sig-clear" id="as-sig-clear">Clear</button>
         </div>
       </div>
       <div class="sig-block">
         <h4>Assignor (Vorvo Services)</h4>
-        <div class="sig-static" style="border:1px solid var(--rule-soft); padding:1.5rem; background:#ffffff; border-radius:3px; height:160px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center;">
-          <div class="sig-static__sig" style="font-family:'Brush Script MT', cursive; font-size:1.6rem; color:#B88A00; text-align:center; margin-bottom:0.5rem; width:100%; justify-content:center;">D. S. &nbsp;·&nbsp; J. V.</div>
-          <div class="sig-static__line" style="font-size:0.75rem; color:#555555; text-align:center; border-top:1px solid #dddddd; padding-top:0.4rem;">Authorized Assignor (countersigned)</div>
+        <div class="sig-static">
+          <div class="sig-static__sig">D. S. &nbsp;·&nbsp; J. V.</div>
+          <div class="sig-static__line">Authorized Assignor (countersigned)</div>
         </div>
       </div>
     </div>
 
-    <div class="agree-confirm" style="max-width:800px; margin:1.5rem auto; display:flex; gap:0.75rem; align-items:flex-start;">
-      <input type="checkbox" id="as-confirm-box" style="margin-top:0.25rem;" />
-      <label for="as-confirm-box" style="font-size:0.9rem; line-height:1.5; color:var(--ink-soft);">
+    <div class="agree-confirm">
+      <input type="checkbox" id="as-confirm-box" />
+      <label for="as-confirm-box">
         <strong>I have read and understood</strong> the entirety of this Assignment Agreement, and I agree to be bound by all terms, conditions, and disclosures set forth herein, including the 'AS-IS' assignment clause.
       </label>
     </div>

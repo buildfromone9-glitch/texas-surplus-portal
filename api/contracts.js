@@ -188,7 +188,7 @@ function generateContractHTML(contract, lead) {
 
   <h3>7. Title, Conveyance, and Closing</h3>
   <p>Seller warrants that Seller holds good, marketable, and insurable title to the Property, free and clear of all liens, encumbrances, and clouds, except for standard utility easements and zoning restrictions. Conveyance shall be by General Warranty Deed. Closing shall take place on or before the Closing Date specified above. All standard closing costs, including title search, title insurance, escrow fees, and transfer taxes, shall be allocated according to standard local real estate customs.</p>
-  <p><strong>TITLE COMPANY DISCLAIMER:</strong> The title company is an independent third party. Vorvo Services LLC does not act as escrow agent, title company, or closing agent. All escrow officer information, wire instructions, deposit instructions, and escrow account information is provided by the title company, not by Vorvo Services LLC.</p>
+  <p><strong>TITLE COMPANY DISCLAIMER:</strong> The title company is an independent third party. Vorvo Services LLC does not act as escrow agent, title company, or closing agent. All wire instructions, deposit instructions, and escrow account information is provided by the title company, not by Vorvo Services LLC.</p>
 
   <h3>8. As-Is Condition</h3>
   <p>Buyer acknowledges that it is purchasing the Property in its current "AS-IS, WHERE-IS" physical condition, with all faults. Seller makes no warranties, express or implied, regarding the structural, mechanical, or environmental condition of the Property, except as explicitly set forth in this Agreement.</p>
@@ -301,12 +301,9 @@ function generateContractHTML(contract, lead) {
     ${deal.title_company ? `
     <tr>
       <td class="label">Title Company</td>
-      <td>${esc(deal.title_company)}</td>
-      <td class="label">Escrow Officer</td>
-      <td>${esc(deal.escrow_officer || '—')}</td>
+      <td colspan="3">${esc(deal.title_company)}</td>
     </tr>
     ${deal.title_address ? `<tr><td class="label">Title Company Address</td><td colspan="3">${esc(deal.title_address)}</td></tr>` : ''}
-    ${deal.escrow_phone || deal.escrow_email ? `<tr><td class="label">Escrow Phone</td><td>${esc(deal.escrow_phone || '—')}</td><td class="label">Escrow Email</td><td>${esc(deal.escrow_email || '—')}</td></tr>` : ''}
     ` : `
     <tr>
       <td class="label">Title Company</td>
@@ -362,7 +359,7 @@ function generateContractHTML(contract, lead) {
 
   <h3>6. Closing &amp; Title</h3>
   <p>Closing shall take place on or before the Closing Date specified above. Assignee shall be solely responsible for all of Assignee's closing costs, title insurance premiums, and transfer taxes. Assignor shall cooperate with the title company to facilitate a simultaneous or double-closing as required.</p>
-  <p><strong>TITLE COMPANY DISCLAIMER:</strong> The title company is an independent third party. Vorvo Services LLC does not act as escrow agent, title company, or closing agent. All escrow officer information, wire instructions, deposit instructions, and escrow account information is provided by the title company, not by Vorvo Services LLC. If title company information is not yet available, it will be provided by the title company after title has been opened.</p>
+  <p><strong>TITLE COMPANY DISCLAIMER:</strong> The title company is an independent third party. Vorvo Services LLC does not act as escrow agent, title company, or closing agent. All wire instructions, deposit instructions, and escrow account information is provided by the title company, not by Vorvo Services LLC. If title company information is not yet available, it will be provided by the title company after title has been opened.</p>
 
   <h3>7. Assignee Default &amp; Remedies</h3>
   <p>If Assignee fails to:</p>
