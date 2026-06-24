@@ -1514,6 +1514,8 @@ const App = {
     } else if (currentRoute === 'assignment') {
       await loadAssignmentAgreement();
       this.loadSignedState();
+    } else if (currentRoute === 'guide') {
+      this.loadSignedState();
     }
 
     window.addEventListener('hashchange', async () => {
@@ -1526,6 +1528,8 @@ const App = {
         this.loadSignedState();
       } else if (route === 'assignment') {
         await loadAssignmentAgreement();
+        this.loadSignedState();
+      } else if (route === 'guide') {
         this.loadSignedState();
       }
       this.render();
@@ -1546,22 +1550,51 @@ const App = {
     }
   },
 
+  getUniqueAgreementId() {
+    const route = this.getRoute();
+    const clientId = this.state.client?.id || '';
+    const contractId = this.state.contract?.id || '';
+    
+    if (route === 'property-management-agreement') {
+      return `pm_${contractId || clientId}`;
+    } else if (route === 'assignment') {
+      return `as_${contractId || clientId}`;
+    } else if (route === 'agreement' || route === 'guide') {
+      return `surplus_${clientId}`;
+    }
+    return clientId ? `gen_${clientId}` : '';
+  },
+
   loadSignedState() {
     try {
-      // Key by agreementId — never load state for 'guest' (unsigned/blank pages)
-      const agreementId = String(this.state.client?.id || '');
-      if (!agreementId) {
-        localStorage.removeItem(STORE_KEY); // clear any stale guest entry
+      const uniqueAgreementId = String(this.getUniqueAgreementId() || '');
+      if (!uniqueAgreementId) {
+        this.state.signature = null;
+        this.state.typedName = '';
+        this.state.signedAt = null;
         return;
       }
       const raw = localStorage.getItem(STORE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed.agreementId === agreementId) {
+        if (parsed[uniqueAgreementId]) {
+          const data = parsed[uniqueAgreementId];
+          this.state.signature = data.signature;
+          this.state.typedName = data.typedName;
+          this.state.signedAt = data.signedAt;
+        } else if (parsed.agreementId === uniqueAgreementId) {
           this.state.signature = parsed.signature;
           this.state.typedName = parsed.typedName;
           this.state.signedAt = parsed.signedAt;
+        } else {
+          this.state.signature = null;
+          this.state.typedName = '';
+          this.state.signedAt = null;
         }
+      } else {
+        this.state.signature = null;
+        this.state.typedName = '';
+        this.state.signedAt = null;
       }
     } catch (e) {
       console.warn('Failed to load signed state', e);
@@ -1570,14 +1603,35 @@ const App = {
 
   saveSignedState() {
     try {
-      const agreementId = String(this.state.client?.id || '');
-      if (!agreementId) return; // never save for guest/blank pages
-      localStorage.setItem(STORE_KEY, JSON.stringify({
-        agreementId,
+      const uniqueAgreementId = String(this.getUniqueAgreementId() || '');
+      if (!uniqueAgreementId) return; // never save for guest/blank pages
+      
+      let storeData = {};
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object' && !parsed.agreementId) {
+            storeData = parsed;
+          } else if (parsed && parsed.agreementId) {
+            storeData[parsed.agreementId] = {
+              signature: parsed.signature,
+              typedName: parsed.typedName,
+              signedAt: parsed.signedAt
+            };
+          }
+        } catch (e) {
+          storeData = {};
+        }
+      }
+      
+      storeData[uniqueAgreementId] = {
         signature: this.state.signature,
         typedName: this.state.typedName,
-        signedAt: this.state.signedAt,
-      }));
+        signedAt: this.state.signedAt
+      };
+      
+      localStorage.setItem(STORE_KEY, JSON.stringify(storeData));
     } catch (e) { console.warn('Save failed', e); }
   },
 
