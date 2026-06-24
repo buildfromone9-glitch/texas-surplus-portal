@@ -4870,9 +4870,9 @@ function bindHandlers(route) {
     
     tabWholesaleBtn?.addEventListener('click', async () => {
       switchTab(tabWholesaleBtn, tabWholesaleContent);
-      const listContainer = document.getElementById('wholesale-leads-list');
-      if (!listContainer || listContainer.innerHTML.includes('Loading wholesale leads') || !listContainer.querySelector('table')) {
-        await loadWholesaleLeads();
+      const listContainer = document.getElementById('property-management-leads-list');
+      if (!listContainer || listContainer.innerHTML.includes('Loading property management leads') || !listContainer.querySelector('table')) {
+        await loadPropertyManagementLeads();
       }
     });
     
@@ -4886,7 +4886,7 @@ function bindHandlers(route) {
 
     // Bind manual refresh buttons
     document.getElementById('btn-refresh-wholesale')?.addEventListener('click', async () => {
-      await loadWholesaleLeads();
+      await loadPropertyManagementLeads();
     });
     document.getElementById('btn-refresh-property')?.addEventListener('click', async () => {
       await loadPropertyQuotes();
@@ -5299,10 +5299,10 @@ function bindHandlers(route) {
               const row = e.currentTarget.closest('.edit-wholesale-row');
               if (row) {
                 const dealId = row.id.replace('edit-wholesale-row-', '');
-                App.state.expandedWholesaleId = dealId;
+                App.state.expandedPropertyManagementId = dealId;
               }
               
-              await loadWholesaleLeads();
+              await loadPropertyManagementLeads();
             } catch (err) {
               alert('Error voiding contract: ' + err.message);
               e.currentTarget.disabled = false;
@@ -5476,8 +5476,8 @@ function bindHandlers(route) {
               if (!createRes.ok) throw new Error(result.error || 'Failed to generate contract');
               
               alert('Contract generated and link created successfully!');
-              App.state.expandedWholesaleId = dealId;
-              await loadWholesaleLeads();
+              App.state.expandedPropertyManagementId = dealId;
+              await loadPropertyManagementLeads();
             } catch (err) {
               console.error('Error generating contract:', err);
               alert('Failed to generate contract: ' + err.message);
@@ -5526,7 +5526,7 @@ function bindHandlers(route) {
                 
               if (error) throw error;
               App.state.expandedPropertyManagementId = id;
-              await loadWholesaleLeads();
+              await loadPropertyManagementLeads();
               alert('Changes saved successfully!');
             } catch (err) {
               console.error('Error updating wholesale lead:', err);
@@ -5538,7 +5538,7 @@ function bindHandlers(route) {
         });
         
       } catch (err) {
-        console.error('Error loading wholesale leads:', err);
+        console.error('Error loading property management leads:', err);
         container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load requests</strong><br>${esc(err.message)}</div>`;
       }
     }
