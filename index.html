@@ -4204,7 +4204,7 @@ function bindHandlers(route) {
       submitBtn.innerHTML = 'Analyzing & submitting... <span class="btn__arrow">→</span>';
       
       const randomNum = Math.floor(100000 + Math.random() * 900000);
-      const clientGeneratedId = 'VRV-MGMT-' + randomNum;
+      const clientGeneratedId = 'VRV-WHL-' + randomNum;
 
       const payload = {
         tracking_id: clientGeneratedId,
@@ -4821,7 +4821,7 @@ function bindHandlers(route) {
             }
             }
         } else {
-          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus), "VRV-MGMT-" (Property Management), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
+          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-AST-" (Surplus), "VRV-WHL-" (Property Management), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
         }
       } catch (err) {
         console.error('Tracking lookup error:', err);
