@@ -1073,6 +1073,45 @@
     display: flex !important;
     justify-content: flex-start !important;
   }
+
+  /* ============================================================
+     GLOBAL FORM & FIELD STYLING
+     ============================================================ */
+  .form h1, .form h2, .form h3, .form h4, .form h5 {
+    color: #FFFFFF !important;
+  }
+  .form p, .form span, .form div, .form li {
+    color: var(--ink-soft) !important;
+  }
+  .form label {
+    color: var(--gold-light) !important;
+  }
+
+  /* ============================================================
+     DISCLOSURE STYLING
+     ============================================================ */
+  .disclosure {
+    border: 1px solid rgba(176, 141, 87, 0.35) !important;
+    background: rgba(24, 24, 24, 0.85) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    padding: 3rem !important;
+    border-radius: 8px !important;
+    box-shadow: var(--shadow-lift) !important;
+  }
+  .disclosure h1, .disclosure h2, .disclosure h3, .disclosure h4, .disclosure h5 {
+    color: var(--gold-light) !important;
+  }
+  .disclosure p, .disclosure li {
+    color: var(--ink-soft) !important;
+  }
+  .disclosure a {
+    color: var(--gold) !important;
+    text-decoration: underline !important;
+  }
+  .disclosure a:hover {
+    color: #FFFFFF !important;
+  }
 </style>
 </head>
 <body id="vorvo-body">
@@ -2075,7 +2114,7 @@ function renderPortal() {
     <section class="section section--light" id="property-services-section">
       <div class="split">
         <div class="split__image-wrap">
-          <img src="images/property/0dd26eed0cc68659a73ee6380a0990a5.jpg" class="split__image" alt="Property Services" loading="lazy">
+          <img src="images/property/e3017aa5d5df6a6a6400e536d4d6ed0d.jpg" class="split__image" alt="Property Services" loading="lazy">
         </div>
         <div class="split__content">
           <div class="section__eyebrow">Strategic Asset Solutions</div>
@@ -2650,28 +2689,34 @@ function renderLanding() {
           <div class="section__eyebrow">Our Role</div>
           <h2 class="section__title">Research, Not Representation.</h2>
           <p class="text-body mb-4">Vorvo Asset Solutions is an educational public-records research firm. We identify funds the State is holding and provide a step-by-step roadmap so you can file the claim yourself.</p>
-          <div class="steps" style="border:none; background:transparent;">
-            <div class="step" style="border:none; padding:1.5rem 0;">
-              <div class="step__num">01</div>
-              <h3 class="step__title">Request Search</h3>
-              <p class="step__body">Submit your address below. No fee, no obligation.</p>
+          
+          <div style="display: grid; gap: 2rem; margin-top: 2.5rem;">
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+              <div style="font-family: var(--mono); font-size: 1rem; font-weight: 800; color: var(--gold); border: 1px solid var(--gold); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; flex-shrink: 0; line-height: 1;">01</div>
+              <div>
+                <h3 style="font-family: var(--sans); font-size: 1.15rem; color: var(--charcoal); font-weight: 700; margin-bottom: 0.5rem; text-transform: none; letter-spacing: normal;">Request Search</h3>
+                <p style="color: var(--charcoal-soft); font-size: 0.95rem; line-height: 1.5; margin: 0;">Submit your address using our secure form below. No fee, no obligation.</p>
+              </div>
             </div>
-            <div class="step" style="border:none; padding:1.5rem 0;">
-              <div class="step__num">02</div>
-              <h3 class="step__title">Review Packet</h3>
-              <p class="step__body">If we find a match, we'll send your research packet.</p>
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+              <div style="font-family: var(--mono); font-size: 1rem; font-weight: 800; color: var(--gold); border: 1px solid var(--gold); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; flex-shrink: 0; line-height: 1;">02</div>
+              <div>
+                <h3 style="font-family: var(--sans); font-size: 1.15rem; color: var(--charcoal); font-weight: 700; margin-bottom: 0.5rem; text-transform: none; letter-spacing: normal;">Review Packet</h3>
+                <p style="color: var(--charcoal-soft); font-size: 0.95rem; line-height: 1.5; margin: 0;">If we locate matching surplus funds, we will deliver your personalized research roadmap.</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="disclosure" style="border:none; background:var(--paper-edge); box-shadow:none;">
-          <h3 class="upper ls-wide fw-bold text-gold mb-3">Required Consumer Disclosure</h3>
-          <p class="text-body">Unclaimed property can be claimed by the rightful owner directly from the State <strong>at no cost</strong>. You have the legal right to search for, and claim, these funds yourself, for free, without hiring a third-party research service.</p>
-          <p class="text-body">Search the official database at <a href="https://claimittexas.gov" target="_blank" rel="noopener">claimittexas.gov</a>.</p>
+    <section class="section" style="background-image: url('images/property/20a27da61793c0cbf22f656713ceb362.jpg'); background-size: cover; background-position: center; position: relative; padding: 6rem 1.5rem;">
+      <div style="position: absolute; inset: 0; background: rgba(17, 17, 17, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1;"></div>
+      <div class="container" style="position: relative; z-index: 2; max-width: var(--content-w);">
+        <div class="disclosure">
+          <h3 class="upper ls-wide fw-bold text-gold mb-3" style="font-size: 1.1rem;">Required Consumer Disclosure</h3>
+          <p class="text-body" style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.5rem;">Unclaimed property can be claimed by the rightful owner directly from the State <strong>at no cost</strong>. You have the legal right to search for, and claim, these funds yourself, for free, without hiring a third-party research service.</p>
+          <p class="text-body" style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 0;">Search the official state database directly at <a href="https://claimittexas.gov" target="_blank" rel="noopener">claimittexas.gov</a>.</p>
         </div>
       </div>
     </section>
@@ -2680,12 +2725,12 @@ function renderLanding() {
     <section class="section section--light" id="search-form">
       <div class="split split--rev">
         <div class="split__image-wrap">
-          <img src="images/property/0dd26eed0cc68659a73ee6380a0990a5.jpg" class="split__image" alt="Foreclosed Property" loading="lazy">
+          <img src="images/property/e3017aa5d5df6a6a6400e536d4d6ed0d.jpg" class="split__image" alt="Foreclosed Property" loading="lazy">
         </div>
         <div class="split__content">
           <div class="form">
-            <h2 class="form__title">Free Surplus Search</h2>
-            <p class="form__intro">No charge, no obligation. If we find a match, we'll send you the agreement and research packet.</p>
+            <h2 class="form__title">Surplus Fund Search</h2>
+            <p class="form__intro" style="margin-bottom: 2rem;">No charge, no obligation. If we find a match, we'll send you the agreement and research packet.</p>
             <form id="search-form-el" action="https://formspree.io/f/xqejewzo" method="POST">
               <div class="field">
                 <label for="full-name">Full Legal Name</label>
@@ -2955,11 +3000,11 @@ function renderGuide() {
   if (!App.hasSigned()) {
     return `
       <main class="track-page" style="background-image: url('images/property/150e637ba6412d4d6c19162c39a5bdc6.jpg');">
-        <div class="locked" style="border:none; background:var(--paper); box-shadow:var(--shadow-lift);">
-          <div class="locked__icon">✦</div>
-          <h2 class="text-headline mb-3">Client Access Only</h2>
-          <p class="text-body mb-5">The educational claims guide is provided exclusively to clients with an active Vorvo service agreement.</p>
-          <a href="#/surplus?scroll=search-form" class="btn btn--gold">Submit a Free Search Request <span class="btn__arrow">→</span></a>
+        <div class="track-card" style="max-width: 540px; text-align: center;">
+          <div class="track-card__eyebrow" style="color: var(--gold-light);">Client Access Only</div>
+          <h2 class="track-card__title">Client Access Only</h2>
+          <p class="track-card__intro" style="margin-bottom: 2.5rem;">The educational claims guide is provided exclusively to clients with an active Vorvo service agreement.</p>
+          <a href="#/surplus?scroll=search-form" class="btn btn--gold" style="width: 100%; justify-content: center; font-weight: 700; letter-spacing: 0.1em; padding: 1.1rem 2rem;">Request a Surplus Search <span class="btn__arrow">→</span></a>
         </div>
       </main>
     `;
@@ -3025,7 +3070,7 @@ function renderGuide() {
       <article class="doc__section">
         <div class="split">
           <div class="split__image-wrap">
-            <img src="images/property/0dd26eed0cc68659a73ee6380a0990a5.jpg" class="split__image" alt="Step 3">
+            <img src="images/property/e3017aa5d5df6a6a6400e536d4d6ed0d.jpg" class="split__image" alt="Step 3">
           </div>
           <div class="split__content">
             <div class="doc__section-num">Step 03</div>
