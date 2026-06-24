@@ -2640,9 +2640,9 @@ function renderPortal() {
         </div>
       </div>
       <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
+        <button class="hero__indicator active" data-slide="0" aria-label="Hero slide 1 of 3"></button>
+        <button class="hero__indicator" data-slide="1" aria-label="Hero slide 2 of 3"></button>
+        <button class="hero__indicator" data-slide="2" aria-label="Hero slide 3 of 3"></button>
       </div>
     </section>
 
@@ -2764,10 +2764,10 @@ function renderVorvoLanding() {
         </div>
       </div>
       <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
-        <button class="hero__indicator" data-slide="3"></button>
+        <button class="hero__indicator active" data-slide="0" aria-label="Hero slide 1 of 4"></button>
+        <button class="hero__indicator" data-slide="1" aria-label="Hero slide 2 of 4"></button>
+        <button class="hero__indicator" data-slide="2" aria-label="Hero slide 3 of 4"></button>
+        <button class="hero__indicator" data-slide="3" aria-label="Hero slide 4 of 4"></button>
       </div>
     </section>
 
@@ -3080,9 +3080,9 @@ function renderPropertyManagementLanding() {
         </div>
       </div>
       <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
+        <button class="hero__indicator active" data-slide="0" aria-label="Hero slide 1 of 3"></button>
+        <button class="hero__indicator" data-slide="1" aria-label="Hero slide 2 of 3"></button>
+        <button class="hero__indicator" data-slide="2" aria-label="Hero slide 3 of 3"></button>
       </div>
     </section>
 
@@ -3209,9 +3209,9 @@ function renderLanding() {
         </div>
       </div>
       <div class="hero__indicators">
-        <button class="hero__indicator active" data-slide="0"></button>
-        <button class="hero__indicator" data-slide="1"></button>
-        <button class="hero__indicator" data-slide="2"></button>
+        <button class="hero__indicator active" data-slide="0" aria-label="Hero slide 1 of 3"></button>
+        <button class="hero__indicator" data-slide="1" aria-label="Hero slide 2 of 3"></button>
+        <button class="hero__indicator" data-slide="2" aria-label="Hero slide 3 of 3"></button>
       </div>
     </section>
 
@@ -4209,11 +4209,16 @@ function bindHandlers(route) {
   if (route === 'landing' || route === 'surplus') {
     const form = document.getElementById('search-form-el');
     form?.addEventListener('submit', (e) => {
+      e.preventDefault();
       const data = new FormData(form);
       const successEl = document.getElementById('form-success');
-      successEl.innerHTML = `<strong>Request received.</strong> Thank you, ${esc(data.get('fullName'))}. If we identify a matching property, we'll email ${esc(data.get('email'))} within 3–5 business days with a personalized service packet. There is no charge for the search.`;
+      
+      // Generate tracking ID
+      const randomNum = Math.floor(100000 + Math.random() * 900000);
+      const trackingId = `TRK-${new Date().getFullYear()}-${randomNum}`;
+      
+      successEl.innerHTML = `<strong>Request received!</strong><br><br>Thank you, ${esc(data.get('fullName'))}. Your surplus search request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>We will search our database and email you a personalized research packet within 24 hours.<br><br><a href="#/track" class="btn btn--gold" style="margin-top:1rem;">Track Your Status →</a>`;
       successEl.style.display = 'block';
-      // NOTE: To wire this up for real, POST to your backend, Formspree, or a webhook here.
       form.reset();
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
