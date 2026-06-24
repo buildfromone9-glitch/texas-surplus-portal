@@ -2473,6 +2473,9 @@ function renderFooter(route) {
               <li>Junk Removal</li>
               <li>Pressure Washing</li>
               <li>Yard Work &amp; Cleanup</li>
+              <li>Lawn Work</li>
+              <li>Car Detailing</li>
+              <li>Other Services</li>
             </ul>
           </div>
         </div>
@@ -2605,7 +2608,7 @@ function renderTrack() {
         
         <div class="field" style="margin-bottom: 1.5rem;">
           <label for="track-id-input" style="display: block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.5rem; font-weight: 600;">Tracking ID</label>
-          <input type="text" id="track-id-input" placeholder="e.g., VRV-AST-123456 or VRV-MOV-789012" required style="text-transform: uppercase; width: 100%; padding: 1rem; border: 1px solid rgba(176, 141, 87, 0.4); background: rgba(0, 0, 0, 0.4); color: #FFFFFF; font-size: 1rem; border-radius: 4px; transition: border-color 0.2s;" />
+          <input type="text" id="track-id-input" placeholder="e.g., VRV-SUR-123456, VRV-WHL-789012, or VRV-CON-345678" required style="text-transform: uppercase; width: 100%; padding: 1rem; border: 1px solid rgba(176, 141, 87, 0.4); background: rgba(0, 0, 0, 0.4); color: #FFFFFF; font-size: 1rem; border-radius: 4px; transition: border-color 0.2s;" />
         </div>
         
         <button id="btn-track-lookup" class="btn btn--gold" style="width: 100%; justify-content: center; font-weight: 700; letter-spacing: 0.1em; padding: 1.1rem 2rem;">Lookup Status <span class="btn__arrow">→</span></button>
@@ -2708,6 +2711,42 @@ function renderPortal() {
             <div class="service-card__cat">Category 03</div>
             <h3 class="service-card__title">Pressure Washing</h3>
             <p class="service-card__text">Driveways, sidewalks, and exterior cleaning.</p>
+            <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <img src="images/labor/cbcd982375b9bd0482e5363ed1b464db.jpg" class="service-card__img" alt="Yard Work &amp; Cleanup">
+          <div class="service-card__body">
+            <div class="service-card__cat">Category 04</div>
+            <h3 class="service-card__title">Yard Work &amp; Cleanup</h3>
+            <p class="service-card__text">Mowing, trimming, edging, weeding, leaf removal, or seasonal yard cleanups.</p>
+            <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <img src="images/labor/cbcd982375b9bd0482e5363ed1b464db.jpg" class="service-card__img" alt="Lawn Work">
+          <div class="service-card__body">
+            <div class="service-card__cat">Category 05</div>
+            <h3 class="service-card__title">Lawn Work</h3>
+            <p class="service-card__text">Professional lawn mowing, precision edging, fertilization, and weed control.</p>
+            <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <img src="images/labor/996e61ace4cd5d1a710ae3bcf1e70422.jpg" class="service-card__img" alt="Car Detailing">
+          <div class="service-card__body">
+            <div class="service-card__cat">Category 06</div>
+            <h3 class="service-card__title">Car Detailing</h3>
+            <p class="service-card__text">Premium interior detailing, vacuuming, exterior hand wash, and waxing.</p>
+            <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
+          </div>
+        </div>
+        <div class="service-card">
+          <img src="images/labor/b1a685116cc6acb7c83b9e53e743e708.jpg" class="service-card__img" alt="Other Services">
+          <div class="service-card__body">
+            <div class="service-card__cat">Category 07</div>
+            <h3 class="service-card__title">Other Services</h3>
+            <p class="service-card__text">Custom contractor coordination, assembly, and general labor tasks.</p>
             <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
           </div>
         </div>
@@ -2815,6 +2854,36 @@ function renderVorvoLanding() {
             <div class="service-card__cat">Category 04</div>
             <h3 class="service-card__title">Yard Work &amp; Cleanup</h3>
             <p class="service-card__text">Mowing, trimming, edging, weeding, leaf removal, or seasonal yard cleanups in your neighborhood.</p>
+            <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <img src="images/labor/cbcd982375b9bd0482e5363ed1b464db.jpg" alt="Lawn Work" class="service-card__img" loading="lazy" />
+          <div class="service-card__body">
+            <div class="service-card__cat">Category 05</div>
+            <h3 class="service-card__title">Lawn Work</h3>
+            <p class="service-card__text">Professional lawn mowing, precision edging, fertilization, and weed control services for your home.</p>
+            <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <img src="images/labor/996e61ace4cd5d1a710ae3bcf1e70422.jpg" alt="Car Detailing" class="service-card__img" loading="lazy" />
+          <div class="service-card__body">
+            <div class="service-card__cat">Category 06</div>
+            <h3 class="service-card__title">Car Detailing</h3>
+            <p class="service-card__text">Premium interior detailing, vacuuming, exterior hand wash, clay bar, and protective wax coating.</p>
+            <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <img src="images/labor/b1a685116cc6acb7c83b9e53e743e708.jpg" alt="Other Services" class="service-card__img" loading="lazy" />
+          <div class="service-card__body">
+            <div class="service-card__cat">Category 07</div>
+            <h3 class="service-card__title">Other Services</h3>
+            <p class="service-card__text">Custom contractor coordination, assembly, and general labor tasks.</p>
             <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
           </div>
         </div>
@@ -3029,7 +3098,9 @@ function renderVorvoLanding() {
                   <option value="junk">Junk Removal</option>
                   <option value="pressure">Pressure Washing</option>
                   <option value="yard">Yard Work</option>
-                  <option value="other">Other</option>
+                  <option value="lawn">Lawn Work</option>
+                  <option value="detailing">Car Detailing</option>
+                  <option value="other">Other/Custom</option>
                 </select>
               </div>
               <div class="field">
@@ -3744,7 +3815,7 @@ function renderAdmin() {
             <div class="field"><label for="inv-email">Claimant Email</label><input type="email" id="inv-email" required placeholder="Email address" /></div>
           </div>
           <div class="field--row">
-            <div class="field"><label for="inv-tracking">Tracking #</label><input type="text" id="inv-tracking" required placeholder="TRK-2026-XXXX" /></div>
+            <div class="field"><label for="inv-tracking">Tracking #</label><input type="text" id="inv-tracking" required placeholder="VRV-SUR-XXXXXX" /></div>
             <div class="field"><label for="inv-property">Property / Claim ID</label><input type="text" id="inv-property" required placeholder="e.g., A0123456789" /></div>
           </div>
           <div class="field--row">
@@ -3783,7 +3854,7 @@ function renderAdmin() {
             <div class="field"><label for="dem-email">Claimant Email</label><input type="email" id="dem-email" required placeholder="Email address" /></div>
           </div>
           <div class="field--row">
-            <div class="field"><label for="dem-tracking">Tracking #</label><input type="text" id="dem-tracking" required placeholder="TRK-2026-XXXX" /></div>
+            <div class="field"><label for="dem-tracking">Tracking #</label><input type="text" id="dem-tracking" required placeholder="VRV-SUR-XXXXXX" /></div>
             <div class="field"><label for="dem-property">Property / Claim ID</label><input type="text" id="dem-property" required placeholder="e.g., A0123456789" /></div>
           </div>
           <div class="field--row">
@@ -3801,13 +3872,29 @@ function renderAdmin() {
           <div class="form__submit"><button type="submit" class="btn" style="background:var(--rust);">Send Demand Letter <span class="btn__arrow">→</span></button></div>
         </form>
         <div id="demand-result" style="display:none;margin-top:1rem;"></div>
+        
+        <!-- Recent Agreements List -->
+        <div style="margin-top:4rem; border-top:2px solid var(--rule); padding-top:3rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <h2 class="admin__title" style="font-size:1.6rem; margin:0;">Surplus Recovery Agreements</h2>
+            <div style="display:flex; gap:0.5rem;">
+              <button type="button" id="btn-delete-agreements" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem; color:var(--rust); border-color:var(--rust); display:none;">Delete Selected</button>
+              <button type="button" id="btn-refresh-agreements" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
+            </div>
+          </div>
+          <p class="admin__sub" style="margin-bottom:1.5rem;">Review and manage signed or pending surplus recovery agreements.</p>
+          <div id="agreements-list" style="margin-bottom:2rem;">Loading agreements...</div>
+        </div>
       </div>
 
       <!-- Tab 2: Property Management -->
       <div id="tab-content-wholesale" class="admin-tab-content" style="display:none; margin-top:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">
           <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Property Management Leads</h2>
-          <button type="button" id="btn-refresh-wholesale" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" id="btn-delete-wholesale" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem; color:var(--rust); border-color:var(--rust); display:none;">Delete Selected</button>
+            <button type="button" id="btn-refresh-wholesale" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
+          </div>
         </div>
         <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming property management inquiries, review details, and set coordination statuses.</p>
         <div id="property-management-leads-list" style="margin-bottom:2rem;">Loading leads...</div>
@@ -3817,7 +3904,10 @@ function renderAdmin() {
       <div id="tab-content-property" class="admin-tab-content" style="display:none; margin-top:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">
           <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Labor Service Quote Requests</h2>
-          <button type="button" id="btn-refresh-property" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" id="btn-delete-property" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem; color:var(--rust); border-color:var(--rust); display:none;">Delete Selected</button>
+            <button type="button" id="btn-refresh-property" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
+          </div>
         </div>
         <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming labor services quotes, assign providers, update pricing, and set job statuses.</p>
         <div id="property-quotes-list" style="margin-bottom:2rem;">Loading requests...</div>
@@ -4215,7 +4305,7 @@ function bindHandlers(route) {
       
       // Generate tracking ID
       const randomNum = Math.floor(100000 + Math.random() * 900000);
-      const trackingId = `TRK-${new Date().getFullYear()}-${randomNum}`;
+      const trackingId = `VRV-SUR-${randomNum}`;
       
       successEl.innerHTML = `<strong>Request received!</strong><br><br>Thank you, ${esc(data.get('fullName'))}. Your surplus search request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>We will search our database and email you a personalized research packet within 24 hours.<br><br><a href="#/track" class="btn btn--gold" style="margin-top:1rem;">Track Your Status →</a>`;
       successEl.style.display = 'block';
@@ -4333,7 +4423,7 @@ function bindHandlers(route) {
       }
       
       const randomNum = Math.floor(100000 + Math.random() * 900000);
-      let trackingPrefix = 'VRV-PRP-';
+      let trackingPrefix = 'VRV-CON-';
       const serviceCat = data.get('serviceCategory');
       if (serviceCat === 'moving') {
         trackingPrefix = 'VRV-MOV-';
@@ -4343,6 +4433,12 @@ function bindHandlers(route) {
         trackingPrefix = 'VRV-WSH-';
       } else if (serviceCat === 'yard') {
         trackingPrefix = 'VRV-YRD-';
+      } else if (serviceCat === 'lawn') {
+        trackingPrefix = 'VRV-LWN-';
+      } else if (serviceCat === 'detailing') {
+        trackingPrefix = 'VRV-CRD-';
+      } else if (serviceCat === 'other') {
+        trackingPrefix = 'VRV-CST-';
       }
       const clientGeneratedId = trackingPrefix + randomNum;
 
@@ -4801,7 +4897,7 @@ function bindHandlers(route) {
       resultEl.style.display = 'block';
       
       try {
-        if (trackingId.startsWith('VRV-AST-') || trackingId.startsWith('TRK-')) {
+        if (trackingId.startsWith('VRV-SUR-') || trackingId.startsWith('VRV-AST-') || trackingId.startsWith('TRK-')) {
           const { data, error } = await supabaseClient
             .from('agreements')
             .select('*')
@@ -4878,7 +4974,7 @@ function bindHandlers(route) {
               </div>
             `;
           }
-        } else if (trackingId.startsWith('VRV-PRP-') || trackingId.startsWith('VRV-MOV-') || trackingId.startsWith('VRV-JNK-') || trackingId.startsWith('VRV-WSH-') || trackingId.startsWith('VRV-YRD-')) {
+        } else if (trackingId.startsWith('VRV-PRP-') || trackingId.startsWith('VRV-MOV-') || trackingId.startsWith('VRV-JNK-') || trackingId.startsWith('VRV-WSH-') || trackingId.startsWith('VRV-YRD-') || trackingId.startsWith('VRV-LWN-') || trackingId.startsWith('VRV-CRD-') || trackingId.startsWith('VRV-CST-') || trackingId.startsWith('VRV-CON-')) {
           const { data, error } = await supabaseClient
             .from('property_quotes')
             .select('*')
@@ -5361,7 +5457,7 @@ function bindHandlers(route) {
             }
             }
         } else {
-          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "TRK-" or "VRV-AST-" (Surplus), "VRV-WHL-" (Property Management), or "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-PRP-" (Property Services).</div>`;
+          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-SUR-" (Surplus), "VRV-WHL-" (Property Management), or "VRV-CON-" / "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-LWN-" / "VRV-CRD-" / "VRV-CST-" (Labor Services).</div>`;
         }
       } catch (err) {
         console.error('Tracking lookup error:', err);
@@ -5449,8 +5545,9 @@ function bindHandlers(route) {
       activeContent.style.display = 'block';
     };
     
-    tabAssetsBtn?.addEventListener('click', () => {
+    tabAssetsBtn?.addEventListener('click', async () => {
       switchTab(tabAssetsBtn, tabAssetsContent);
+      await loadAgreements();
     });
     
     tabWholesaleBtn?.addEventListener('click', async () => {
@@ -5470,12 +5567,150 @@ function bindHandlers(route) {
     });
 
     // Bind manual refresh buttons
+    document.getElementById('btn-refresh-agreements')?.addEventListener('click', async () => {
+      await loadAgreements();
+    });
     document.getElementById('btn-refresh-wholesale')?.addEventListener('click', async () => {
       await loadPropertyManagementLeads();
     });
     document.getElementById('btn-refresh-property')?.addEventListener('click', async () => {
       await loadPropertyQuotes();
     });
+
+    // Initial load of agreements if logged in
+    if (App.state.adminUser) {
+      setTimeout(async () => {
+        await loadAgreements();
+      }, 100);
+    }
+
+    async function loadAgreements() {
+      const container = document.getElementById('agreements-list');
+      if (!container) return;
+      container.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading agreements from database...</div>';
+      
+      try {
+        const { data, error } = await supabaseClient
+          .from('agreements')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="color:var(--ink-mute); font-style:italic; padding:1rem; text-align:center;">No agreements found in the database.</p>';
+          return;
+        }
+        
+        let html = `
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+            <thead>
+              <tr style="background:var(--ink); color:var(--paper); text-align:left;">
+                <th style="padding:0.75rem; width: 40px; text-align:center;"><input type="checkbox" id="select-all-agreements" /></th>
+                <th style="padding:0.75rem;">Tracking ID</th>
+                <th style="padding:0.75rem;">Claimant</th>
+                <th style="padding:0.75rem;">Property ID</th>
+                <th style="padding:0.75rem;">Estimated Value</th>
+                <th style="padding:0.75rem;">Status</th>
+                <th style="padding:0.75rem; text-align:center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        data.forEach(q => {
+          const isSigned = q.signed;
+          const statusText = isSigned ? 'Signed' : 'Pending Signature';
+          const badgeClass = `badge badge--${isSigned ? 'paid' : 'new'}`;
+          
+          html += `
+            <tr style="border-bottom:1px solid var(--rule-soft);" id="agreement-row-${q.id}">
+              <td style="padding:0.75rem; text-align:center;"><input type="checkbox" class="agreement-select" data-id="${q.id}" /></td>
+              <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
+              <td style="padding:0.75rem;"><strong>${esc(q.claimant_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.claimant_email)}</small></td>
+              <td style="padding:0.75rem; font-family:var(--mono);">${esc(q.property_id)}</td>
+              <td style="padding:0.75rem;">${q.estimated_value ? formatMoney(q.estimated_value) : '<em>Not specified</em>'}</td>
+              <td style="padding:0.75rem;"><span class="${badgeClass}">${statusText}</span></td>
+              <td style="padding:0.75rem; text-align:center;">
+                <a href="${window.location.origin}/#/surplus?id=${q.id}" target="_blank" class="btn btn--small btn--ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem; text-decoration:none;">View Packet</a>
+              </td>
+            </tr>
+          `;
+        });
+        
+        html += `
+            </tbody>
+            </table>
+          </div>
+        `;
+        
+        container.innerHTML = html;
+        
+        // Bind checkboxes
+        const selectAllAgreements = document.getElementById('select-all-agreements');
+        const agreementCheckboxes = container.querySelectorAll('.agreement-select');
+        const deleteAgreementsBtn = document.getElementById('btn-delete-agreements');
+        
+        const updateDeleteAgreementsVisibility = () => {
+          const checkedCount = container.querySelectorAll('.agreement-select:checked').length;
+          if (deleteAgreementsBtn) {
+            deleteAgreementsBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+            deleteAgreementsBtn.textContent = `Delete Selected (${checkedCount})`;
+          }
+        };
+
+        selectAllAgreements?.addEventListener('change', (e) => {
+          agreementCheckboxes.forEach(cb => {
+            cb.checked = e.target.checked;
+          });
+          updateDeleteAgreementsVisibility();
+        });
+
+        agreementCheckboxes.forEach(cb => {
+          cb.addEventListener('change', () => {
+            if (selectAllAgreements) {
+              selectAllAgreements.checked = Array.from(agreementCheckboxes).every(c => c.checked);
+            }
+            updateDeleteAgreementsVisibility();
+          });
+        });
+
+        if (deleteAgreementsBtn && !deleteAgreementsBtn.dataset.bound) {
+          deleteAgreementsBtn.dataset.bound = 'true';
+          deleteAgreementsBtn.addEventListener('click', async () => {
+            const checkedBoxes = container.querySelectorAll('.agreement-select:checked');
+            const idsToDelete = Array.from(checkedBoxes).map(cb => cb.getAttribute('data-id'));
+            if (idsToDelete.length === 0) return;
+            
+            if (confirm(`Are you sure you want to permanently delete the ${idsToDelete.length} selected agreement(s)? This action cannot be undone.`)) {
+              deleteAgreementsBtn.disabled = true;
+              deleteAgreementsBtn.textContent = 'Deleting...';
+              try {
+                const { error } = await supabaseClient
+                  .from('agreements')
+                  .delete()
+                  .in('id', idsToDelete);
+                  
+                if (error) throw error;
+                alert('Selected agreements deleted successfully!');
+                await loadAgreements();
+              } catch (err) {
+                console.error('Error deleting agreements:', err);
+                alert('Failed to delete agreements: ' + err.message);
+              } finally {
+                deleteAgreementsBtn.disabled = false;
+                updateDeleteAgreementsVisibility();
+              }
+            }
+          });
+        }
+        
+      } catch (err) {
+        console.error('Error loading agreements:', err);
+        container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load agreements</strong><br>${esc(err.message)}</div>`;
+      }
+    }
 
     async function loadPropertyManagementLeads() {
       const container = document.getElementById('property-management-leads-list');
@@ -5519,6 +5754,7 @@ function bindHandlers(route) {
             <table class="admin-table">
             <thead>
               <tr style="background:var(--ink); color:var(--paper); text-align:left;">
+                <th style="padding:0.75rem; width: 40px; text-align:center;"><input type="checkbox" id="select-all-wholesale" /></th>
                 <th style="padding:0.75rem;">Tracking ID</th>
                 <th style="padding:0.75rem;">Owner</th>
                 <th style="padding:0.75rem;">Property Address</th>
@@ -5717,7 +5953,8 @@ function bindHandlers(route) {
           `;
           
           html += `
-            <tr style="border-bottom:1px solid var(--rule-soft);">
+            <tr style="border-bottom:1px solid var(--rule-soft);" id="lead-row-${q.id}">
+              <td style="padding:0.75rem; text-align:center;"><input type="checkbox" class="wholesale-select" data-id="${q.id}" /></td>
               <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
               <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
               <td style="padding:0.75rem; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${esc(q.property_address)}">${esc(q.property_address)}</td>
@@ -6104,6 +6341,65 @@ function bindHandlers(route) {
           });
         });
         
+        // Checkbox handling and bulk delete for wholesale leads
+        const selectAllWholesale = document.getElementById('select-all-wholesale');
+        const wholesaleCheckboxes = container.querySelectorAll('.wholesale-select');
+        const deleteWholesaleBtn = document.getElementById('btn-delete-wholesale');
+        
+        const updateDeleteButtonVisibility = () => {
+          const checkedCount = container.querySelectorAll('.wholesale-select:checked').length;
+          if (deleteWholesaleBtn) {
+            deleteWholesaleBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+            deleteWholesaleBtn.textContent = `Delete Selected (${checkedCount})`;
+          }
+        };
+
+        selectAllWholesale?.addEventListener('change', (e) => {
+          wholesaleCheckboxes.forEach(cb => {
+            cb.checked = e.target.checked;
+          });
+          updateDeleteButtonVisibility();
+        });
+
+        wholesaleCheckboxes.forEach(cb => {
+          cb.addEventListener('change', () => {
+            if (selectAllWholesale) {
+              selectAllWholesale.checked = Array.from(wholesaleCheckboxes).every(c => c.checked);
+            }
+            updateDeleteButtonVisibility();
+          });
+        });
+
+        if (deleteWholesaleBtn && !deleteWholesaleBtn.dataset.bound) {
+          deleteWholesaleBtn.dataset.bound = 'true';
+          deleteWholesaleBtn.addEventListener('click', async () => {
+            const checkedBoxes = container.querySelectorAll('.wholesale-select:checked');
+            const idsToDelete = Array.from(checkedBoxes).map(cb => cb.getAttribute('data-id'));
+            if (idsToDelete.length === 0) return;
+            
+            if (confirm(`Are you sure you want to permanently delete the ${idsToDelete.length} selected lead(s)? This action cannot be undone.`)) {
+              deleteWholesaleBtn.disabled = true;
+              deleteWholesaleBtn.textContent = 'Deleting...';
+              try {
+                const { error } = await supabaseClient
+                  .from('wholesale_leads')
+                  .delete()
+                  .in('id', idsToDelete);
+                  
+                if (error) throw error;
+                alert('Selected leads deleted successfully!');
+                await loadPropertyManagementLeads();
+              } catch (err) {
+                console.error('Error deleting leads:', err);
+                alert('Failed to delete leads: ' + err.message);
+              } finally {
+                deleteWholesaleBtn.disabled = false;
+                updateDeleteButtonVisibility();
+              }
+            }
+          });
+        }
+        
       } catch (err) {
         console.error('Error loading property management leads:', err);
         container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load requests</strong><br>${esc(err.message)}</div>`;
@@ -6132,6 +6428,7 @@ function bindHandlers(route) {
           <table class="agreement-table admin-table" style="width:100%; font-size:0.9rem; border-collapse:collapse; margin-top:1rem;">
             <thead>
               <tr style="background:var(--ink); color:var(--paper); text-align:left;">
+                <th style="padding:0.75rem; width: 40px; text-align:center;"><input type="checkbox" id="select-all-property" /></th>
                 <th style="padding:0.75rem;">Tracking ID</th>
                 <th style="padding:0.75rem;">Customer</th>
                 <th style="padding:0.75rem;">Service</th>
@@ -6182,7 +6479,8 @@ function bindHandlers(route) {
           const contractLink = `${window.location.origin}/#/track?id=${q.tracking_id}`;
           
           html += `
-            <tr style="border-bottom:1px solid var(--rule-soft);">
+            <tr style="border-bottom:1px solid var(--rule-soft);" id="quote-row-${q.id}">
+              <td style="padding:0.75rem; text-align:center;"><input type="checkbox" class="property-select" data-id="${q.id}" /></td>
               <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
               <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
               <td style="padding:0.75rem; text-transform:capitalize;">${esc(q.service_category)}</td>
@@ -6470,6 +6768,65 @@ function bindHandlers(route) {
           });
         });
         
+        // Checkbox handling and bulk delete for property quotes
+        const selectAllProperty = document.getElementById('select-all-property');
+        const propertyCheckboxes = container.querySelectorAll('.property-select');
+        const deletePropertyBtn = document.getElementById('btn-delete-property');
+        
+        const updateDeletePropertyVisibility = () => {
+          const checkedCount = container.querySelectorAll('.property-select:checked').length;
+          if (deletePropertyBtn) {
+            deletePropertyBtn.style.display = checkedCount > 0 ? 'inline-block' : 'none';
+            deletePropertyBtn.textContent = `Delete Selected (${checkedCount})`;
+          }
+        };
+
+        selectAllProperty?.addEventListener('change', (e) => {
+          propertyCheckboxes.forEach(cb => {
+            cb.checked = e.target.checked;
+          });
+          updateDeletePropertyVisibility();
+        });
+
+        propertyCheckboxes.forEach(cb => {
+          cb.addEventListener('change', () => {
+            if (selectAllProperty) {
+              selectAllProperty.checked = Array.from(propertyCheckboxes).every(c => c.checked);
+            }
+            updateDeletePropertyVisibility();
+          });
+        });
+
+        if (deletePropertyBtn && !deletePropertyBtn.dataset.bound) {
+          deletePropertyBtn.dataset.bound = 'true';
+          deletePropertyBtn.addEventListener('click', async () => {
+            const checkedBoxes = container.querySelectorAll('.property-select:checked');
+            const idsToDelete = Array.from(checkedBoxes).map(cb => cb.getAttribute('data-id'));
+            if (idsToDelete.length === 0) return;
+            
+            if (confirm(`Are you sure you want to permanently delete the ${idsToDelete.length} selected request(s)? This action cannot be undone.`)) {
+              deletePropertyBtn.disabled = true;
+              deletePropertyBtn.textContent = 'Deleting...';
+              try {
+                const { error } = await supabaseClient
+                  .from('property_quotes')
+                  .delete()
+                  .in('id', idsToDelete);
+                  
+                if (error) throw error;
+                alert('Selected requests deleted successfully!');
+                await loadPropertyQuotes();
+              } catch (err) {
+                console.error('Error deleting requests:', err);
+                alert('Failed to delete requests: ' + err.message);
+              } finally {
+                deletePropertyBtn.disabled = false;
+                updateDeletePropertyVisibility();
+              }
+            }
+          });
+        }
+        
       } catch (err) {
         console.error('Error loading property quotes:', err);
         container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load requests</strong><br>${esc(err.message)}</div>`;
@@ -6495,7 +6852,9 @@ function bindHandlers(route) {
     });
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const randomNum = Math.floor(100000 + Math.random() * 900000);
       const payload = {
+        tracking_id: 'VRV-SUR-' + randomNum,
         claimant_name: document.getElementById('a-name').value.trim(),
         claimant_email: document.getElementById('a-email').value.trim(),
         property_id: document.getElementById('a-pid').value.trim(),
