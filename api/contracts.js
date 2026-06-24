@@ -229,13 +229,19 @@ function generateContractHTML(contract, lead) {
         ${contract.ip_address ? `<div style="font-size:10px; color:#777777;">IP: ${contract.ip_address}</div>` : ''}
       </div>
       <div class="sig-box">
-        <strong>BUYER (Vorvo Services, LLC):</strong><br/><br/>
-        <div style="height:60px; line-height:60px; font-size:20px; font-family:'Brush Script MT', cursive; color:#15172b;">
-          D. S. &nbsp;·&nbsp; J. V.
+        <strong>BUYER / ASSIGNOR:</strong><br/><br/>
+        <div style="margin-bottom:12px;"><strong>Vorvo Services LLC</strong></div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid #dddddd;">
+          <div style="height:40px; line-height:40px; font-size:18px; font-family:'Brush Script MT', cursive; color:#15172b;">D.A.S.</div>
+          <div>By: Dennis S.</div>
+          <div>Title: Authorized Representative</div>
         </div>
-        <div>Name: Dennis S. / Joel V.</div>
-        <div>Title: Authorized Co-Operators</div>
-        <div>Date: ${createdDate}</div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid #dddddd;">
+          <div style="height:40px; line-height:40px; font-size:18px; font-family:'Brush Script MT', cursive; color:#15172b;">J.V.</div>
+          <div>By: Joel V.</div>
+          <div>Title: Authorized Representative</div>
+        </div>
+        <div style="margin-top:12px; font-size:11px; color:#777777;">Date: ${createdDate}</div>
       </div>
     </div>
   </div>
@@ -414,11 +420,18 @@ function generateContractHTML(contract, lead) {
     <div class="sig-grid">
       <div class="sig-box">
         <strong>ASSIGNOR:</strong><br/><br/>
-        <div style="height:60px;">
-          <em>Vorvo Services LLC</em>
+        <div style="margin-bottom:12px;"><strong>Vorvo Services LLC</strong></div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid #dddddd;">
+          <div style="height:40px; line-height:40px; font-size:18px; font-family:'Brush Script MT', cursive; color:#15172b;">D.A.S.</div>
+          <div>By: Dennis S.</div>
+          <div>Title: Authorized Representative</div>
         </div>
-        <div>Authorized Representative</div>
-        <div>Date: ${createdDate}</div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid #dddddd;">
+          <div style="height:40px; line-height:40px; font-size:18px; font-family:'Brush Script MT', cursive; color:#15172b;">J.V.</div>
+          <div>By: Joel V.</div>
+          <div>Title: Authorized Representative</div>
+        </div>
+        <div style="margin-top:12px; font-size:11px; color:#777777;">Date: ${createdDate}</div>
       </div>
       <div class="sig-box">
         <strong>ASSIGNEE:</strong><br/><br/>
