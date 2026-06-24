@@ -160,7 +160,10 @@ function generateContractHTML(contract, lead) {
   <h3>2. Purchase Price &amp; Escrow Deposit</h3>
   <p>The total Purchase Price to be paid by Buyer at closing shall be ${formatMoney(lead.asking_price)}. Buyer shall deposit the Earnest Money of ${formatMoney(lead.deposit_amount || 0)} with a mutually agreeable licensed title company or escrow agent within <strong>five (5) business days</strong> following execution of the Agreement. The balance of the Purchase Price shall be paid in cash or certified funds at Closing.</p>
 
-  <h3>3. Buyer's Obligations</h3>
+  <h3>3. Failure to Deposit Earnest Money</h3>
+  <p>Buyer shall deposit the Earnest Money Deposit within five (5) business days following execution of this Agreement. If Buyer fails to deposit the Earnest Money Deposit within such period, this Agreement shall automatically terminate without further action by either party, and neither party shall have any further obligations under this Agreement.</p>
+
+  <h3>4. Buyer's Obligations</h3>
   <p>Buyer's obligations under this Agreement are limited to:</p>
   <ol>
     <li>Execute this Purchase Agreement;</li>
@@ -173,34 +176,37 @@ function generateContractHTML(contract, lead) {
   </ol>
   <p>No additional obligations are implied beyond those expressly stated herein.</p>
 
-  <h3>4. Due Diligence &amp; Access</h3>
+  <h3>5. Due Diligence &amp; Access</h3>
   <div class="clause-box">${clauses.inspection}</div>
   <p>If Buyer determines, in its sole and absolute discretion, that the Property is not suitable for Buyer's investment purposes, Buyer shall have the absolute right to terminate this Agreement by providing written notice to Seller at any time prior to the expiration of the Inspection Period, in which case the Earnest Money Deposit shall be immediately returned to Buyer in full, and neither party shall have any further obligations hereunder.</p>
 
-  <h3>5. Assignment &amp; Wholesaling Rights</h3>
+  <h3>6. Assignment &amp; Wholesaling Rights</h3>
   <div class="clause-box"><strong>${clauses.assignment}</strong></div>
 
-  <h3>6. State-Specific Disclosures &amp; Disclaimers</h3>
+  <h3>7. State-Specific Disclosures &amp; Disclaimers</h3>
   <div class="clause-box" style="background:#fff9e6; border-left-color:#b88a00;">
     <strong>LEGAL DISCLOSURES:</strong><br/><br/>
     ${clauses.disclosures}
   </div>
 
-  <h3>7. Title, Conveyance, and Closing</h3>
+  <h3>8. Title, Conveyance, and Closing</h3>
   <p>Seller warrants that Seller holds good, marketable, and insurable title to the Property, free and clear of all liens, encumbrances, and clouds, except for standard utility easements and zoning restrictions. Conveyance shall be by General Warranty Deed. Closing shall take place on or before the Closing Date specified above. All standard closing costs, including title search, title insurance, escrow fees, and transfer taxes, shall be allocated according to standard local real estate customs.</p>
   <p><strong>TITLE COMPANY DISCLAIMER:</strong> The title company is an independent third party. Vorvo Services LLC does not act as escrow agent, title company, or closing agent. All wire instructions, deposit instructions, and escrow account information is provided by the title company, not by Vorvo Services LLC.</p>
 
-  <h3>8. As-Is Condition</h3>
+  <h3>9. Title Defects &amp; Marketable Title</h3>
+  <p>If title examination reveals liens, judgments, ownership disputes, probate issues, tax delinquencies, encumbrances, title defects, or any other condition that prevents Seller from conveying marketable title on or before Closing, Buyer may terminate this Agreement by written notice and shall have no further obligations under this Agreement.</p>
+
+  <h3>10. As-Is Condition</h3>
   <p>Buyer acknowledges that it is purchasing the Property in its current "AS-IS, WHERE-IS" physical condition, with all faults. Seller makes no warranties, express or implied, regarding the structural, mechanical, or environmental condition of the Property, except as explicitly set forth in this Agreement.</p>
   <p><strong>NO IMPLIED RESPONSIBILITIES:</strong> Vorvo Services LLC does not inspect the property for any party, verify property condition, guarantee title quality, guarantee value, guarantee repairs, provide appraisals, provide contractor estimates, provide financing, act as escrow agent, act as title company, or hold earnest money on behalf of any party. All inspections and due diligence are the sole responsibility of Buyer and/or its assigns.</p>
 
-  <h3>9. Default Provisions</h3>
+  <h3>11. Default Provisions</h3>
   <p>In the event of a default by Buyer, Seller's sole and exclusive remedy shall be to retain the Earnest Money Deposit as liquidated damages, and Seller hereby waives any right to seek specific performance or additional damages. In the event of a default by Seller, Buyer shall have the right to seek return of its Earnest Money Deposit, sue for specific performance, or pursue any other remedies available at law or in equity.</p>
 
-  <h3>10. Governing Law</h3>
+  <h3>12. Governing Law</h3>
   <p>${clauses.governingLaw}</p>
 
-  <h3>11. Role Definitions</h3>
+  <h3>13. Role Definitions</h3>
   <p><strong>For clarity, the parties acknowledge the following:</strong></p>
   <ul style="margin-top:10px;">
     <li><strong>Seller:</strong> Property Owner</li>
