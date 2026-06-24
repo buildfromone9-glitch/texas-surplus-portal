@@ -1349,6 +1349,221 @@
     padding-top: 0.5rem !important;
     width: 100% !important;
   }
+
+  /* ============================================================
+     RESPONSIVE MOBILE OVERHAUL (WCAG compliant & touch-friendly)
+     ============================================================ */
+  
+  /* Mobile Menu Toggle Button */
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 101;
+    position: relative;
+  }
+  .menu-toggle span {
+    width: 100%;
+    height: 2px;
+    background-color: var(--ink);
+    transition: all var(--transition-base);
+    border-radius: 2px;
+  }
+  .menu-toggle.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    /* Header Responsive Layout */
+    .site-header {
+      height: 70px !important;
+    }
+    .site-header__inner {
+      padding: 0 1.25rem !important;
+    }
+    .brand {
+      gap: 0.5rem !important;
+    }
+    .brand__mark {
+      width: 32px !important;
+      height: 32px !important;
+      font-size: 1.1rem !important;
+    }
+    .brand__name {
+      font-size: 0.95rem !important;
+    }
+    .brand__name small {
+      font-size: 0.55rem !important;
+      margin-top: 1px !important;
+    }
+
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: flex !important;
+    }
+
+    /* Responsive Navigation Links overlay */
+    .nav-links {
+      display: none !important; /* Overrides default flex and inline style */
+      flex-direction: column !important;
+      position: absolute !important;
+      top: 70px !important;
+      left: 0 !important;
+      width: 100% !important;
+      background: rgba(17, 17, 17, 0.98) !important;
+      backdrop-filter: blur(25px) !important;
+      -webkit-backdrop-filter: blur(25px) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      padding: 2rem 1.5rem !important;
+      gap: 1.25rem !important;
+      align-items: stretch !important;
+      box-sizing: border-box !important;
+      z-index: 99 !important;
+    }
+    .nav-links.active {
+      display: flex !important;
+    }
+    .nav-links a {
+      width: 100% !important;
+      font-size: 1rem !important;
+      padding: 0.75rem 0 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      text-align: left !important;
+      color: var(--ink-soft) !important;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #FFFFFF !important;
+    }
+    .nav-links a.active::after {
+      display: none !important; /* Disable active underline state on mobile overlay */
+    }
+    .nav-links .btn {
+      width: 100% !important;
+      justify-content: center !important;
+      margin-top: 1rem !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Hero Section Responsive Layout */
+    .hero {
+      min-height: 70vh !important;
+    }
+    .hero__inner {
+      padding: 3.5rem 1.25rem 3rem !important;
+    }
+    .hero__title {
+      font-size: clamp(2rem, 6vw, 3rem) !important;
+    }
+    .hero__lede {
+      font-size: 1.05rem !important;
+      margin-bottom: 2rem !important;
+    }
+    .hero__indicators {
+      bottom: 1.5rem !important;
+    }
+
+    /* Section Spacing & Layout */
+    .section {
+      padding: 3rem 1.25rem !important;
+    }
+    .section__head {
+      margin-bottom: 2rem !important;
+    }
+    .section__title {
+      font-size: clamp(1.8rem, 4.5vw, 2.5rem) !important;
+    }
+    .section__subtitle {
+      font-size: 1.05rem !important;
+    }
+
+    /* Split Content Layout */
+    .split__image-wrap {
+      height: 280px !important;
+    }
+    .split__content {
+      padding: 1rem 0 !important;
+    }
+
+    /* Forms Padding */
+    .form {
+      padding: 1.75rem 1.25rem !important;
+    }
+    .disclosure {
+      padding: 2rem 1.25rem !important;
+    }
+
+    /* Signature & Agreements */
+    .agreement-wrap {
+      padding: 2.5rem 1rem !important;
+    }
+    .agreement-wrap .sig-grid {
+      padding: 1.75rem 1.25rem !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    /* CTA Buttons Full Width */
+    .hero__cta-row {
+      flex-direction: column !important;
+      gap: 1rem !important;
+      width: 100% !important;
+    }
+    .hero__cta-row .btn {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+
+    /* Card Grids */
+    .card-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+    }
+    .service-card__img {
+      height: 180px !important;
+    }
+    .service-card__body {
+      padding: 1.5rem !important;
+    }
+  }
+
+  /* Prevent horizontal overflow globally */
+  body, #app {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  /* Admin Dashboard Mobile Responsiveness */
+  .admin-table-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .admin-tabs {
+    display: flex !important;
+    gap: 0.5rem !important;
+    margin-top: 2rem !important;
+    border-bottom: 1px solid var(--rule) !important;
+    padding-bottom: 1px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    white-space: nowrap !important;
+  }
+  .admin-tab-btn {
+    flex-shrink: 0 !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.85rem !important;
+  }
 </style>
 </head>
 <body id="vorvo-body">
@@ -1764,7 +1979,12 @@ function renderHeader(route) {
               <small>Labor &amp; Contractor Services</small>
             </div>
           </a>
-          <nav class="nav-links" style="display:flex;">
+          <button class="menu-toggle" aria-label="Toggle Menu" onclick="const nav = this.parentElement.querySelector('.nav-links'); nav.classList.toggle('active'); this.classList.toggle('active');">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <nav class="nav-links">
             <a href="#/portal" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
             <a href="#/vorvo" class="active">Labor Services</a>
             <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
@@ -1784,7 +2004,12 @@ function renderHeader(route) {
               <small>Property Management Solutions</small>
             </div>
           </a>
-          <nav class="nav-links" style="display:flex;">
+          <button class="menu-toggle" aria-label="Toggle Menu" onclick="const nav = this.parentElement.querySelector('.nav-links'); nav.classList.toggle('active'); this.classList.toggle('active');">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <nav class="nav-links">
             <a href="#/portal" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
             <a href="#/property-management" class="active">Property Management</a>
             <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
@@ -1804,7 +2029,12 @@ function renderHeader(route) {
               <small>Property &amp; Labor Services</small>
             </div>
           </a>
-          <nav class="nav-links" style="display:flex;">
+          <button class="menu-toggle" aria-label="Toggle Menu" onclick="const nav = this.parentElement.querySelector('.nav-links'); nav.classList.toggle('active'); this.classList.toggle('active');">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <nav class="nav-links">
             <a href="#/portal?scroll=property-services-section">Property Services</a>
             <a href="#/portal?scroll=labor-services-section">Labor Services</a>
             <a href="#/track">Track Status</a>
@@ -1824,7 +2054,12 @@ function renderHeader(route) {
               <small>Foreclosure Surplus Recovery</small>
             </div>
           </a>
-          <nav class="nav-links" style="display:flex;">
+          <button class="menu-toggle" aria-label="Toggle Menu" onclick="const nav = this.parentElement.querySelector('.nav-links'); nav.classList.toggle('active'); this.classList.toggle('active');">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <nav class="nav-links">
             <a href="#/portal" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
             <a href="#/surplus" class="${route === 'surplus' ? 'active' : ''}">Overview</a>
             <a href="#/guide" class="${route === 'guide' ? 'active' : ''}">Claims Guide</a>
@@ -2799,7 +3034,7 @@ function renderVorvoLanding() {
               <div class="field">
                 <label>Job Site Photos</label>
                 <div id="v-dropzone" style="border:1px dashed var(--rule-soft); padding:2rem; text-align:center; background:var(--paper-deep); cursor:pointer;">
-                  <span id="v-dropzone-text" class="text-small">Drag photos or click to browse</span>
+                  <span id="v-dropzone-text" class="text-small">Tap to upload photos or drag &amp; drop</span>
                   <input type="file" id="v-photos" accept="image/*" multiple style="display:none;" />
                   <div id="v-preview-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(60px, 1fr)); gap:0.5rem; margin-top:1rem;"></div>
                 </div>
@@ -4009,7 +4244,7 @@ function bindHandlers(route) {
             selectedFiles = selectedFiles.filter(f => f !== file);
             div.remove();
             if (selectedFiles.length === 0) {
-              dropzoneText.textContent = 'Drag & drop photos here or click to browse';
+              dropzoneText.textContent = 'Tap to upload photos or drag & drop';
             }
           });
           
@@ -4140,7 +4375,7 @@ function bindHandlers(route) {
       form.reset();
       selectedFiles = [];
       previewContainer.innerHTML = '';
-      dropzoneText.textContent = 'Drag & drop photos here or click to browse';
+      dropzoneText.textContent = 'Tap to upload photos or drag & drop';
       submitBtn.disabled = false;
       submitBtn.innerHTML = 'Submit Quote Request <span class="btn__arrow">→</span>';
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
