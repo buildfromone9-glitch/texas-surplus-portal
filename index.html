@@ -1004,6 +1004,75 @@
     border-color: var(--gold) !important;
     box-shadow: 0 0 10px rgba(176, 141, 87, 0.2);
   }
+
+  /* ============================================================
+     GLOBAL FORM & FIELD STYLING
+     ============================================================ */
+  .form {
+    background: var(--paper) !important;
+    border: 1px solid rgba(176, 141, 87, 0.2) !important;
+    padding: 2.5rem !important;
+    border-radius: 6px !important;
+    box-shadow: var(--shadow-lift) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .field {
+    margin-bottom: 1.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+  .field label {
+    font-family: var(--sans) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: var(--gold-light) !important;
+    margin-bottom: 0.25rem !important;
+    display: block !important;
+  }
+  .field input, .field textarea, .field select {
+    width: 100% !important;
+    padding: 0.85rem 1rem !important;
+    border: 1px solid rgba(176, 141, 87, 0.3) !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    font-family: var(--sans) !important;
+    font-size: 0.95rem !important;
+    color: #FFFFFF !important;
+    border-radius: 4px !important;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast) !important;
+    box-sizing: border-box !important;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none !important;
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 8px rgba(176, 141, 87, 0.25) !important;
+  }
+  .field input::placeholder, .field textarea::placeholder {
+    color: var(--ink-mute) !important;
+    opacity: 0.8 !important;
+  }
+  .field--row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.5rem !important;
+    margin-bottom: 0 !important;
+  }
+  @media (max-width: 640px) {
+    .field--row {
+      grid-template-columns: 1fr !important;
+      gap: 0 !important;
+    }
+  }
+  .form__submit {
+    margin-top: 2rem !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
 </style>
 </head>
 <body id="vorvo-body">
@@ -2994,21 +3063,23 @@ function renderAdmin() {
   // Supabase Auth — show login form if not authenticated
   if (!App.state.adminUser) {
     return `
-      <main style="display:flex; align-items:center; justify-content:center; min-height:70vh;">
-        <div style="width:100%; max-width:420px; padding:2.5rem; background:var(--cream); border:1px solid var(--rule);">
-          <div style="font-family:var(--mono); font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:1rem;">Vorvo Internal</div>
-          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0 0 0.5rem;">Admin Login</h2>
-          <p style="color:var(--ink-mute); font-size:0.9rem; margin:0 0 2rem;">Sign in with your Vorvo credentials.</p>
-          <div style="margin-bottom:1.25rem;">
-            <label style="display:block; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Email</label>
-            <input id="admin-login-email" type="email" value="" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:0.95rem; box-sizing:border-box;" />
+      <main class="track-page" style="background-image: url('images/property/20a27da61793c0cbf22f656713ceb362.jpg');">
+        <div class="track-card" style="max-width: 440px;">
+          <div class="track-card__eyebrow">Vorvo Internal</div>
+          <h2 class="track-card__title">Admin Login</h2>
+          <p class="track-card__intro" style="margin-bottom: 2rem;">Sign in with your Vorvo credentials.</p>
+          
+          <div class="field">
+            <label for="admin-login-email">Email Address</label>
+            <input id="admin-login-email" type="email" required placeholder="e.g., admin@vorvoservices.com" />
           </div>
-          <div style="margin-bottom:1.75rem;">
-            <label style="display:block; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Password</label>
-            <input id="admin-login-password" type="password" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:0.95rem; box-sizing:border-box;" />
+          <div class="field" style="margin-bottom: 2rem !important;">
+            <label for="admin-login-password">Password</label>
+            <input id="admin-login-password" type="password" required placeholder="••••••••" />
           </div>
-          <button id="admin-login-btn" class="btn" style="width:100%;">Sign In →</button>
-          <p id="admin-login-error" style="color:var(--rust); font-size:0.85rem; margin-top:1rem; display:none;"></p>
+          
+          <button id="admin-login-btn" class="btn btn--gold" style="width:100%; justify-content: center;">Sign In <span class="btn__arrow">→</span></button>
+          <p id="admin-login-error" style="color:var(--rust); font-size:0.85rem; margin-top:1.5rem; display:none; text-align:center; font-family:var(--mono);"></p>
         </div>
       </main>
     `;
@@ -3039,7 +3110,7 @@ function renderAdmin() {
           <p class="admin__sub" style="margin-bottom:1.5rem;">Fill in the customizable fields below. The tool will generate a URL you can email or text to the client. Opening the URL will personalize the landing page and pre-fill their agreement.</p>
         </div>
 
-        <form id="admin-form" class="form" style="border:1px solid var(--rule); padding:2rem; background:var(--cream);">
+        <form id="admin-form" class="form" style="margin-top: 1.5rem;">
           <div class="field">
             <label for="a-name">Claimant Full Legal Name</label>
             <input type="text" id="a-name" required placeholder="e.g., Maria Lopez" />
@@ -3080,7 +3151,7 @@ function renderAdmin() {
           <h2 class="admin__title" style="font-size:1.6rem;">Send Invoice</h2>
           <p class="admin__sub">Issue the 10% contingency fee invoice after receiving the claimant's disbursement notice.</p>
         </div>
-        <form id="invoice-form" class="form" style="border:1px solid var(--rule);padding:2rem;background:var(--cream);margin-top:1.5rem;">
+        <form id="invoice-form" class="form" style="margin-top: 1.5rem;">
           <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
             <div class="field" style="margin:0;flex:1;">
               <label for="inv-agreement-id">Agreement ID (auto-fill claimant)</label>
@@ -3119,7 +3190,7 @@ function renderAdmin() {
           <h2 class="admin__title" style="font-size:1.6rem;">Send Demand Letter</h2>
           <p class="admin__sub">Send a formal Notice-and-Cure demand if payment is not received within the required period. A certified mail copy must also be sent manually.</p>
         </div>
-        <form id="demand-form" class="form" style="border:1px solid var(--rust);padding:2rem;background:var(--cream);margin-top:1.5rem;">
+        <form id="demand-form" class="form" style="border:1px solid var(--rust) !important; margin-top: 1.5rem;">
           <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:1.5rem;">
             <div class="field" style="margin:0;flex:1;">
               <label for="dem-agreement-id">Agreement ID (auto-fill claimant)</label>
@@ -5516,6 +5587,13 @@ function bindHandlers(route) {
             'cancelled': 'var(--rust)'
           };
           const color = statusColors[q.status] || 'var(--ink-mute)';
+          const badgeClass = `badge badge--${
+            q.status === 'new' ? 'new' :
+            q.status === 'quoted' ? 'scheduled' :
+            q.status === 'scheduled' ? 'contract' :
+            q.status === 'completed' ? 'paid' :
+            q.status === 'cancelled' ? 'void' : 'new'
+          }`;
           
           // Contract Status
           const contractLabel = q.contract_signed_at ? 'Signed' : 'Awaiting Sign';
