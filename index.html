@@ -2635,8 +2635,8 @@ function renderPortal() {
           Helping property owners find, compare, and coordinate qualified service providers nationwide.
         </p>
         <div class="hero__cta-row">
-          <a href="#/?scroll=property-services-section" class="btn btn--gold">Explore Property Services</a>
-          <a href="#/?scroll=labor-services-section" class="btn btn--ghost">Labor Coordination</a>
+          <a href="#/portal?scroll=property-services-section" class="btn btn--gold">Explore Property Services</a>
+          <a href="#/portal?scroll=labor-services-section" class="btn btn--ghost">Labor Coordination</a>
         </div>
       </div>
       <div class="hero__indicators">
@@ -4175,7 +4175,7 @@ function bindHandlers(route) {
   if (scrollToId) {
     setTimeout(() => {
       document.getElementById(scrollToId)?.scrollIntoView({ behavior: 'smooth' });
-    }, 150);
+    }, 300);
   }
 
   if (route === 'agreement' && !App.hasSigned()) {
