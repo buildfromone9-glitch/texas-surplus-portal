@@ -24,7 +24,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://js.stripe.com/v3/"></script>
+<!-- HelcimPay.js for payment processing -->
+<script src="https://secure.helcim.app/helcim-pay/services/start.js"></script>
 
 <script>
   /**
@@ -2442,10 +2443,11 @@ function renderClientAgreement() {
 
         <button id="ca-submit-btn" class="btn btn--gold" style="width:100%; justify-content:center;">Accept Terms &amp; Sign Client Agreement →</button>
         
-        <!-- Stripe Secure Payment Section (Hidden initially) -->
+        <!-- Helcim Secure Payment Section (Hidden initially) -->
+        <!-- Helcim Secure Payment Section (Hidden initially) -->
         <div id="ca-payment-section" style="display:none; margin-top:2rem; border-top:1px solid #E0D8CC; padding-top:2rem;">
-          <h3 style="font-family:var(--serif); font-size:1.3rem; color:var(--gold-dark); margin-top:0; margin-bottom:0.5rem;">3. Secure Payment Details</h3>
-          <p style="color:#555555; font-size:0.9rem; margin-bottom:1.5rem;">To complete your registration, please authorize your payment securely via Stripe. You will only be charged the running total for selected services.</p>
+          <h3 style="font-family:var(--serif); font-size:1.3rem; color:var(--gold-dark); margin-top:0; margin-bottom:0.5rem;">3. Secure Payment</h3>
+          <p style="color:#555555; font-size:0.9rem; margin-bottom:1.5rem;">To complete your registration, please proceed to secure payment. You will be prompted to enter your payment details in a secure modal.</p>
           
           <div id="ca-payment-summary" style="background:#F7F4ED; border:1px solid #E0D8CC; padding:1.25rem; border-radius:4px; margin-bottom:1.5rem; font-family:var(--sans); font-size:0.95rem; color:#111111; line-height:1.5;">
             <strong style="color:var(--gold-dark) !important; display:block; margin-bottom:0.25rem;">Selected Services Checklist:</strong>
@@ -2456,13 +2458,7 @@ function renderClientAgreement() {
             </div>
           </div>
 
-          <div id="ca-stripe-card-container" style="margin-bottom:1.5rem; display:block;">
-            <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem; color:#333333;">Credit or Debit Card Details</label>
-            <div id="ca-stripe-card-element" style="padding:0.75rem; border:1px solid #E0D8CC; background:#FFFFFF; border-radius:3px;"></div>
-            <div id="ca-stripe-card-errors" role="alert" style="color:var(--rust); font-size:0.8rem; margin-top:0.4rem; display:none;"></div>
-          </div>
-
-          <button id="ca-pay-btn" class="btn btn--gold" style="width:100%; justify-content:center; background:var(--gold-dark);">Authorize Payment &amp; Complete Registration →</button>
+          <button id="ca-pay-btn" class="btn btn--gold" style="width:100%; justify-content:center; background:var(--gold-dark);">Proceed to Secure Payment →</button>
         </div>
 
         <div id="ca-submit-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:rgba(61,92,68,0.1); border-left:3px solid var(--moss); font-size:0.95rem; color:#222222; line-height:1.6;">
@@ -4719,50 +4715,79 @@ function bindHandlers(route) {
         hasInk = false;
       });
 
-      let caStripe;
-      let caElements;
-      let caCardElement;
-      let stripeInitialized = false;
+      // Helcim payment state
+      let helcimCheckoutToken = null;
+      let helcimSecretToken = null;
 
-      const initCaStripe = async () => {
-        if (stripeInitialized) return;
+      // Initialize HelcimPay.js modal
+      const initHelcimPay = async (amount, customerEmail, customerName, trackingId) => {
         try {
-          const configRes = await fetch('/api/create-payment-intent');
-          const configData = await configRes.json();
-          const publishableKey = configData.publishableKey || 'pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR';
-          
-          caStripe = Stripe(publishableKey);
-          caElements = caStripe.elements();
-          caCardElement = caElements.create('card', {
-            style: {
-              base: {
-                color: '#111111',
-                fontFamily: 'DM Sans, sans-serif',
-                fontSize: '15px',
-                '::placeholder': { color: '#888888' }
-              },
-              invalid: { color: '#FF3333' }
-            }
+          const checkoutRes = await fetch('/api/helcim-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: amount,
+              customerEmail: customerEmail,
+              customerName: customerName,
+              trackingId: trackingId,
+              description: `Vorvo Services Coordination Payment - ${trackingId}`
+            })
           });
-          caCardElement.mount('#ca-stripe-card-element');
           
-          caCardElement.on('change', (event) => {
-            const displayError = document.getElementById('ca-stripe-card-errors');
-            if (event.error) {
-              displayError.textContent = event.error.message;
-              displayError.style.display = 'block';
-            } else {
-              displayError.textContent = '';
-              displayError.style.display = 'none';
-            }
-          });
-          stripeInitialized = true;
+          const checkoutData = await checkoutRes.json();
+          if (!checkoutRes.ok) {
+            throw new Error(checkoutData.error || 'Failed to initialize payment');
+          }
+          
+          helcimCheckoutToken = checkoutData.checkoutToken;
+          helcimSecretToken = checkoutData.secretToken;
+          
+          console.log('[Helcim] Checkout initialized:', helcimCheckoutToken);
+          
+          if (typeof appendHelcimPayIframe === 'function') {
+            appendHelcimPayIframe(helcimCheckoutToken);
+          } else {
+            throw new Error('Payment system not loaded. Please refresh and try again.');
+          }
         } catch (err) {
-          console.error('[Stripe] Initialization failed:', err);
+          console.error('[Helcim] Initialization failed:', err);
+          throw err;
         }
       };
 
-      const submitAgreement = async (stripePaymentIntentId = null) => {
+      // Listen for Helcim payment response
+      window.addEventListener('message', async (event) => {
+        if (event.data && event.data.event === 'helcimPayJsResponse') {
+          console.log('[Helcim] Payment response received:', event.data);
+          
+          const response = event.data.response;
+          
+          if (response && response.transactionId) {
+            console.log('[Helcim] Payment successful, transaction:', response.transactionId);
+            await submitAgreement(response.transactionId);
+            
+            const paySection = document.getElementById('ca-payment-section');
+            if (paySection) paySection.style.display = 'none';
+            
+            const submitBtn = document.getElementById('ca-submit-btn');
+            if (submitBtn) submitBtn.style.display = 'none';
+            
+            const payBtn = document.getElementById('ca-pay-btn');
+            if (payBtn) payBtn.style.display = 'none';
+          } else if (response && response.error) {
+            console.error('[Helcim] Payment failed:', response.error);
+            alert('Payment failed: ' + (response.error.message || 'Unknown error'));
+            
+            const payBtn = document.getElementById('ca-pay-btn');
+            if (payBtn) {
+              payBtn.disabled = false;
+              payBtn.textContent = 'Proceed to Secure Payment →';
+            }
+          }
+        }
+      });
+
+      const submitAgreement = async (helcimTransactionId = null) => {
         const typedName = document.getElementById('ca-typed-name').value.trim();
         const email = document.getElementById('ca-email').value.trim();
         const signatureData = canvas.toDataURL('image/png');
@@ -4785,8 +4810,8 @@ function bindHandlers(route) {
         formspreeData.append('selectedServices', selectedServices.join(', '));
         formspreeData.append('totalPrice', `$${total}`);
         formspreeData.append('signature', signatureData);
-        if (stripePaymentIntentId) {
-          formspreeData.append('stripePaymentIntentId', stripePaymentIntentId);
+        if (helcimTransactionId) {
+          formspreeData.append('helcimTransactionId', helcimTransactionId);
         }
 
         fetch('https://formspree.io/f/xqejewzo', {
@@ -4811,7 +4836,7 @@ function bindHandlers(route) {
                 contract_signer_name: typedName,
                 contract_signature_data: signatureData,
                 contract_signed_at: new Date().toISOString(),
-                stripe_payment_intent_id: stripePaymentIntentId
+                stripe_payment_intent_id: helcimTransactionId
               })
               .eq('tracking_id', trackingId);
 
@@ -4836,7 +4861,7 @@ function bindHandlers(route) {
                 contract_signer_name: typedName,
                 contract_signature_data: signatureData,
                 contract_signed_at: new Date().toISOString(),
-                stripe_payment_intent_id: stripePaymentIntentId
+                stripe_payment_intent_id: helcimTransactionId
               }])
               .select();
 
@@ -4911,7 +4936,7 @@ function bindHandlers(route) {
             paySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
           
-          await initCaStripe();
+          // Helcim payment initialized on button click
         }
       });
 
@@ -4930,49 +4955,19 @@ function bindHandlers(route) {
           }
         });
 
-        if (!caStripe || !caCardElement) {
-          return alert('Stripe secure billing is still initializing. Please wait a moment and try again.');
-        }
-
         payBtn.disabled = true;
-        payBtn.textContent = 'Authorizing card via Stripe...';
+        payBtn.textContent = 'Initializing secure payment...';
 
         try {
-          const piRes = await fetch('/api/create-payment-intent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              amount: total || 1.00,
-              trackingId: trackingId || 'unknown',
-              description: `Vorvo Services Coordination Payment - ${trackingId || 'unknown'}`
-            })
-          });
-          const piData = await piRes.json();
-          if (!piRes.ok) throw new Error(piData.error || 'Failed to create PaymentIntent');
+          // Initialize Helcim checkout and open modal
+          await initHelcimPay(total || 1.00, email, typedName, trackingId || 'unknown');
           
-          const stripeResult = await caStripe.confirmCardPayment(piData.clientSecret, {
-            payment_method: {
-              card: caCardElement,
-              billing_details: { name: typedName, email: email }
-            }
-          });
-          
-          if (stripeResult.error) {
-            throw new Error(stripeResult.error.message);
-          }
-          
-          App.logAudit('Stripe payment authorized successfully: ' + stripeResult.paymentIntent.id);
-          payBtn.textContent = 'Saving Agreement...';
-          
-          await submitAgreement(stripeResult.paymentIntent.id);
-          payBtn.style.display = 'none';
-          
-          const submitBtn = document.getElementById('ca-submit-btn');
-          if (submitBtn) submitBtn.style.display = 'none';
+          App.logAudit('Helcim checkout modal opened for amount: $' + total);
+          payBtn.textContent = 'Complete payment in modal...';
         } catch (err) {
-          alert('Payment Authorization Failed: ' + err.message);
+          alert('Payment Initialization Failed: ' + err.message);
           payBtn.disabled = false;
-          payBtn.textContent = 'Authorize Payment & Complete Registration →';
+          payBtn.textContent = 'Proceed to Secure Payment →';
         }
       });
     }
@@ -5534,7 +5529,7 @@ function bindHandlers(route) {
                         signerName: typedName,
                         signatureData: signatureData,
                         paymentMethod: paymentMethod,
-                        stripePaymentIntentId: null // Will be added after Stripe integration
+                        helcimTransactionId: null // Will be added after Stripe integration
                       })
                     });
                     
