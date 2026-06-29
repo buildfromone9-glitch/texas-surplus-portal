@@ -58,28 +58,32 @@ export default async function handler(req) {
     }
 
     // Initialize Helcim checkout
+    // Using HelcimPay.js checkout initialization
     const checkoutData = {
-      amount: amount.toFixed(2),
+      paymentType: 'purchase',
+      amount: Number(amount),
       currency: 'USD',
-      paymentMethods: ['card'],
-      customer: customerEmail ? {
-        email: customerEmail,
-        name: customerName || customerEmail.split('@')[0]
+      paymentMethod: 'cc',
+      customerRequest: customerEmail ? {
+        contactName: customerName || customerEmail.split('@')[0],
+        billingAddress: {
+          email: customerEmail
+        }
       } : undefined,
-      metadata: {
-        tracking_id: trackingId || 'unknown',
-        description: description || `Vorvo Services Coordination Payment - ${trackingId || 'unknown'}`
+      invoiceRequest: {
+        invoiceNumber: trackingId || 'unknown',
+        notes: description || `Vorvo Services Coordination Payment - ${trackingId || 'unknown'}`
       }
     };
 
     console.log('[Helcim] Initializing checkout for amount:', amount, 'trackingId:', trackingId);
 
     // Call Helcim API to initialize checkout session
-    const helcimRes = await fetch('https://api.helcim.com/v2/checkout/initialize', {
+    const helcimRes = await fetch('https://api.helcim.com/v2/helcim-pay/initialize', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${HELCIM_API_TOKEN}`,
+        'api-token': HELCIM_API_TOKEN,
       },
       body: JSON.stringify(checkoutData),
     });
@@ -88,7 +92,8 @@ export default async function handler(req) {
 
     if (!helcimRes.ok) {
       console.error('[Helcim] Checkout initialization failed:', helcimData);
-      throw new Error(helcimData.message || helcimData.error || 'Helcim API error');
+      const errMsg = helcimData.message || helcimData.error || helcimData.errors || 'Helcim API error';
+      throw new Error(typeof errMsg === 'object' ? JSON.stringify(errMsg) : errMsg);
     }
 
     console.log('[Helcim] Checkout initialized successfully:', helcimData.checkoutToken);
