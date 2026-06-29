@@ -2441,6 +2441,30 @@ function renderClientAgreement() {
         </div>
 
         <button id="ca-submit-btn" class="btn btn--gold" style="width:100%; justify-content:center;">Accept Terms &amp; Sign Client Agreement →</button>
+        
+        <!-- Stripe Secure Payment Section (Hidden initially) -->
+        <div id="ca-payment-section" style="display:none; margin-top:2rem; border-top:1px solid #E0D8CC; padding-top:2rem;">
+          <h3 style="font-family:var(--serif); font-size:1.3rem; color:var(--gold-dark); margin-top:0; margin-bottom:0.5rem;">3. Secure Payment Details</h3>
+          <p style="color:#555555; font-size:0.9rem; margin-bottom:1.5rem;">To complete your registration, please authorize your payment securely via Stripe. You will only be charged the running total for selected services.</p>
+          
+          <div id="ca-payment-summary" style="background:#F7F4ED; border:1px solid #E0D8CC; padding:1.25rem; border-radius:4px; margin-bottom:1.5rem; font-family:var(--sans); font-size:0.95rem; color:#111111; line-height:1.5;">
+            <strong style="color:var(--gold-dark); display:block; margin-bottom:0.25rem;">Selected Services Checklist:</strong>
+            <span id="ca-summary-services" style="display:block; margin-bottom:0.5rem; font-size:0.85rem; color:#444444;">None</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E0D8CC; padding-top:0.5rem;">
+              <strong>Total Amount Due:</strong>
+              <strong id="ca-summary-total" style="font-size:1.25rem; color:var(--gold-dark); font-family:var(--mono);">$0.00</strong>
+            </div>
+          </div>
+
+          <div id="ca-stripe-card-container" style="margin-bottom:1.5rem; display:block;">
+            <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem; color:#333333;">Credit or Debit Card Details</label>
+            <div id="ca-stripe-card-element" style="padding:0.75rem; border:1px solid #E0D8CC; background:#FFFFFF; border-radius:3px;"></div>
+            <div id="ca-stripe-card-errors" role="alert" style="color:var(--rust); font-size:0.8rem; margin-top:0.4rem; display:none;"></div>
+          </div>
+
+          <button id="ca-pay-btn" class="btn btn--gold" style="width:100%; justify-content:center; background:var(--gold-dark);">Authorize Payment &amp; Complete Registration →</button>
+        </div>
+
         <div id="ca-submit-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:rgba(61,92,68,0.1); border-left:3px solid var(--moss); font-size:0.95rem; color:#222222; line-height:1.6;">
           <strong style="color:var(--moss); font-size:1.1rem; display:block; margin-bottom:0.5rem;">Client Service Agreement Signed!</strong>
           Thank you! Your signed Client Service Agreement has been successfully registered. We will begin your selected coordination services immediately and contact you at the email address provided.
@@ -4695,20 +4719,52 @@ function bindHandlers(route) {
         hasInk = false;
       });
 
-      document.getElementById('ca-submit-btn')?.addEventListener('click', async (ev) => {
-        const submitBtn = ev.currentTarget;
+      let caStripe;
+      let caElements;
+      let caCardElement;
+      let stripeInitialized = false;
+
+      const initCaStripe = async () => {
+        if (stripeInitialized) return;
+        try {
+          const configRes = await fetch('/api/create-payment-intent');
+          const configData = await configRes.json();
+          const publishableKey = configData.publishableKey || 'pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR';
+          
+          caStripe = Stripe(publishableKey);
+          caElements = caStripe.elements();
+          caCardElement = caElements.create('card', {
+            style: {
+              base: {
+                color: '#111111',
+                fontFamily: 'DM Sans, sans-serif',
+                fontSize: '15px',
+                '::placeholder': { color: '#888888' }
+              },
+              invalid: { color: '#FF3333' }
+            }
+          });
+          caCardElement.mount('#ca-stripe-card-element');
+          
+          caCardElement.on('change', (event) => {
+            const displayError = document.getElementById('ca-stripe-card-errors');
+            if (event.error) {
+              displayError.textContent = event.error.message;
+              displayError.style.display = 'block';
+            } else {
+              displayError.textContent = '';
+              displayError.style.display = 'none';
+            }
+          });
+          stripeInitialized = true;
+        } catch (err) {
+          console.error('[Stripe] Initialization failed:', err);
+        }
+      };
+
+      const submitAgreement = async (stripePaymentIntentId = null) => {
         const typedName = document.getElementById('ca-typed-name').value.trim();
         const email = document.getElementById('ca-email').value.trim();
-        const confirmBox = document.getElementById('ca-confirm-box');
-
-        if (!typedName) return alert('Please type your full legal name to sign.');
-        if (!email) return alert('Please enter your email address.');
-        if (!hasInk) return alert('Please draw your signature to accept the agreement.');
-        if (!confirmBox || !confirmBox.checked) return alert('Please agree to the terms by checking the box.');
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Registering Signature...';
-
         const signatureData = canvas.toDataURL('image/png');
         
         // Collect selected services
@@ -4729,6 +4785,9 @@ function bindHandlers(route) {
         formspreeData.append('selectedServices', selectedServices.join(', '));
         formspreeData.append('totalPrice', `$${total}`);
         formspreeData.append('signature', signatureData);
+        if (stripePaymentIntentId) {
+          formspreeData.append('stripePaymentIntentId', stripePaymentIntentId);
+        }
 
         fetch('https://formspree.io/f/xqejewzo', {
           method: 'POST',
@@ -4751,7 +4810,8 @@ function bindHandlers(route) {
                 quote_amount: total,
                 contract_signer_name: typedName,
                 contract_signature_data: signatureData,
-                contract_signed_at: new Date().toISOString()
+                contract_signed_at: new Date().toISOString(),
+                stripe_payment_intent_id: stripePaymentIntentId
               })
               .eq('tracking_id', trackingId);
 
@@ -4775,7 +4835,8 @@ function bindHandlers(route) {
                 quote_amount: total,
                 contract_signer_name: typedName,
                 contract_signature_data: signatureData,
-                contract_signed_at: new Date().toISOString()
+                contract_signed_at: new Date().toISOString(),
+                stripe_payment_intent_id: stripePaymentIntentId
               }])
               .select();
 
@@ -4790,8 +4851,8 @@ function bindHandlers(route) {
         const successEl = document.getElementById('ca-submit-success');
         if (successEl) {
           successEl.innerHTML = `
-            <strong style="color:var(--moss); font-size:1.1rem; display:block; margin-bottom:0.5rem;">Client Service Agreement Signed!</strong>
-            Thank you! Your signed Client Service Agreement has been successfully registered. We will begin your selected coordination services immediately and contact you at the email address provided.
+            <strong style="color:var(--moss); font-size:1.1rem; display:block; margin-bottom:0.5rem;">Client Service Agreement Signed &amp; Paid!</strong>
+            Thank you! Your signed Client Service Agreement has been successfully registered and payment authorized. We will begin your selected coordination services immediately and contact you at the email address provided.
             ${trackingId ? `
               <br><br>
               <a href="#/track?id=${esc(trackingId)}" class="btn btn--small btn--gold" style="display:inline-flex; text-decoration:none; margin-top:0.5rem; justify-content:center;">← Return to Project Tracking</a>
@@ -4799,10 +4860,120 @@ function bindHandlers(route) {
           `;
           successEl.style.display = 'block';
         }
-        submitBtn.style.display = 'none';
+        
+        // Hide payment section if visible
+        const paySection = document.getElementById('ca-payment-section');
+        if (paySection) paySection.style.display = 'none';
         
         // Scroll to success
         successEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+
+      document.getElementById('ca-submit-btn')?.addEventListener('click', async (ev) => {
+        const submitBtn = ev.currentTarget;
+        const typedName = document.getElementById('ca-typed-name').value.trim();
+        const email = document.getElementById('ca-email').value.trim();
+        const confirmBox = document.getElementById('ca-confirm-box');
+
+        if (!typedName) return alert('Please type your full legal name to sign.');
+        if (!email) return alert('Please enter your email address.');
+        if (!hasInk) return alert('Please draw your signature to accept the agreement.');
+        if (!confirmBox || !confirmBox.checked) return alert('Please agree to the terms by checking the box.');
+
+        // Calculate total
+        const selectedServices = [];
+        let total = 0;
+        serviceCheckboxes.forEach(cb => {
+          if (cb.checked) {
+            selectedServices.push(cb.dataset.name);
+            total += parseInt(cb.dataset.price, 10);
+          }
+        });
+
+        if (total === 0) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Registering Signature...';
+          await submitAgreement(null);
+          submitBtn.style.display = 'none';
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Signature Registered. Proceed to Payment below ↓';
+          
+          const paySection = document.getElementById('ca-payment-section');
+          const summaryServices = document.getElementById('ca-summary-services');
+          const summaryTotal = document.getElementById('ca-summary-total');
+          
+          if (summaryServices) summaryServices.textContent = selectedServices.join(', ');
+          if (summaryTotal) summaryTotal.textContent = formatMoney(total);
+          
+          if (paySection) {
+            paySection.style.display = 'block';
+            paySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          
+          await initCaStripe();
+        }
+      });
+
+      document.getElementById('ca-pay-btn')?.addEventListener('click', async (ev) => {
+        const payBtn = ev.currentTarget;
+        const typedName = document.getElementById('ca-typed-name').value.trim();
+        const email = document.getElementById('ca-email').value.trim();
+        
+        // Calculate total
+        const selectedServices = [];
+        let total = 0;
+        serviceCheckboxes.forEach(cb => {
+          if (cb.checked) {
+            selectedServices.push(cb.dataset.name);
+            total += parseInt(cb.dataset.price, 10);
+          }
+        });
+
+        if (!caStripe || !caCardElement) {
+          return alert('Stripe secure billing is still initializing. Please wait a moment and try again.');
+        }
+
+        payBtn.disabled = true;
+        payBtn.textContent = 'Authorizing card via Stripe...';
+
+        try {
+          const piRes = await fetch('/api/create-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: total || 1.00,
+              trackingId: trackingId || 'unknown',
+              description: `Vorvo Services Coordination Payment - ${trackingId || 'unknown'}`
+            })
+          });
+          const piData = await piRes.json();
+          if (!piRes.ok) throw new Error(piData.error || 'Failed to create PaymentIntent');
+          
+          const stripeResult = await caStripe.confirmCardPayment(piData.clientSecret, {
+            payment_method: {
+              card: caCardElement,
+              billing_details: { name: typedName, email: email }
+            }
+          });
+          
+          if (stripeResult.error) {
+            throw new Error(stripeResult.error.message);
+          }
+          
+          App.logAudit('Stripe payment authorized successfully: ' + stripeResult.paymentIntent.id);
+          payBtn.textContent = 'Saving Agreement...';
+          
+          await submitAgreement(stripeResult.paymentIntent.id);
+          payBtn.style.display = 'none';
+          
+          const submitBtn = document.getElementById('ca-submit-btn');
+          if (submitBtn) submitBtn.style.display = 'none';
+        } catch (err) {
+          alert('Payment Authorization Failed: ' + err.message);
+          payBtn.disabled = false;
+          payBtn.textContent = 'Authorize Payment & Complete Registration →';
+        }
       });
     }
   }
