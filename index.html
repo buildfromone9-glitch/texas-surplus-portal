@@ -1138,7 +1138,7 @@
     text-transform: uppercase !important;
     letter-spacing: -0.01em !important;
   }
-  .agreement-wrap p, .agreement-wrap li, .agreement-wrap span, .agreement-wrap td, .agreement-wrap dt, .agreement-wrap dd {
+  .agreement-wrap p, .agreement-wrap li, .agreement-wrap span, .agreement-wrap td, .agreement-wrap dt, .agreement-wrap dd, .agreement-wrap strong {
     color: #222222 !important;
   }
   .agreement-wrap .agreement-cover__label {
@@ -2448,11 +2448,11 @@ function renderClientAgreement() {
           <p style="color:#555555; font-size:0.9rem; margin-bottom:1.5rem;">To complete your registration, please authorize your payment securely via Stripe. You will only be charged the running total for selected services.</p>
           
           <div id="ca-payment-summary" style="background:#F7F4ED; border:1px solid #E0D8CC; padding:1.25rem; border-radius:4px; margin-bottom:1.5rem; font-family:var(--sans); font-size:0.95rem; color:#111111; line-height:1.5;">
-            <strong style="color:var(--gold-dark); display:block; margin-bottom:0.25rem;">Selected Services Checklist:</strong>
+            <strong style="color:var(--gold-dark) !important; display:block; margin-bottom:0.25rem;">Selected Services Checklist:</strong>
             <span id="ca-summary-services" style="display:block; margin-bottom:0.5rem; font-size:0.85rem; color:#444444;">None</span>
             <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E0D8CC; padding-top:0.5rem;">
               <strong>Total Amount Due:</strong>
-              <strong id="ca-summary-total" style="font-size:1.25rem; color:var(--gold-dark); font-family:var(--mono);">$0.00</strong>
+              <strong id="ca-summary-total" style="font-size:1.25rem; color:var(--gold-dark) !important; font-family:var(--mono);">$0.00</strong>
             </div>
           </div>
 
