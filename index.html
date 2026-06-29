@@ -2240,113 +2240,113 @@ function renderClientAgreement() {
   return `
     <main class="agreement-wrap" style="max-width:820px; margin:0 auto; padding:4rem 1.5rem;">
       <div class="agreement-cover" style="text-align:center; margin-bottom:3rem;">
-        <div class="agreement-cover__label" style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem;">Legal Document</div>
-        <h1 class="agreement-cover__title" style="font-family:var(--serif); font-size:2.5rem; margin:0 0 0.5rem; color:var(--ink);">Client Service Agreement</h1>
-        <p style="color:var(--ink-soft); font-size:0.9rem; margin:0;">Vorvo Services · Nationwide Coordination Layer</p>
+        <div class="agreement-cover__label" style="font-family:var(--mono); font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:0.5rem;">Legal Document</div>
+        <h1 class="agreement-cover__title" style="font-family:var(--serif); font-size:2.5rem; margin:0 0 0.5rem; color:#111111;">Client Service Agreement</h1>
+        <p style="color:#555555; font-size:0.9rem; margin:0;">Vorvo Services · Nationwide Coordination Layer</p>
       </div>
 
       <!-- Interactive Checklist Section -->
       <div style="background:var(--cream); border:1px solid var(--rule); padding:2rem; border-radius:4px; margin-bottom:3rem;">
-        <h3 style="font-family:var(--serif); font-size:1.4rem; color:var(--gold); margin-top:0; margin-bottom:0.5rem;">1. Select Your Coordination Services</h3>
-        <p style="color:var(--ink-soft); font-size:0.95rem; margin-bottom:1.5rem;">Choose the individual services you would like Vorvo Services to perform on your behalf. These selections will dynamically update your Client Service Agreement below.</p>
+        <h3 style="font-family:var(--serif); font-size:1.4rem; color:var(--gold-dark); margin-top:0; margin-bottom:0.5rem;">1. Select Your Coordination Services</h3>
+        <p style="color:#555555; font-size:0.95rem; margin-bottom:1.5rem;">Choose the individual services you would like Vorvo Services to perform on your behalf. These selections will dynamically update your Client Service Agreement below.</p>
         
         <!-- Full Service Option Card -->
-        <div id="ca-full-service-card" style="border: 2px solid var(--gold); background: rgba(255, 204, 0, 0.05); padding: 1.25rem; margin-bottom:1.5rem; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s;">
+        <div id="ca-full-service-card" style="border: 2px solid var(--gold); background: rgba(176, 141, 87, 0.08); padding: 1.25rem; margin-bottom:1.5rem; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s;">
           <div style="display: flex; align-items: center; gap: 1rem;">
             <input type="checkbox" id="ca-chk-full-service" style="width: 1.5rem; height: 1.5rem; accent-color: var(--gold); cursor: pointer;" />
             <div>
-              <h4 style="margin: 0; font-size: 1.15rem; color: var(--gold-soft); text-transform:none;">Full Service Bundle</h4>
-              <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--ink-soft);">Select all coordination and procurement services for complete, end-to-end project support.</p>
+              <h4 style="margin: 0; font-size: 1.15rem; color: var(--gold-dark); text-transform:none;">Full Service Bundle</h4>
+              <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: #555555;">Select all coordination and procurement services for complete, end-to-end project support.</p>
             </div>
           </div>
-          <div style="font-family: var(--mono); font-size: 1.25rem; font-weight: bold; color: var(--gold); white-space: nowrap;">$343</div>
+          <div style="font-family: var(--mono); font-size: 1.25rem; font-weight: bold; color: var(--gold-dark); white-space: nowrap;">$343</div>
         </div>
 
         <!-- Individual Services Checklist -->
         <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
           
           <!-- Contractor Research -->
-          <div class="ca-service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+          <div class="ca-service-item-card" data-price="49" style="border: 1px solid #E0D8CC; background: #FFFFFF; padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
             <div style="display: flex; align-items: flex-start; gap: 1rem;">
               <input type="checkbox" class="ca-chk-service" data-price="49" data-name="Contractor Research" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Research</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Identify and provide up to 3 relevant contractors.</p>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Research</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Identify and provide up to 3 relevant contractors.</p>
               </div>
             </div>
-            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$49</div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$49</div>
           </div>
 
           <!-- Quote Collection -->
-          <div class="ca-service-item-card" data-price="79" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+          <div class="ca-service-item-card" data-price="79" style="border: 1px solid #E0D8CC; background: #FFFFFF; padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
             <div style="display: flex; align-items: flex-start; gap: 1rem;">
               <input type="checkbox" class="ca-chk-service" data-price="79" data-name="Quote Collection" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Collection</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Contact contractors and obtain quotes.</p>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Collection</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Contact contractors and obtain quotes.</p>
               </div>
             </div>
-            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$79</div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$79</div>
           </div>
 
           <!-- Quote Comparison -->
-          <div class="ca-service-item-card" data-price="39" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+          <div class="ca-service-item-card" data-price="39" style="border: 1px solid #E0D8CC; background: #FFFFFF; padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
             <div style="display: flex; align-items: flex-start; gap: 1rem;">
               <input type="checkbox" class="ca-chk-service" data-price="39" data-name="Quote Comparison" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Comparison</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Summarize and compare contractor quotes.</p>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Comparison</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Summarize and compare contractor quotes.</p>
               </div>
             </div>
-            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$39</div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$39</div>
           </div>
 
           <!-- Contractor Recommendation -->
-          <div class="ca-service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+          <div class="ca-service-item-card" data-price="29" style="border: 1px solid #E0D8CC; background: #FFFFFF; padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
             <div style="display: flex; align-items: flex-start; gap: 1rem;">
               <input type="checkbox" class="ca-chk-service" data-price="29" data-name="Contractor Recommendation" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Recommendation</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Provide recommendation based on responsiveness and submitted quotes.</p>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Recommendation</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Provide recommendation based on responsiveness and submitted quotes.</p>
               </div>
             </div>
-            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$29</div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$29</div>
           </div>
 
           <!-- Scheduling Coordination -->
-          <div class="ca-service-item-card" data-price="69" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+          <div class="ca-service-item-card" data-price="69" style="border: 1px solid #E0D8CC; background: #FFFFFF; padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
             <div style="display: flex; align-items: flex-start; gap: 1rem;">
               <input type="checkbox" class="ca-chk-service" data-price="69" data-name="Scheduling Coordination" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Scheduling Coordination</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Coordinate scheduling between client and contractor.</p>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Scheduling Coordination</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Coordinate scheduling between client and contractor.</p>
               </div>
             </div>
-            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$69</div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$69</div>
           </div>
 
           <!-- Communication Assistance -->
-          <div class="ca-service-item-card" data-price="49" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+          <div class="ca-service-item-card" data-price="49" style="border: 1px solid #E0D8CC; background: #FFFFFF; padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
             <div style="display: flex; align-items: flex-start; gap: 1rem;">
               <input type="checkbox" class="ca-chk-service" data-price="49" data-name="Communication Assistance" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Communication Assistance</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Assist with communications and follow-ups.</p>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Communication Assistance</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Assist with communications and follow-ups.</p>
               </div>
             </div>
-            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$49</div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$49</div>
           </div>
 
           <!-- Completion Confirmation -->
-          <div class="ca-service-item-card" data-price="29" style="border: 1px solid var(--rule-soft); background: var(--paper); padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
+          <div class="ca-service-item-card" data-price="29" style="border: 1px solid #E0D8CC; background: #FFFFFF; padding: 1rem; border-radius: 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; cursor: pointer; transition: border-color 0.2s;">
             <div style="display: flex; align-items: flex-start; gap: 1rem;">
               <input type="checkbox" class="ca-chk-service" data-price="29" data-name="Completion Confirmation" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
-                <h4 style="margin: 0; font-size: 0.95rem; color: var(--ink); text-transform: none; font-family: var(--serif); font-weight: 700;">Completion Confirmation</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--ink-soft);">Confirm work completion with client.</p>
+                <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Completion Confirmation</h4>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Confirm work completion with client.</p>
               </div>
             </div>
-            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-soft); margin-top: 0.15rem;">$29</div>
+            <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$29</div>
           </div>
 
         </div>
@@ -2358,16 +2358,16 @@ function renderClientAgreement() {
       </div>
 
       <!-- Agreement Text Container -->
-      <div style="border: 1px solid var(--rule-soft); padding: 2.5rem; background: var(--paper-deep); font-size: 0.9rem; line-height: 1.6; color: var(--ink-soft); margin-bottom: 3rem; border-radius: 4px;">
-        <div style="text-align: center; margin-bottom: 2.5rem; border-bottom: 1px solid var(--rule-soft); padding-bottom: 1.5rem;">
-          <h2 style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold); margin: 0 0 0.5rem; text-transform: uppercase;">Client Service Agreement</h2>
-          <p style="font-family: var(--mono); font-size: 0.8rem; margin: 0; color: var(--ink-mute);">VORVO SERVICES · STATE OF TEXAS</p>
-          <p style="font-family: var(--mono); font-size: 0.8rem; margin: 0.25rem 0 0; color: var(--ink-mute);">Effective Date: Upon Execution</p>
+      <div style="border: 1px solid #E0D8CC; padding: 2.5rem; background: #FFFFFF; font-size: 0.9rem; line-height: 1.6; color: #222222; margin-bottom: 3rem; border-radius: 4px;">
+        <div style="text-align: center; margin-bottom: 2.5rem; border-bottom: 1px solid #E0D8CC; padding-bottom: 1.5rem;">
+          <h2 style="font-family: var(--serif); font-size: 1.6rem; color: var(--gold-dark); margin: 0 0 0.5rem; text-transform: uppercase;">Client Service Agreement</h2>
+          <p style="font-family: var(--mono); font-size: 0.8rem; margin: 0; color: #666666;">VORVO SERVICES · STATE OF TEXAS</p>
+          <p style="font-family: var(--mono); font-size: 0.8rem; margin: 0.25rem 0 0; color: #666666;">Effective Date: Upon Execution</p>
         </div>
 
         <p>This Client Service Agreement (the "Agreement") is entered into between <strong>Vorvo Services</strong> ("Vorvo" or the "Company"), a Texas-based service coordination layer, and the undersigned individual or entity ("Client"). By signing below, the Client agrees to every term of this Agreement.</p>
 
-        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">1. What Vorvo Does</h3>
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold-dark); border-bottom: 1px solid #E0D8CC; padding-bottom: 0.25rem; margin-top: 2rem;">1. What Vorvo Does</h3>
         <p>Vorvo provides research, procurement, and coordination services to its Clients. Vorvo’s role is strictly limited to performing the specific coordination and research tasks selected by the Client via the checklist model, which may include:</p>
         <ul>
           <li><strong>Contractor Research:</strong> Researching and identifying independent third-party service providers.</li>
@@ -2379,7 +2379,7 @@ function renderClientAgreement() {
           <li><strong>Completion Confirmation:</strong> Confirming project completion with the Client.</li>
         </ul>
 
-        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">2. What Vorvo Does Not Do (Disclaimers)</h3>
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold-dark); border-bottom: 1px solid #E0D8CC; padding-bottom: 0.25rem; margin-top: 2rem;">2. What Vorvo Does Not Do (Disclaimers)</h3>
         <p><strong>Client expressly acknowledges and agrees to the following disclaimers:</strong></p>
         <ul>
           <li><strong>No Contracting Services:</strong> Vorvo is not a contractor, subcontractor, construction manager, or builder. Vorvo does not perform any physical labor, construction, cleaning, hauling, or trade work.</li>
@@ -2388,13 +2388,13 @@ function renderClientAgreement() {
           <li><strong>Direct Contract for Labor:</strong> Any agreement or contract for actual labor, construction, or physical services is solely and directly between the Client and the selected independent service provider. Vorvo is not a party to, and is not responsible for, any such agreement.</li>
         </ul>
 
-        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">3. Fees and Payment Flow</h3>
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold-dark); border-bottom: 1px solid #E0D8CC; padding-bottom: 0.25rem; margin-top: 2rem;">3. Fees and Payment Flow</h3>
         <ul>
           <li><strong>Coordination Fees:</strong> Client agrees to pay Vorvo directly for the specific coordination and research services selected in the checklist above, in accordance with the running total displayed.</li>
           <li><strong>Direct Provider Payment:</strong> Independent contractors and service providers are paid directly by the Client for any physical labor or services they perform. Vorvo does not collect payments on behalf of independent providers, and Vorvo charges no referral fees, commissions, or percentages of provider revenue.</li>
         </ul>
 
-        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">4. Client Responsibilities</h3>
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold-dark); border-bottom: 1px solid #E0D8CC; padding-bottom: 0.25rem; margin-top: 2rem;">4. Client Responsibilities</h3>
         <p>The Client is solely responsible for:</p>
         <ul>
           <li>Providing accurate project details, location, and access to the job site.</li>
@@ -2403,30 +2403,30 @@ function renderClientAgreement() {
           <li>Providing a safe working environment at the service location.</li>
         </ul>
 
-        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">5. Indemnification & Limitation of Liability</h3>
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold-dark); border-bottom: 1px solid #E0D8CC; padding-bottom: 0.25rem; margin-top: 2rem;">5. Indemnification & Limitation of Liability</h3>
         <p><strong>5.1 Indemnification:</strong> Client agrees to defend, indemnify, and hold harmless Vorvo Services and its owners, officers, and agents from any and all claims, demands, losses, damages, or liabilities — including reasonable attorneys' fees — arising out of or related to the work performed by independent service providers, any property damage or personal injury occurring at the job site, or any breach of this Agreement by the Client.</p>
         <p><strong>5.2 Limitation of Liability:</strong> TO THE MAXIMUM EXTENT PERMITTED BY LAW, VORVO'S TOTAL CUMULATIVE LIABILITY TO CLIENT FOR ANY CAUSE WHATSOEVER SHALL NOT EXCEED ONE HUNDRED DOLLARS ($100.00). VORVO SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES.</p>
 
-        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold); border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.25rem; margin-top: 2rem;">6. General Provisions</h3>
+        <h3 style="font-family: var(--serif); font-size: 1.15rem; color: var(--gold-dark); border-bottom: 1px solid #E0D8CC; padding-bottom: 0.25rem; margin-top: 2rem;">6. General Provisions</h3>
         <p>This Agreement is governed by the laws of the State of Texas. It represents the entire agreement between the Parties regarding Vorvo's coordination services and supersedes any prior discussions or representations.</p>
       </div>
 
       <!-- Signature Section -->
-      <div style="background:var(--cream); border:1px solid var(--rule-soft); padding:2rem; border-radius:4px;">
-        <h3 style="font-family:var(--serif); font-size:1.3rem; color:var(--gold); margin-top:0; margin-bottom:1.5rem;">2. Sign the Agreement</h3>
+      <div style="background:var(--cream); border:1px solid #E0D8CC; padding:2rem; border-radius:4px;">
+        <h3 style="font-family:var(--serif); font-size:1.3rem; color:var(--gold-dark); margin-top:0; margin-bottom:1.5rem;">2. Sign the Agreement</h3>
         
         <div class="field" style="margin-bottom:1.25rem;">
-          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Your Full Legal Name</label>
-          <input type="text" id="ca-typed-name" placeholder="Type your full legal name" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:1rem; color:var(--ink); box-sizing:border-box;" />
+          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem; color:#333333;">Your Full Legal Name</label>
+          <input type="text" id="ca-typed-name" placeholder="Type your full legal name" style="width:100%; padding:0.75rem; border:1px solid #E0D8CC; background:#FFFFFF; font-size:1rem; color:#111111; box-sizing:border-box;" />
         </div>
 
         <div class="field" style="margin-bottom:1.25rem;">
-          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Your Email Address</label>
-          <input type="email" id="ca-email" placeholder="your@email.com" style="width:100%; padding:0.75rem; border:1px solid var(--rule); background:var(--paper); font-size:1rem; color:var(--ink); box-sizing:border-box;" />
+          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem; color:#333333;">Your Email Address</label>
+          <input type="email" id="ca-email" placeholder="your@email.com" style="width:100%; padding:0.75rem; border:1px solid #E0D8CC; background:#FFFFFF; font-size:1rem; color:#111111; box-sizing:border-box;" />
         </div>
 
         <div class="field" style="margin-bottom:1.5rem;">
-          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem;">Draw Your Signature</label>
+          <label style="font-size:0.75rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.5rem; color:#333333;">Draw Your Signature</label>
           <div id="ca-sig-pad-container" style="position:relative; border:1px solid var(--rule); background:#ffffff; cursor:crosshair; height:120px;">
             <canvas id="ca-sig-canvas" style="display:block; width:100%; height:100%; touch-action:none;"></canvas>
             <button type="button" id="ca-sig-clear" style="position:absolute; bottom:5px; right:5px; font-family:var(--mono); font-size:0.6rem; background:none; border:1px solid var(--rule); padding:0.25rem 0.5rem; cursor:pointer; color:var(--ink-mute);">Clear</button>
@@ -2435,13 +2435,13 @@ function renderClientAgreement() {
 
         <div style="margin-bottom:1.5rem; display:flex; align-items:flex-start; gap:0.5rem;">
           <input type="checkbox" id="ca-confirm-box" style="width:1.2rem; height:1.2rem; accent-color:var(--gold); margin-top:0.1rem; cursor:pointer;" />
-          <label for="ca-confirm-box" style="font-size:0.85rem; color:var(--ink-soft); cursor:pointer; line-height:1.4;">
+          <label for="ca-confirm-box" style="font-size:0.85rem; color:#333333; cursor:pointer; line-height:1.4;">
             I agree to the terms of this Client Service Agreement, and I authorize Vorvo Services to proceed with the selected coordination services.
           </label>
         </div>
 
         <button id="ca-submit-btn" class="btn btn--gold" style="width:100%; justify-content:center;">Accept Terms &amp; Sign Client Agreement →</button>
-        <div id="ca-submit-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:rgba(61,92,68,0.1); border-left:3px solid var(--moss); font-size:0.95rem; color:var(--ink-soft); line-height:1.6;">
+        <div id="ca-submit-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:rgba(61,92,68,0.1); border-left:3px solid var(--moss); font-size:0.95rem; color:#222222; line-height:1.6;">
           <strong style="color:var(--moss); font-size:1.1rem; display:block; margin-bottom:0.5rem;">Client Service Agreement Signed!</strong>
           Thank you! Your signed Client Service Agreement has been successfully registered. We will begin your selected coordination services immediately and contact you at the email address provided.
         </div>
@@ -4580,11 +4580,11 @@ function bindHandlers(route) {
         if (cb.checked) {
           total += parseInt(cb.dataset.price, 10);
           cb.closest('.ca-service-item-card').style.borderColor = 'var(--gold)';
-          cb.closest('.ca-service-item-card').style.background = 'rgba(255, 204, 0, 0.02)';
+          cb.closest('.ca-service-item-card').style.background = 'rgba(176, 141, 87, 0.08)';
         } else {
           allSelected = false;
-          cb.closest('.ca-service-item-card').style.borderColor = 'var(--rule-soft)';
-          cb.closest('.ca-service-item-card').style.background = 'var(--paper)';
+          cb.closest('.ca-service-item-card').style.borderColor = '#E0D8CC';
+          cb.closest('.ca-service-item-card').style.background = '#FFFFFF';
         }
       });
 
@@ -4593,14 +4593,14 @@ function bindHandlers(route) {
       if (allSelected) {
         if (chkFullService) chkFullService.checked = true;
         if (fullServiceCard) {
-          fullServiceCard.style.background = 'rgba(255, 204, 0, 0.1)';
+          fullServiceCard.style.background = 'rgba(176, 141, 87, 0.15)';
           fullServiceCard.style.borderColor = 'var(--gold)';
         }
       } else {
         if (chkFullService) chkFullService.checked = false;
         if (fullServiceCard) {
-          fullServiceCard.style.background = 'rgba(255, 204, 0, 0.05)';
-          fullServiceCard.style.borderColor = 'rgba(255, 204, 0, 0.3)';
+          fullServiceCard.style.background = 'rgba(176, 141, 87, 0.08)';
+          fullServiceCard.style.borderColor = 'rgba(176, 141, 87, 0.4)';
         }
       }
     };
