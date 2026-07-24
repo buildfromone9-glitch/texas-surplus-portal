@@ -1,84 +1,71 @@
-/**
- * API: Stripe Webhook Handler
- * 
- * Handles Stripe webhook events for automated payment processing.
- * Events handled:
- * - payment_intent.succeeded
- * - payment_intent.payment_failed
- * - charge.refunded
- * - charge.dispute.created
- * 
- * Future Use: Enable when ready for automated payment tracking
- */
+// Stripe webhook handler. Keep this endpoint on the Node runtime because Stripe
+// signature verification requires the exact raw request body.
+export const config = { api: { bodyParser: false } };
 
-export default async function handler(req, res) {
-  // Only accept POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+const json = (body, status = 200) => new Response(JSON.stringify(body), {
+  status,
+  headers: { 'Content-Type': 'application/json' }
+});
 
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-  const sig = req.headers['stripe-signature'];
+export default async function handler(req) {
+  if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+
+  const secret = process.env.STRIPE_SECRET_KEY;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  let event;
-  let data;
-  let eventType;
-
-  // Verify webhook signature (when deployed with webhook secret)
-  if (webhookSecret) {
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body, // Raw body needed
-        sig,
-        webhookSecret
-      );
-    } catch (err) {
-      console.error('[STRIPE-WEBHOOK] Signature verification failed:', err.message);
-      return res.status(400).json({ error: `Webhook Error: ${err.message}` });
-    }
-    
-    data = event.data;
-    eventType = event.type;
-  } else {
-    // Development mode without signature verification
-    data = req.body.data;
-    eventType = req.body.type;
+  if (!secret || !webhookSecret) {
+    console.error('[STRIPE-WEBHOOK] Missing Stripe webhook configuration');
+    return json({ error: 'Webhook is not configured' }, 500);
   }
 
-  console.log('[STRIPE-WEBHOOK] Event received:', eventType);
-
+  let stripe;
   try {
-    switch (eventType) {
+    const module = await import('stripe');
+    const Stripe = module.default || module;
+    stripe = new Stripe(secret);
+  } catch (error) {
+    console.error('[STRIPE-WEBHOOK] Stripe SDK unavailable:', error);
+    return json({ error: 'Stripe SDK unavailable' }, 500);
+  }
+
+  const signature = req.headers.get('stripe-signature');
+  const rawBody = await req.text();
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
+  } catch (error) {
+    console.error('[STRIPE-WEBHOOK] Signature verification failed:', error.message);
+    return json({ error: 'Invalid webhook signature' }, 400);
+  }
+
+  console.log('[STRIPE-WEBHOOK] Event received:', event.id, event.type);
+  try {
+    const object = event.data?.object;
+    switch (event.type) {
       case 'payment_intent.succeeded':
-        await handlePaymentSucceeded(data.object);
+        await handlePaymentSucceeded(object);
         break;
-
       case 'payment_intent.payment_failed':
-        await handlePaymentFailed(data.object);
+        await handlePaymentFailed(object);
         break;
-
+      case 'payment_intent.canceled':
+        await handlePaymentCanceled(object);
+        break;
       case 'charge.refunded':
-        await handleChargeRefunded(data.object);
+        await handleChargeRefunded(object);
         break;
-
       case 'charge.dispute.created':
-        await handleDisputeCreated(data.object);
+        await handleDisputeCreated(object);
         break;
-
       case 'checkout.session.completed':
-        await handleCheckoutCompleted(data.object);
+        await handleCheckoutCompleted(object);
         break;
-
       default:
-        console.log('[STRIPE-WEBHOOK] Unhandled event type:', eventType);
+        console.log('[STRIPE-WEBHOOK] Unhandled event type:', event.type);
     }
-
-    res.status(200).json({ received: true });
-
+    return json({ received: true });
   } catch (error) {
     console.error('[STRIPE-WEBHOOK] Handler error:', error);
-    res.status(500).json({ error: 'Webhook handler failed' });
+    return json({ error: 'Webhook handler failed' }, 500);
   }
 }
 
@@ -128,6 +115,14 @@ async function handlePaymentSucceeded(paymentIntent) {
 /**
  * Handle failed payment
  */
+async function handlePaymentCanceled(paymentIntent) {
+  console.log('[STRIPE-WEBHOOK] Payment canceled:', {
+    payment_intent_id: paymentIntent?.id,
+    tracking_id: paymentIntent?.metadata?.tracking_id,
+    timestamp: new Date().toISOString()
+  });
+}
+
 async function handlePaymentFailed(paymentIntent) {
   const { id, last_payment_error, metadata } = paymentIntent;
   

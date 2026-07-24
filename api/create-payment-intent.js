@@ -4,14 +4,17 @@
 export const config = { runtime: 'edge' };
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const DEFAULT_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY;
+
+const json = (body, status = 200) => new Response(JSON.stringify(body), {
+  status,
+  headers: { 'Content-Type': 'application/json' },
+});
 
 export default async function handler(req) {
   if (req.method === 'GET') {
-    const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR';
-    return new Response(JSON.stringify({ publishableKey }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    if (!DEFAULT_PUBLISHABLE_KEY) return json({ error: 'Stripe publishable key is not configured' }, 500);
+    return json({ publishableKey: DEFAULT_PUBLISHABLE_KEY });
   }
 
   if (req.method !== 'POST') {
@@ -20,12 +23,7 @@ export default async function handler(req) {
 
   try {
     if (!STRIPE_SECRET_KEY) {
-      return new Response(JSON.stringify({
-        error: 'Stripe Secret Key is not configured on Vercel. Please log into your Vercel dashboard, go to your Project Settings -> Environment Variables, and add STRIPE_SECRET_KEY with your Stripe Secret Key.'
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
+        return json({ error: 'Stripe is not configured on the server' }, 500);
     }
 
     const { amount, currency, trackingId, description } = await req.json();
@@ -58,18 +56,12 @@ export default async function handler(req) {
       throw new Error(data.error?.message || 'Stripe API error');
     }
 
-    return new Response(JSON.stringify({ 
+    return json({
       clientSecret: data.client_secret,
-      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_51TfYtkJ9ebCZwudiOhe5Vo6ekT3HpN7USzbJq8WjeWQwTMtAHAFUlX78zrFtSgOA5gJ3zbBCdIxiddT8XRnr376K00Y1TgGtFR'
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      publishableKey: DEFAULT_PUBLISHABLE_KEY
     });
   } catch (err) {
     console.error('[Stripe] PaymentIntent creation failed:', err.message);
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: err.message }, 500);
   }
 }
