@@ -40,7 +40,6 @@ export default async function handler(req) {
       signerName, 
       signatureData, 
       paymentMethod,
-      stripePaymentIntentId 
     } = body;
 
     // ===== VALIDATION =====
@@ -223,10 +222,6 @@ export default async function handler(req) {
       payment_method: paymentMethod
     };
 
-    // Add Stripe payment intent ID if provided (for card payments)
-    if (stripePaymentIntentId && paymentMethod === 'Credit/Debit Card') {
-      updateData.stripe_payment_intent_id = stripePaymentIntentId;
-    }
 
     // Update the record using Service Role Key
     const updateResponse = await fetch(

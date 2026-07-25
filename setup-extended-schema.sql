@@ -21,10 +21,6 @@ CREATE TABLE IF NOT EXISTS payments (
   agreement_id UUID REFERENCES agreements(id) ON DELETE SET NULL,
   wholesale_lead_id UUID REFERENCES wholesale_leads(id) ON DELETE SET NULL,
   
-  -- Stripe integration
-  stripe_payment_intent_id TEXT UNIQUE,
-  stripe_charge_id TEXT,
-  stripe_refund_id TEXT,
   
   -- Payment details
   amount_cents INTEGER NOT NULL,
@@ -59,7 +55,6 @@ CREATE TABLE IF NOT EXISTS payments (
 CREATE INDEX idx_payments_quote_id ON payments(quote_id);
 CREATE INDEX idx_payments_agreement_id ON payments(agreement_id);
 CREATE INDEX idx_payments_wholesale_lead_id ON payments(wholesale_lead_id);
-CREATE INDEX idx_payments_stripe_payment_intent ON payments(stripe_payment_intent_id);
 CREATE INDEX idx_payments_status ON payments(status);
 CREATE INDEX idx_payments_created_at ON payments(created_at);
 
@@ -102,7 +97,6 @@ CREATE TABLE IF NOT EXISTS providers (
   average_response_time_minutes INTEGER,
   
   -- Payment info
-  stripe_account_id TEXT,
   bank_account_last4 TEXT,
   payment_terms TEXT DEFAULT 'net_7',
   

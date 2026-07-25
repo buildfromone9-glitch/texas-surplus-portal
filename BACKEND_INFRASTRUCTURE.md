@@ -18,12 +18,10 @@ This branch contains backend infrastructure code that is **ready for future use*
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `api/capture-payment.js` | Capture authorized Stripe payments after job completion | Ready |
 | `api/refund-payment.js` | Process full or partial refunds | Ready |
 | `api/send-sms.js` | Send SMS notifications via Twilio | Ready (Twilio not configured) |
 | `api/admin/analytics.js` | Dashboard analytics and metrics | Ready (returns empty data) |
 | `api/admin/export.js` | Export data as CSV/JSON | Ready |
-| `api/webhooks/stripe.js` | Handle Stripe webhook events | Ready |
 | `api/cron/payment-reminders.js` | Daily payment reminder job | Ready |
 | `api/cron/quote-expiration.js` | Daily quote expiration job | Ready |
 | `api/cron/status-updates.js` | Daily status escalation job | Ready |
@@ -54,7 +52,6 @@ Tracks all payment transactions across all divisions.
 id UUID PRIMARY KEY
 quote_id UUID -- Links to labor jobs
 agreement_id UUID -- Links to surplus agreements
-stripe_payment_intent_id TEXT
 amount_cents INTEGER
 status TEXT -- pending, authorized, captured, succeeded, failed, refunded, disputed
 ```
@@ -128,8 +125,6 @@ value JSONB
 Add these to Vercel environment variables when ready to enable:
 
 ```bash
-# Stripe Webhooks
-STRIPE_WEBHOOK_SECRET=whsec_...
 
 # Twilio SMS
 TWILIO_ACCOUNT_SID=AC...
@@ -197,11 +192,7 @@ Configured in `vercel.json`:
 ### Step 2: Add Environment Variables
 Add the required environment variables to Vercel.
 
-### Step 3: Configure Stripe Webhooks
-1. Go to Stripe Dashboard > Webhooks
-2. Add endpoint: `https://www.vorvoservices.com/api/webhooks/stripe`
 3. Select events: `payment_intent.*`, `charge.*`, `checkout.session.*`
-4. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`
 
 ### Step 4: Configure Twilio (Optional)
 1. Create Twilio account
@@ -345,8 +336,6 @@ Export data as CSV or JSON.
 
 ### Webhook Endpoint
 
-#### `POST /api/webhooks/stripe`
-Handle Stripe events. Automatically called by Stripe.
 
 ---
 
@@ -354,7 +343,6 @@ Handle Stripe events. Automatically called by Stripe.
 
 1. **All admin endpoints require authentication** via Supabase Bearer token
 2. **Cron endpoints verify secret** via `x-cron-secret` header or `Authorization` header
-3. **Stripe webhooks verify signature** when `STRIPE_WEBHOOK_SECRET` is configured
 4. **Row Level Security** enabled on all new tables
 
 ---
@@ -363,7 +351,6 @@ Handle Stripe events. Automatically called by Stripe.
 
 1. **Review and test** the endpoints locally or on a preview deployment
 2. **Run database migrations** in Supabase when ready
-3. **Configure external services** (Stripe webhooks, Twilio)
 4. **Merge to main** when ready for production
 5. **Connect frontend** to use the new endpoints
 

@@ -36,10 +36,6 @@
       "memory": 1024,
       "maxDuration": 60
     },
-    "api/webhooks/stripe.js": {
-      "memory": 256,
-      "maxDuration": 30
-    },
     "api/cron/payment-reminders.js": {
       "memory": 512,
       "maxDuration": 300
@@ -71,7 +67,10 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
       ]
     }
   ]
