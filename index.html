@@ -1627,16 +1627,16 @@ const SITE_CONFIG = {
           ]
         },
         {
-          id: "property-management",
-          title: "Property Management Solutions",
-          description: "Professional coordination and oversight for your active real estate assets. We handle trusted provider matching, maintenance scheduling, and property stewardship to protect your investment.",
-          link: "#/property-management",
-          ctaText: "Enter Property Management Portal →",
+          id: "asset-acquirement",
+          title: "Asset Acquirement",
+          description: "We identify and coordinate real-estate acquisition opportunities by organizing property details, evaluating potential, and connecting qualified parties with clear next steps.",
+          link: "#/asset-acquirement",
+          ctaText: "Enter Asset Acquirement Portal →",
           bullets: [
-            "Verified local caretakers",
-            "Complete coordination layer",
-            "Routine property oversight",
-            "Maximize asset value & longevity"
+            "Property opportunity screening",
+            "Organized asset details",
+            "Qualified buyer and seller coordination",
+            "Clear path from review to transaction"
           ]
         }
       ]
@@ -2008,7 +2008,7 @@ function renderHeader(route) {
             <div class="brand__mark">V</div>
             <div class="brand__name">
               Vorvo Services
-              <small>Property Management Solutions</small>
+              <small>Asset Acquirement</small>
             </div>
           </a>
           <button class="menu-toggle" aria-label="Toggle Menu" onclick="const nav = this.parentElement.querySelector('.nav-links'); nav.classList.toggle('active'); this.classList.toggle('active');">
@@ -2018,7 +2018,7 @@ function renderHeader(route) {
           </button>
           <nav class="nav-links">
             <a href="#/portal" style="font-size:0.8rem; color:var(--ink-mute);">← Back to Hub</a>
-            <a href="#/property-management" class="active">Property Management</a>
+            <a href="#/asset-acquirement" class="active">Asset Acquirement</a>
             <a href="#/track" class="${route === 'track' ? 'active' : ''}">Track Status</a>
             <a href="javascript:void(0)" onclick="document.getElementById('property-management-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--small" style="padding:0.4rem 0.9rem; font-size:0.75rem;">Request Quote</a>
           </nav>
@@ -2509,7 +2509,7 @@ function renderFooter(route) {
         <div class="site-footer__inner">
           <div class="site-footer__brand-col">
             <h4>Vorvo Services</h4>
-            <p>Vorvo Property Management Solutions connects property owners with trusted local property managers, maintenance providers, and asset caretakers nationwide.</p>
+            <p>Vorvo Asset Acquirement connects property owners with trusted local property managers, maintenance providers, and asset caretakers nationwide.</p>
           </div>
           <div>
             <h4>Contact Vorvo</h4>
@@ -2529,7 +2529,7 @@ function renderFooter(route) {
           </div>
         </div>
         <div class="site-footer__legal">
-          This site is an informational resource prepared by Vorvo Services. <strong>We are a property management coordination layer, not a licensed brokerage, property management firm, or legal advisory firm.</strong>
+          This site is an informational resource prepared by Vorvo Services. <strong>We are a asset-acquirement coordination layer, not a licensed brokerage, asset-acquirement firm, or legal advisory firm.</strong>
           <div class="site-footer__legal-links">
             <a href="#/client-agreement">Client Service Agreement</a>
             <a href="#/terms">Terms of Service</a>
@@ -2550,7 +2550,7 @@ function renderFooter(route) {
             <h4>Our Affiliated Services</h4>
             <ul>
               <li><a href="#/surplus" style="color:inherit;">Surplus Property Recovery</a></li>
-              <li><a href="#/property-management" style="color:inherit;">Property Management Solutions</a></li>
+              <li><a href="#/asset-acquirement" style="color:inherit;">Asset Acquirement</a></li>
               <li><a href="#/vorvo" style="color:inherit;">Vorvo Labor Services</a></li>
             </ul>
           </div>
@@ -2674,7 +2674,7 @@ function renderPortal() {
           <p class="text-body mb-4">Specialized public-records research, financial recovery, and strategic property asset coordination.</p>
           <div style="display:grid; gap:1.5rem;">
             <a href="#/surplus" class="btn btn--gold">Surplus Fund Recovery →</a>
-            <a href="#/property-management" class="btn btn--ghost">Property Management →</a>
+            <a href="#/asset-acquirement" class="btn btn--ghost">Asset Acquirement →</a>
           </div>
         </div>
       </div>
@@ -2683,13 +2683,13 @@ function renderPortal() {
     <section class="section">
       <div class="split split--rev">
         <div class="split__image-wrap">
-          <img src="images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="split__image" alt="Property Management" loading="lazy">
+          <img src="images/property/cd1607eef39ce41a4ccd20642949b7df.jpg" class="split__image" alt="Asset Acquirement" loading="lazy">
         </div>
         <div class="split__content">
-          <div class="section__eyebrow">Asset Stewardship</div>
-          <h2 class="section__title">Property Management</h2>
-          <p class="text-body mb-4">Professional coordination and oversight for your active real estate assets. We handle trusted provider matching, maintenance scheduling, and property stewardship to protect your investment.</p>
-          <a href="#/property-management" class="btn btn--gold">Explore Management Solutions →</a>
+          <div class="section__eyebrow">Asset Acquirement</div>
+          <h2 class="section__title">Asset Acquirement</h2>
+          <p class="text-body mb-4">We identify and coordinate real-estate acquisition opportunities by organizing property details, evaluating potential, and connecting qualified parties with clear next steps.</p>
+          <a href="#/asset-acquirement" class="btn btn--gold">Explore Asset Acquirement →</a>
         </div>
       </div>
     </section>
@@ -3136,11 +3136,11 @@ function renderPropertyManagementLanding() {
       </div>
       <div class="hero__overlay"></div>
       <div class="hero__inner">
-        <div class="hero__eyebrow">Vorvo Property Management Solutions</div>
+        <div class="hero__eyebrow">Vorvo Asset Acquirement</div>
         <h1 class="hero__title">Professional Property Oversight. <em>Stewardship.</em> Less Stress.</h1>
-        <p class="hero__lede">Vorvo is your partner in premium property management and coordination. We connect you with top-tier local property managers, maintenance crews, and professional caretakers.</p>
+        <p class="hero__lede">Vorvo helps identify, organize, and coordinate real-estate acquisition opportunities by bringing together property information, qualified parties, and practical next steps.</p>
         <div class="hero__cta-row">
-          <a href="javascript:void(0)" onclick="document.getElementById('property-management-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Request Management Quote <span class="btn__arrow">→</span></a>
+          <a href="javascript:void(0)" onclick="document.getElementById('property-management-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Request Asset Acquirement Review <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
         </div>
       </div>
@@ -3154,7 +3154,7 @@ function renderPropertyManagementLanding() {
     <section class="section section--light">
       <div class="section__head">
         <div class="section__eyebrow">The Vorvo Advantage</div>
-        <h2 class="section__title">Why Choose Property Management?</h2>
+        <h2 class="section__title">Why Choose Asset Acquirement?</h2>
       </div>
       
       <div class="card-grid">
@@ -3175,10 +3175,10 @@ function renderPropertyManagementLanding() {
           </div>
         </div>
         <div class="service-card">
-          <img src="images/property/ff74425c3ac14fd7c7602bcd3a6cd547.jpg" class="service-card__img" alt="Asset Stewardship" loading="lazy">
+          <img src="images/property/ff74425c3ac14fd7c7602bcd3a6cd547.jpg" class="service-card__img" alt="Asset Acquirement" loading="lazy">
           <div class="service-card__body">
             <div class="service-card__cat">Benefit 03</div>
-            <h3 class="service-card__title">Asset Stewardship</h3>
+            <h3 class="service-card__title">Asset Acquirement</h3>
             <p class="service-card__text">We prioritize the long-term value, upkeep, and integrity of your real estate investments.</p>
           </div>
         </div>
@@ -3189,7 +3189,7 @@ function renderPropertyManagementLanding() {
       <div class="split">
         <div class="split__content">
           <div class="section__eyebrow">Request Quote</div>
-          <h2 class="section__title">Request Property Management Quote</h2>
+          <h2 class="section__title">Request Asset Acquirement Quote</h2>
           <p class="text-body mb-5">Submit details below. Our team will deliver a management quote within 24 hours.</p>
           <div class="callout" style="background:var(--paper-edge);">
             <strong>Simple process</strong>
@@ -3743,7 +3743,7 @@ function renderAdmin() {
         <!-- Tab Switcher -->
         <div class="admin-tabs" style="display:flex; gap:1rem; margin-top:2rem; border-bottom:1px solid var(--rule); padding-bottom:1px;">
           <button id="tab-btn-assets" class="admin-tab-btn active" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid var(--gold); cursor:pointer; color:var(--ink); font-size:0.95rem;">Surplus Recovery</button>
-          <button id="tab-btn-wholesale" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Property Management</button>
+          <button id="tab-btn-wholesale" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Asset Acquirement</button>
           <button id="tab-btn-property" class="admin-tab-btn" style="font-family:var(--sans); font-weight:600; padding:0.75rem 1.5rem; border:none; background:none; border-bottom:2px solid transparent; cursor:pointer; color:var(--ink-mute); font-size:0.95rem;">Labor Services</button>
         </div>
       </div>
@@ -3881,17 +3881,17 @@ function renderAdmin() {
         </div>
       </div>
 
-      <!-- Tab 2: Property Management -->
+      <!-- Tab 2: Asset Acquirement -->
       <div id="tab-content-wholesale" class="admin-tab-content" style="display:none; margin-top:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; border-bottom:1px solid var(--rule-soft); padding-bottom:0.5rem;">
-          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Property Management Leads</h2>
+          <h2 style="font-family:var(--serif); font-size:1.8rem; margin:0;">Asset Acquirement Leads</h2>
           <div style="display:flex; gap:0.5rem;">
             <button type="button" id="btn-delete-wholesale" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem; color:var(--rust); border-color:var(--rust); display:none;">Delete Selected</button>
             <button type="button" id="btn-refresh-wholesale" class="btn btn--small btn--ghost" style="padding:0.4rem 0.8rem; font-size:0.8rem;">↻ Refresh</button>
           </div>
         </div>
-        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming property management inquiries, review details, and set coordination statuses.</p>
-        <div id="property-management-leads-list" style="margin-bottom:2rem;">Loading leads...</div>
+        <p class="admin__sub" style="margin-bottom:1.5rem;">Manage incoming asset-acquirement inquiries, review details, and set coordination statuses.</p>
+        <div id="property-management-leads-list" style="margin-bottom:2rem;">Loading asset-acquirement leads...</div>
       </div>
 
       <!-- Tab 3: Labor Services (Contracting) -->
@@ -4905,7 +4905,7 @@ function bindHandlers(route) {
           trackingId = insertedData[0].tracking_id;
           data.append('trackingId', trackingId);
         } else if (error) {
-          console.error('Supabase property management insert error:', error);
+          console.error('Supabase asset-acquirement insert error:', error);
         }
       } catch (err) {
         console.error('Supabase connection error:', err);
@@ -4917,7 +4917,7 @@ function bindHandlers(route) {
         headers: { 'Accept': 'application/json' }
       }).catch(err => console.warn('Formspree submission error:', err));
 
-      successEl.innerHTML = `<strong>Property details received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your property management request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>Our management coordination team will analyze your property details and contact you within 24 hours. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
+      successEl.innerHTML = `<strong>Asset-acquirement details received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your asset-acquirement request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>Our acquisition coordination team will review your opportunity details and contact you within 24 hours. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
       successEl.style.display = 'block';
       form.reset();
       submitBtn.disabled = false;
@@ -5008,7 +5008,7 @@ function bindHandlers(route) {
                     ${data.signed ? `
                       <a href="#/property-management-agreement?token=${data.access_token}" class="btn btn--ghost" style="width:100%; justify-content:center; text-decoration:none; border:1px solid var(--moss); color:var(--moss);">View Signed Agreement ✓</a>
                     ` : `
-                      <a href="#/property-management-agreement?token=${data.access_token}" class="btn btn--gold" style="width:100%; justify-content:center; text-decoration:none;">Review &amp; Sign Management Agreement →</a>
+                      <a href="#/property-management-agreement?token=${data.access_token}" class="btn btn--gold" style="width:100%; justify-content:center; text-decoration:none;">Review &amp; Sign Asset Acquirement Agreement →</a>
                     `}
                   </div>
                 ` : ''}
@@ -5403,7 +5403,7 @@ function bindHandlers(route) {
             }
             }
         } else {
-          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-SUR-" (Surplus), "VRV-WHL-" (Property Management), or "VRV-CON-" / "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-LWN-" / "VRV-CRD-" / "VRV-CST-" (Labor Services).</div>`;
+          resultEl.innerHTML = `<div style="color:var(--rust); line-height:1.5;"><strong>Invalid ID Format</strong><br>Vorvo Tracking IDs must start with "VRV-SUR-" (Surplus), "VRV-WHL-" (Asset Acquirement), or "VRV-CON-" / "VRV-MOV-" / "VRV-JNK-" / "VRV-WSH-" / "VRV-YRD-" / "VRV-LWN-" / "VRV-CRD-" / "VRV-CST-" (Labor Services).</div>`;
         }
       } catch (err) {
         console.error('Tracking lookup error:', err);
@@ -5499,7 +5499,7 @@ function bindHandlers(route) {
     tabWholesaleBtn?.addEventListener('click', async () => {
       switchTab(tabWholesaleBtn, tabWholesaleContent);
       const listContainer = document.getElementById('property-management-leads-list');
-      if (!listContainer || listContainer.innerHTML.includes('Loading property management leads') || !listContainer.querySelector('table')) {
+      if (!listContainer || listContainer.innerHTML.includes('Loading asset-acquirement leads') || !listContainer.querySelector('table')) {
         await loadPropertyManagementLeads();
       }
     });
@@ -5661,7 +5661,7 @@ function bindHandlers(route) {
     async function loadPropertyManagementLeads() {
       const container = document.getElementById('property-management-leads-list');
       if (!container) return;
-      container.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading property management leads from database...</div>';
+      container.innerHTML = '<div style="text-align:center; padding:2rem; font-family:var(--mono); font-size:0.9rem; color:var(--ink-mute);">Loading asset-acquirement leads from database...</div>';
       
       try {
         const { data, error } = await supabaseClient
@@ -5692,7 +5692,7 @@ function bindHandlers(route) {
             }
           }
         } catch (cErr) {
-          console.error('Error fetching contracts for property management leads:', cErr);
+          console.error('Error fetching contracts for asset-acquirement leads:', cErr);
         }
         
         let html = `
@@ -6347,7 +6347,7 @@ function bindHandlers(route) {
         }
         
       } catch (err) {
-        console.error('Error loading property management leads:', err);
+        console.error('Error loading asset-acquirement leads:', err);
         container.innerHTML = `<div style="color:var(--rust); padding:1rem; text-align:center;"><strong>Failed to load requests</strong><br>${esc(err.message)}</div>`;
       }
     }
