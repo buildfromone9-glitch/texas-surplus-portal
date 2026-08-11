@@ -5555,6 +5555,7 @@ function bindHandlers(route) {
               <tr style="background:var(--ink); color:var(--paper); text-align:left;">
                 <th style="padding:0.75rem; width: 40px; text-align:center;"><input type="checkbox" id="select-all-agreements" /></th>
                 <th style="padding:0.75rem;">Tracking ID</th>
+                <th style="padding:0.75rem;">Created</th>
                 <th style="padding:0.75rem;">Claimant</th>
                 <th style="padding:0.75rem;">Property ID</th>
                 <th style="padding:0.75rem;">Estimated Value</th>
@@ -5574,6 +5575,7 @@ function bindHandlers(route) {
             <tr style="border-bottom:1px solid var(--rule-soft);" id="agreement-row-${q.id}">
               <td style="padding:0.75rem; text-align:center;"><input type="checkbox" class="agreement-select" data-id="${q.id}" /></td>
               <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
+              <td style="padding:0.75rem; white-space:nowrap;">${q.created_at ? new Date(q.created_at).toLocaleString() : '—'}</td>
               <td style="padding:0.75rem;"><strong>${esc(q.claimant_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.claimant_email)}</small></td>
               <td style="padding:0.75rem; font-family:var(--mono);">${esc(q.property_id)}</td>
               <td style="padding:0.75rem;">${q.estimated_value ? formatMoney(q.estimated_value) : '<em>Not specified</em>'}</td>
@@ -5702,6 +5704,7 @@ function bindHandlers(route) {
               <tr style="background:var(--ink); color:var(--paper); text-align:left;">
                 <th style="padding:0.75rem; width: 40px; text-align:center;"><input type="checkbox" id="select-all-wholesale" /></th>
                 <th style="padding:0.75rem;">Tracking ID</th>
+                <th style="padding:0.75rem;">Created</th>
                 <th style="padding:0.75rem;">Owner</th>
                 <th style="padding:0.75rem;">Property Address</th>
                 <th style="padding:0.75rem;">Asking Price</th>
@@ -6376,6 +6379,7 @@ function bindHandlers(route) {
               <tr style="background:var(--ink); color:var(--paper); text-align:left;">
                 <th style="padding:0.75rem; width: 40px; text-align:center;"><input type="checkbox" id="select-all-property" /></th>
                 <th style="padding:0.75rem;">Tracking ID</th>
+                <th style="padding:0.75rem;">Created</th>
                 <th style="padding:0.75rem;">Customer</th>
                 <th style="padding:0.75rem;">Service</th>
                 <th style="padding:0.75rem;">Current Status</th>
