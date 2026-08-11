@@ -5905,6 +5905,7 @@ function bindHandlers(route) {
             <tr style="border-bottom:1px solid var(--rule-soft);" id="lead-row-${q.id}">
               <td style="padding:0.75rem; text-align:center;"><input type="checkbox" class="wholesale-select" data-id="${q.id}" /></td>
               <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
+              <td style="padding:0.75rem; white-space:nowrap;">${q.created_at ? new Date(q.created_at).toLocaleString() : '—'}</td>
               <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
               <td style="padding:0.75rem; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${esc(q.property_address)}">${esc(q.property_address)}</td>
               <td style="padding:0.75rem;">${q.asking_price ? formatMoney(q.asking_price) : '<em>Not specified</em>'}</td>
@@ -6432,6 +6433,7 @@ function bindHandlers(route) {
             <tr style="border-bottom:1px solid var(--rule-soft);" id="quote-row-${q.id}">
               <td style="padding:0.75rem; text-align:center;"><input type="checkbox" class="property-select" data-id="${q.id}" /></td>
               <td style="padding:0.75rem; font-family:var(--mono); font-weight:bold;">${esc(q.tracking_id)}</td>
+              <td style="padding:0.75rem; white-space:nowrap;">${q.created_at ? new Date(q.created_at).toLocaleString() : '—'}</td>
               <td style="padding:0.75rem;"><strong>${esc(q.full_name)}</strong><br><small style="color:var(--ink-mute);">${esc(q.phone)} | ${esc(q.email)}</small></td>
               <td style="padding:0.75rem; text-transform:capitalize;">${esc(q.service_category)}</td>
               <td style="padding:0.75rem;"><span class="${badgeClass}">${esc(q.status)}</span></td>
