@@ -130,16 +130,17 @@ BEFORE INSERT ON public.property_quotes
 FOR EACH ROW
 EXECUTE FUNCTION set_property_tracking_id();
 
--- 7. Create Storage Bucket for Job Images (if storage schema exists)
+-- 7. Create a PRIVATE Storage Bucket for Job Images.
+-- Existing buckets are explicitly made private so a prior public setting is corrected.
 INSERT INTO storage.buckets (id, name, public) 
-VALUES ('job-images', 'job-images', true) 
-ON CONFLICT (id) DO NOTHING;
+VALUES ('job-images', 'job-images', false)
+ON CONFLICT (id) DO UPDATE SET public = false;
 
--- Enable public select/insert on storage objects for job-images bucket
-CREATE POLICY "Allow public read of job images" 
-ON storage.objects FOR SELECT 
-USING (bucket_id = 'job-images');
+-- Do not create a public SELECT policy. Access must use authorized server-side
+-- retrieval and short-lived signed URLs when images need to be reviewed.
+DROP POLICY IF EXISTS "Allow public read of job images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public upload of job images" ON storage.objects;
 
-CREATE POLICY "Allow public upload of job images" 
-ON storage.objects FOR INSERT 
-WITH CHECK (bucket_id = 'job-images');
+-- The public browser must not write directly to a private bucket. Uploads should
+-- be moved behind an authenticated/server-side endpoint before enabling uploads.
+DROP POLICY IF EXISTS "Authenticated users can upload job images" ON storage.objects;
