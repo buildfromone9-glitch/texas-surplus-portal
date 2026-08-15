@@ -182,38 +182,53 @@
     --transition-hero: 1.2s ease-in-out;
   }
 
-  body.legal-gate-active > *:not(#legal-acceptance-gate) {
-    visibility: hidden;
+  body.legal-gate-active #app,
+  body.legal-gate-active .site-header,
+  body.legal-gate-active .site-footer,
+  body.legal-gate-active main,
+  body.legal-gate-active section,
+  body.legal-gate-active article,
+  body.legal-gate-active aside {
+    pointer-events: none;
+  }
+
+  body.legal-gate-active #legal-acceptance-gate,
+  body.legal-gate-active #legal-acceptance-gate * {
+    pointer-events: auto;
   }
 
   #legal-acceptance-gate {
     position: fixed;
-    inset: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 10000;
     display: flex;
-    align-items: flex-end;
     justify-content: center;
-    padding: 1rem;
-    background: rgba(17,17,17,0.72);
+    padding: 0.75rem 1rem;
+    background: linear-gradient(180deg, rgba(17,17,17,0) 0%, rgba(17,17,17,0.65) 30%, rgba(17,17,17,0.92) 100%);
   }
 
   .legal-acceptance-gate__card {
-    width: min(100%, 760px);
-    max-height: min(90vh, 680px);
-    overflow-y: auto;
-    padding: 1.5rem;
-    border: 1px solid var(--gold);
-    border-radius: 4px;
-    background: var(--paper);
+    width: min(100%, 1240px);
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(176, 141, 87, 0.55);
+    border-left: 1px solid rgba(176, 141, 87, 0.25);
+    border-right: 1px solid rgba(176, 141, 87, 0.25);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    background: rgba(24, 24, 24, 0.95);
     color: var(--ink);
-    box-shadow: var(--shadow-lift);
+    box-shadow: 0 -16px 45px rgba(0,0,0,0.35);
+    backdrop-filter: blur(18px);
+    display: grid;
+    gap: 0.75rem;
   }
 
   .legal-acceptance-gate__links {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin: 1rem 0;
   }
 
   .legal-acceptance-gate__links a {
@@ -225,13 +240,18 @@
     display: flex;
     gap: 0.65rem;
     align-items: flex-start;
-    margin: 1rem 0;
     line-height: 1.5;
+    margin: 0;
+  }
+
+  #legal-acceptance-title {
+    font-family: var(--serif);
+    margin: 0;
   }
 
   @media (max-width: 600px) {
     #legal-acceptance-gate { padding: 0.5rem; }
-    .legal-acceptance-gate__card { padding: 1rem; max-height: 94vh; }
+    .legal-acceptance-gate__card { padding: 0.9rem 1rem; border-radius: 12px 12px 0 0; }
   }
   
   /* ============================================================
@@ -1689,18 +1709,24 @@
   <div id="app"></div>
   <div id="legal-acceptance-gate" hidden>
     <div class="legal-acceptance-gate__card" role="dialog" aria-modal="true" aria-labelledby="legal-acceptance-title">
-      <div class="section__eyebrow">Before you continue</div>
-      <h2 id="legal-acceptance-title" style="font-family:var(--serif);margin:0.5rem 0;">Please review and accept our policies</h2>
-      <p>To enter any section of the site, please review the <a href="#/terms">Terms of Service</a> and <a href="#/privacy">Privacy Policy</a>, then confirm your acceptance below.</p>
-      <div class="legal-acceptance-gate__links">
-        <a href="#/terms" target="_blank" rel="noopener">Read Terms of Service</a>
-        <a href="#/privacy" target="_blank" rel="noopener">Read Privacy Policy</a>
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-start; justify-content:space-between;">
+        <div style="min-width:240px; flex:1;">
+          <div class="section__eyebrow" style="margin-bottom:0.35rem;">Before you continue</div>
+          <h2 id="legal-acceptance-title" style="font-family:var(--serif);margin:0;">Please review and accept our policies</h2>
+          <p style="margin:0.5rem 0 0; color:var(--ink-soft);">The website remains visible. Buttons stay disabled until you accept the Terms of Service and Privacy Policy.</p>
+        </div>
+        <div class="legal-acceptance-gate__links">
+          <a href="#/terms" target="_blank" rel="noopener">Read Terms of Service</a>
+          <a href="#/privacy" target="_blank" rel="noopener">Read Privacy Policy</a>
+        </div>
       </div>
-      <label class="legal-acceptance-gate__accept">
-        <input id="legal-acceptance-checkbox" type="checkbox" />
-        <span>I have read and agree to the Terms of Service and Privacy Policy.</span>
-      </label>
-      <button id="legal-acceptance-button" class="btn btn--gold" type="button" disabled>Accept and Continue →</button>
+      <div style="display:flex; flex-wrap:wrap; gap:0.9rem; align-items:center; justify-content:space-between;">
+        <label class="legal-acceptance-gate__accept">
+          <input id="legal-acceptance-checkbox" type="checkbox" />
+          <span>I have read and agree to the Terms of Service and Privacy Policy.</span>
+        </label>
+        <button id="legal-acceptance-button" class="btn btn--gold" type="button" disabled>Accept and Continue →</button>
+      </div>
     </div>
   </div>
 
