@@ -1872,26 +1872,46 @@ function showLegalAcceptanceGate() {
   const gate = document.getElementById('legal-acceptance-gate');
   if (!gate) return;
   clearLegacyLegalAcceptance();
-  if (hasLegalAcceptance()) return;
-  document.body.classList.add('legal-gate-active');
-  gate.hidden = false;
-  installLegalGateBlocker();
   const checkbox = document.getElementById('legal-acceptance-checkbox');
   const button = document.getElementById('legal-acceptance-button');
-  checkbox?.addEventListener('change', () => {
-    if (button) button.disabled = !checkbox.checked;
-  });
+  const card = gate.querySelector('.legal-acceptance-gate__card');
+
   const syncAcceptedState = () => {
     const accepted = hasLegalAcceptance();
-    if (checkbox) checkbox.checked = accepted;
-    if (button) {
-      button.disabled = accepted ? true : !checkbox?.checked;
-      button.textContent = accepted ? 'Accepted' : 'Accept & Continue →';
+    if (accepted) {
+      gate.hidden = false;
+      gate.classList.add('is-accepted');
+      document.body.classList.remove('legal-gate-active');
+      if (card) card.setAttribute('aria-hidden', 'true');
+      if (checkbox) checkbox.checked = true;
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Accepted';
+      }
+      const blocker = document.getElementById('legal-gate-blocker');
+      if (blocker) blocker.remove();
+      setTimeout(() => {
+        gate.hidden = true;
+      }, 50);
+      return true;
     }
+    gate.hidden = false;
+    gate.classList.remove('is-accepted');
+    document.body.classList.add('legal-gate-active');
+    if (card) card.removeAttribute('aria-hidden');
+    installLegalGateBlocker();
+    if (checkbox) checkbox.checked = false;
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Accept & Continue →';
+    }
+    return false;
   };
 
+  if (syncAcceptedState()) return;
+
   checkbox?.addEventListener('change', () => {
-    syncAcceptedState();
+    if (button) button.disabled = !checkbox.checked;
   });
 
   button?.addEventListener('click', () => {
@@ -1915,8 +1935,6 @@ function showLegalAcceptanceGate() {
       if (blocker) blocker.remove();
     }, 450);
   });
-
-  syncAcceptedState();
 }
 
 
