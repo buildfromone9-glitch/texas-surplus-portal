@@ -92,6 +92,34 @@
 
     const paymentSection = document.getElementById('ca-payment-section');
     if (paymentSection) paymentSection.style.display = selected.length ? 'block' : 'none';
+
+    const paymentButton = document.getElementById('ca-pay-btn');
+    if (paymentButton) {
+      const link = resolveLaborPaymentLink(selected);
+      paymentButton.disabled = !link;
+      paymentButton.textContent = link
+        ? `Proceed to Secure Payment — ${formatMoney(selected.length === LABOR_SERVICE_CATALOG.length ? 343 : total)} →`
+        : 'Select one service or the Full Service Bundle to pay →';
+    }
+  }
+
+  const LABOR_PAYMENT_LINKS = {
+    'Contractor Research': 'https://square.link/u/hYfL564B',
+    'Quote Collection': 'https://square.link/u/jLHAXlew',
+    'Quote Comparison': 'https://square.link/u/b0hXFeaN',
+    'Contractor Recommendation': 'https://square.link/u/QVXZ73tp',
+    'Scheduling Coordination': 'https://square.link/u/2tiUmGzO',
+    'Communication Assistance': 'https://square.link/u/Ps5sLbzR',
+    'Completion Confirmation': 'https://square.link/u/rWm5JY5i',
+    'Full Service Bundle': 'https://square.link/u/xGXHKLYd',
+  };
+
+  function resolveLaborPaymentLink(serviceNames) {
+    const selected = Array.from(new Set(serviceNames));
+    if (!selected.length) return null;
+    if (selected.length === LABOR_SERVICE_CATALOG.length) return LABOR_PAYMENT_LINKS['Full Service Bundle'];
+    if (selected.length === 1) return LABOR_PAYMENT_LINKS[selected[0]] || null;
+    return null;
   }
 
   async function openLaborCheckout() {
@@ -101,18 +129,14 @@
       return;
     }
 
-    try {
-      const checkout = await buildLaborCheckout(selected);
-      const fallbackTotal = selected.reduce((sum, name) => sum + (getLaborServiceByName(name)?.price || 0), 0);
-      const checkoutUrl = checkout.checkoutUrl || checkout.url || checkout.link || null;
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-        return;
-      }
-      alert(`Checkout is ready. Total: ${formatMoney(checkout.total ?? fallbackTotal)}. Provide the live payment links and I’ll connect them.`);
-    } catch (error) {
-      alert(error?.message || 'Unable to prepare checkout.');
+    const checkoutLink = resolveLaborPaymentLink(selected);
+
+    if (checkoutLink) {
+      window.location.assign(checkoutLink);
+      return;
     }
+
+    alert('Choose one service to pay for, or select all seven services for the Full Service Bundle. Each has its own secure payment link.');
   }
 </script>
 
