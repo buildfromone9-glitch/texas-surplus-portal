@@ -1774,8 +1774,9 @@ const supabaseKey = "sb_publishable_l165SNZrHJ4XqQh46bqS9g_d9L-EsJX";
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const STORE_KEY = 'vorvo_signed_v1';
-const LEGAL_ACCEPTANCE_KEY = 'vorvo_legal_acceptance_v2';
+const LEGAL_ACCEPTANCE_KEY = 'vorvo_legal_acceptance_v3';
 const LEGAL_ACCEPTANCE_VERSION = '2026-08-15';
+const PRIVACY_POLICY_VERSION = '2026-08-15';
 const LABOR_CHECKOUT_ENDPOINT = '/api/labor-services/checkout';
 const LABOR_SERVICE_CATALOG = [
   { id: 'contractor-research', name: 'Contractor Research', price: 49 },
@@ -1821,7 +1822,7 @@ async function buildLaborCheckout(serviceNames) {
 function hasLegalAcceptance() {
   try {
     const acceptance = JSON.parse(localStorage.getItem(LEGAL_ACCEPTANCE_KEY) || 'null');
-    return acceptance?.accepted === true && acceptance?.version === LEGAL_ACCEPTANCE_VERSION && acceptance?.terms && acceptance?.privacy;
+    return acceptance?.accepted === true && acceptance?.version === LEGAL_ACCEPTANCE_VERSION && acceptance?.privacyVersion === PRIVACY_POLICY_VERSION && acceptance?.terms && acceptance?.privacy;
   } catch (e) {
     return false;
   }
@@ -1829,11 +1830,14 @@ function hasLegalAcceptance() {
 
 function clearLegacyLegalAcceptance() {
   try {
-    const legacyKey = 'vorvo_legal_acceptance_v1';
-    const legacy = JSON.parse(localStorage.getItem(legacyKey) || 'null');
-    if (legacy?.accepted) localStorage.removeItem(legacyKey);
+    const legacyKeys = ['vorvo_legal_acceptance_v1', 'vorvo_legal_acceptance_v2'];
+    for (const legacyKey of legacyKeys) {
+      const legacy = JSON.parse(localStorage.getItem(legacyKey) || 'null');
+      if (legacy?.accepted) localStorage.removeItem(legacyKey);
+    }
   } catch (e) {
     localStorage.removeItem('vorvo_legal_acceptance_v1');
+    localStorage.removeItem('vorvo_legal_acceptance_v2');
   }
 }
 
@@ -1877,6 +1881,7 @@ function showLegalAcceptanceGate() {
       terms: true,
       privacy: true,
       version: LEGAL_ACCEPTANCE_VERSION,
+      privacyVersion: PRIVACY_POLICY_VERSION,
       acceptedAt
     }));
     gate.classList.add('is-accepted');
