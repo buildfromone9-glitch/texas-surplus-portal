@@ -207,6 +207,13 @@
     justify-content: center;
     padding: 0.75rem 1rem;
     background: linear-gradient(180deg, rgba(17,17,17,0) 0%, rgba(17,17,17,0.65) 30%, rgba(17,17,17,0.92) 100%);
+    transform: translateY(0);
+    transition: transform 420ms ease, opacity 420ms ease;
+  }
+
+  #legal-acceptance-gate.is-accepted {
+    transform: translateY(110%);
+    opacity: 0;
   }
 
   .legal-acceptance-gate__card {
@@ -1815,8 +1822,12 @@ function showLegalAcceptanceGate() {
       version: LEGAL_ACCEPTANCE_VERSION,
       acceptedAt
     }));
-    gate.hidden = true;
-    document.body.classList.remove('legal-gate-active');
+    gate.classList.add('is-accepted');
+    setTimeout(() => {
+      gate.hidden = true;
+      document.body.classList.remove('legal-gate-active');
+      gate.classList.remove('is-accepted');
+    }, 450);
   }, { once: true });
 }
 
