@@ -241,6 +241,10 @@
     pointer-events: none;
   }
 
+  #legal-acceptance-button:disabled {
+    cursor: default;
+  }
+
   .legal-acceptance-gate__card {
     width: 100%;
     padding: 0.45rem 0.85rem;
@@ -1873,8 +1877,21 @@ function showLegalAcceptanceGate() {
   checkbox?.addEventListener('change', () => {
     if (button) button.disabled = !checkbox.checked;
   });
+  const syncAcceptedState = () => {
+    const accepted = hasLegalAcceptance();
+    if (checkbox) checkbox.checked = accepted;
+    if (button) {
+      button.disabled = accepted ? true : !checkbox?.checked;
+      button.textContent = accepted ? 'Accepted' : 'Accept & Continue →';
+    }
+  };
+
+  checkbox?.addEventListener('change', () => {
+    syncAcceptedState();
+  });
+
   button?.addEventListener('click', () => {
-    if (!checkbox?.checked) return;
+    if (!checkbox?.checked || hasLegalAcceptance()) return;
     const acceptedAt = new Date().toISOString();
     localStorage.setItem(LEGAL_ACCEPTANCE_KEY, JSON.stringify({
       accepted: true,
@@ -1884,6 +1901,7 @@ function showLegalAcceptanceGate() {
       privacyVersion: PRIVACY_POLICY_VERSION,
       acceptedAt
     }));
+    syncAcceptedState();
     gate.classList.add('is-accepted');
     setTimeout(() => {
       gate.hidden = true;
@@ -1893,6 +1911,8 @@ function showLegalAcceptanceGate() {
       if (blocker) blocker.remove();
     }, 450);
   });
+
+  syncAcceptedState();
 }
 
 
