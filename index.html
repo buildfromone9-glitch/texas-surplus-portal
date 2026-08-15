@@ -204,13 +204,7 @@
   body.legal-gate-active main,
   body.legal-gate-active section,
   body.legal-gate-active article,
-  body.legal-gate-active aside,
-  body.legal-gate-active .btn,
-  body.legal-gate-active a,
-  body.legal-gate-active button,
-  body.legal-gate-active input,
-  body.legal-gate-active select,
-  body.legal-gate-active textarea {
+  body.legal-gate-active aside {
     pointer-events: none !important;
     user-select: none !important;
   }
@@ -219,6 +213,15 @@
   body.legal-gate-active #legal-acceptance-gate * {
     pointer-events: auto !important;
     user-select: auto !important;
+  }
+
+  body.legal-gate-active button,
+  body.legal-gate-active .btn,
+  body.legal-gate-active a,
+  body.legal-gate-active input,
+  body.legal-gate-active select,
+  body.legal-gate-active textarea {
+    pointer-events: none !important;
   }
 
   #legal-acceptance-gate {
