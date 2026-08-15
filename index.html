@@ -1771,8 +1771,8 @@ const supabaseKey = "sb_publishable_l165SNZrHJ4XqQh46bqS9g_d9L-EsJX";
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const STORE_KEY = 'vorvo_signed_v1';
-const LEGAL_ACCEPTANCE_KEY = 'vorvo_legal_acceptance_v1';
-const LEGAL_ACCEPTANCE_VERSION = '2026-06-08';
+const LEGAL_ACCEPTANCE_KEY = 'vorvo_legal_acceptance_v2';
+const LEGAL_ACCEPTANCE_VERSION = '2026-08-15';
 const LABOR_CHECKOUT_ENDPOINT = '/api/labor-services/checkout';
 const LABOR_SERVICE_CATALOG = [
   { id: 'contractor-research', name: 'Contractor Research', price: 49 },
@@ -1824,6 +1824,16 @@ function hasLegalAcceptance() {
   }
 }
 
+function clearLegacyLegalAcceptance() {
+  try {
+    const legacyKey = 'vorvo_legal_acceptance_v1';
+    const legacy = JSON.parse(localStorage.getItem(legacyKey) || 'null');
+    if (legacy?.accepted) localStorage.removeItem(legacyKey);
+  } catch (e) {
+    localStorage.removeItem('vorvo_legal_acceptance_v1');
+  }
+}
+
 
 function installLegalGateBlocker() {
   if (document.getElementById('legal-gate-blocker')) return;
@@ -1845,7 +1855,9 @@ function installLegalGateBlocker() {
 
 function showLegalAcceptanceGate() {
   const gate = document.getElementById('legal-acceptance-gate');
-  if (!gate || hasLegalAcceptance()) return;
+  if (!gate) return;
+  clearLegacyLegalAcceptance();
+  if (hasLegalAcceptance()) return;
   document.body.classList.add('legal-gate-active');
   gate.hidden = false;
   installLegalGateBlocker();
