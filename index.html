@@ -188,13 +188,19 @@
   body.legal-gate-active main,
   body.legal-gate-active section,
   body.legal-gate-active article,
-  body.legal-gate-active aside {
-    pointer-events: none;
+  body.legal-gate-active aside,
+  body.legal-gate-active .btn,
+  body.legal-gate-active a,
+  body.legal-gate-active button,
+  body.legal-gate-active input,
+  body.legal-gate-active select,
+  body.legal-gate-active textarea {
+    pointer-events: none !important;
   }
 
   body.legal-gate-active #legal-acceptance-gate,
   body.legal-gate-active #legal-acceptance-gate * {
-    pointer-events: auto;
+    pointer-events: auto !important;
   }
 
   #legal-acceptance-gate {
@@ -1811,7 +1817,7 @@ function showLegalAcceptanceGate() {
   const button = document.getElementById('legal-acceptance-button');
   checkbox?.addEventListener('change', () => {
     if (button) button.disabled = !checkbox.checked;
-  }, { once: true });
+  });
   button?.addEventListener('click', () => {
     if (!checkbox?.checked) return;
     const acceptedAt = new Date().toISOString();
@@ -1827,8 +1833,9 @@ function showLegalAcceptanceGate() {
       gate.hidden = true;
       document.body.classList.remove('legal-gate-active');
       gate.classList.remove('is-accepted');
+      window.location.reload();
     }, 450);
-  }, { once: true });
+  });
 }
 
 
