@@ -69,6 +69,51 @@
     // Force reload ignoring cache
     window.location.reload(true);
   }
+
+  function getSelectedLaborServices() {
+    return Array.from(document.querySelectorAll('.ca-chk-service:checked')).map((input) => input.dataset.name).filter(Boolean);
+  }
+
+  function updateLaborSummary() {
+    const selected = getSelectedLaborServices();
+    const total = selected.reduce((sum, name) => {
+      const service = getLaborServiceByName(name);
+      return sum + (service?.price || 0);
+    }, 0);
+
+    const totalEl = document.getElementById('ca-running-total');
+    if (totalEl) totalEl.textContent = `Base Total: ${formatMoney(total)}`;
+
+    const summaryEl = document.getElementById('ca-summary-services');
+    if (summaryEl) summaryEl.textContent = selected.length ? selected.join(', ') : 'None';
+
+    const summaryTotalEl = document.getElementById('ca-summary-total');
+    if (summaryTotalEl) summaryTotalEl.textContent = formatMoney(total);
+
+    const paymentSection = document.getElementById('ca-payment-section');
+    if (paymentSection) paymentSection.style.display = selected.length ? 'block' : 'none';
+  }
+
+  async function openLaborCheckout() {
+    const selected = getSelectedLaborServices();
+    if (!selected.length) {
+      alert('Please select at least one labor service first.');
+      return;
+    }
+
+    try {
+      const checkout = await buildLaborCheckout(selected);
+      const fallbackTotal = selected.reduce((sum, name) => sum + (getLaborServiceByName(name)?.price || 0), 0);
+      const checkoutUrl = checkout.checkoutUrl || checkout.url || checkout.link || null;
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+        return;
+      }
+      alert(`Checkout is ready. Total: ${formatMoney(checkout.total ?? fallbackTotal)}. Provide the live payment links and I’ll connect them.`);
+    } catch (error) {
+      alert(error?.message || 'Unable to prepare checkout.');
+    }
+  }
 </script>
 
 <style>
@@ -135,6 +180,58 @@
     --transition-base: 250ms ease;
     --transition-slow: 400ms ease;
     --transition-hero: 1.2s ease-in-out;
+  }
+
+  body.legal-gate-active > *:not(#legal-acceptance-gate) {
+    visibility: hidden;
+  }
+
+  #legal-acceptance-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(17,17,17,0.72);
+  }
+
+  .legal-acceptance-gate__card {
+    width: min(100%, 760px);
+    max-height: min(90vh, 680px);
+    overflow-y: auto;
+    padding: 1.5rem;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .legal-acceptance-gate__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .legal-acceptance-gate__links a {
+    color: var(--gold-light);
+    text-decoration: underline;
+  }
+
+  .legal-acceptance-gate__accept {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    margin: 1rem 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 600px) {
+    #legal-acceptance-gate { padding: 0.5rem; }
+    .legal-acceptance-gate__card { padding: 1rem; max-height: 94vh; }
   }
   
   /* ============================================================
@@ -1590,6 +1687,22 @@
   </div>
 
   <div id="app"></div>
+  <div id="legal-acceptance-gate" hidden>
+    <div class="legal-acceptance-gate__card" role="dialog" aria-modal="true" aria-labelledby="legal-acceptance-title">
+      <div class="section__eyebrow">Before you continue</div>
+      <h2 id="legal-acceptance-title" style="font-family:var(--serif);margin:0.5rem 0;">Please review and accept our policies</h2>
+      <p>To enter any section of the site, please review the <a href="#/terms">Terms of Service</a> and <a href="#/privacy">Privacy Policy</a>, then confirm your acceptance below.</p>
+      <div class="legal-acceptance-gate__links">
+        <a href="#/terms" target="_blank" rel="noopener">Read Terms of Service</a>
+        <a href="#/privacy" target="_blank" rel="noopener">Read Privacy Policy</a>
+      </div>
+      <label class="legal-acceptance-gate__accept">
+        <input id="legal-acceptance-checkbox" type="checkbox" />
+        <span>I have read and agree to the Terms of Service and Privacy Policy.</span>
+      </label>
+      <button id="legal-acceptance-button" class="btn btn--gold" type="button" disabled>Accept and Continue →</button>
+    </div>
+  </div>
 
 <script>
 /* ============================================================
@@ -1603,6 +1716,84 @@ const supabaseKey = "sb_publishable_l165SNZrHJ4XqQh46bqS9g_d9L-EsJX";
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const STORE_KEY = 'vorvo_signed_v1';
+const LEGAL_ACCEPTANCE_KEY = 'vorvo_legal_acceptance_v1';
+const LEGAL_ACCEPTANCE_VERSION = '2026-06-08';
+const LABOR_CHECKOUT_ENDPOINT = '/api/labor-services/checkout';
+const LABOR_SERVICE_CATALOG = [
+  { id: 'contractor-research', name: 'Contractor Research', price: 49 },
+  { id: 'quote-collection', name: 'Quote Collection', price: 79 },
+  { id: 'quote-comparison', name: 'Quote Comparison', price: 39 },
+  { id: 'contractor-recommendation', name: 'Contractor Recommendation', price: 29 },
+  { id: 'scheduling-coordination', name: 'Scheduling Coordination', price: 69 },
+  { id: 'communication-assistance', name: 'Communication Assistance', price: 49 },
+  { id: 'completion-confirmation', name: 'Completion Confirmation', price: 29 },
+];
+
+function getLaborServiceByName(name) {
+  return LABOR_SERVICE_CATALOG.find((service) => service.name === name) || null;
+}
+
+function formatMoney(amount) {
+  return `$${Number(amount || 0).toFixed(2)}`;
+}
+
+async function buildLaborCheckout(serviceNames) {
+  const selected = serviceNames
+    .map(getLaborServiceByName)
+    .filter(Boolean);
+
+  if (!selected.length) {
+    throw new Error('Please select at least one labor service.');
+  }
+
+  const response = await fetch(LABOR_CHECKOUT_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ serviceIds: selected.map((service) => service.id) }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || 'Unable to prepare checkout.');
+  }
+
+  return response.json();
+}
+
+function hasLegalAcceptance() {
+  try {
+    const acceptance = JSON.parse(localStorage.getItem(LEGAL_ACCEPTANCE_KEY) || 'null');
+    return acceptance?.accepted === true && acceptance?.version === LEGAL_ACCEPTANCE_VERSION && acceptance?.terms && acceptance?.privacy;
+  } catch (e) {
+    return false;
+  }
+}
+
+function showLegalAcceptanceGate() {
+  const gate = document.getElementById('legal-acceptance-gate');
+  if (!gate || hasLegalAcceptance()) return;
+  document.body.classList.add('legal-gate-active');
+  gate.hidden = false;
+  const checkbox = document.getElementById('legal-acceptance-checkbox');
+  const button = document.getElementById('legal-acceptance-button');
+  checkbox?.addEventListener('change', () => {
+    if (button) button.disabled = !checkbox.checked;
+  }, { once: true });
+  button?.addEventListener('click', () => {
+    if (!checkbox?.checked) return;
+    const acceptedAt = new Date().toISOString();
+    localStorage.setItem(LEGAL_ACCEPTANCE_KEY, JSON.stringify({
+      accepted: true,
+      terms: true,
+      privacy: true,
+      version: LEGAL_ACCEPTANCE_VERSION,
+      acceptedAt
+    }));
+    gate.hidden = true;
+    document.body.classList.remove('legal-gate-active');
+  }, { once: true });
+}
+
 
 const SITE_CONFIG = {
   brandName: "Vorvo Services",
@@ -1643,13 +1834,13 @@ const SITE_CONFIG = {
     },
     labor: {
       title: "Labor & Contractor Services",
-      subtitle: "Nationwide Labor Coordination",
-      description: "Need moving help, junk removal, pressure washing, or yard work? Vorvo is the nationwide coordination layer.",
+      subtitle: "Nationwide Help Finding and Coordinating Independent Service Providers",
+      description: "Planning a move, cleanup, pressure-washing project, or yard job? Tell us what you need, and Vorvo can help you explore independent service-provider options in your area.",
       services: [
         {
           id: "labor",
           title: "Labor Coordination",
-          description: "Need moving help, junk removal, pressure washing, or yard work? We collect your request, organize details, check trusted provider availability in your area, and help you get clear quotes.",
+          description: "Share your project details once, and we’ll organize the information, research independent service-provider options, and help you move toward clear quotes and next steps.",
           link: "#/vorvo",
           ctaText: "Enter Labor Portal →",
           bullets: [
@@ -1722,6 +1913,7 @@ const App = {
       if (statusChanged) {
         this.state.adminUser = newUser;
         this.render();
+        showLegalAcceptanceGate();
       }
     });
 
@@ -1755,8 +1947,10 @@ const App = {
         this.loadSignedState();
       }
       this.render();
+      showLegalAcceptanceGate();
     });
     this.render();
+    showLegalAcceptanceGate();
   },
 
   loadClient() {
@@ -2262,6 +2456,12 @@ function renderClientAgreement() {
           <div style="font-family: var(--mono); font-size: 1.25rem; font-weight: bold; color: var(--gold-dark); white-space: nowrap;">$343</div>
         </div>
 
+        <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+          <button type="button" id="ca-select-all" class="btn btn--small btn--ghost">Select all</button>
+          <button type="button" id="ca-clear-all" class="btn btn--small btn--ghost">Clear all</button>
+        </div>
+        </div>
+
         <!-- Individual Services Checklist -->
         <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
           
@@ -2271,7 +2471,7 @@ function renderClientAgreement() {
               <input type="checkbox" class="ca-chk-service" data-price="49" data-name="Contractor Research" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Research</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Identify and provide up to 3 relevant contractors.</p>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">We’ll research and present up to three independent contractor options based on the search criteria you choose, giving you information to review before making your own decision.</p>
               </div>
             </div>
             <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$49</div>
@@ -2283,7 +2483,7 @@ function renderClientAgreement() {
               <input type="checkbox" class="ca-chk-service" data-price="79" data-name="Quote Collection" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Collection</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Contact contractors and obtain quotes.</p>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">We’ll help contact independent contractors about your project and gather quotes or pricing information when available for you to review.</p>
               </div>
             </div>
             <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$79</div>
@@ -2295,7 +2495,7 @@ function renderClientAgreement() {
               <input type="checkbox" class="ca-chk-service" data-price="39" data-name="Quote Comparison" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Quote Comparison</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Summarize and compare contractor quotes.</p>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">We’ll organize the quotes and available project details in a clear comparison so you can evaluate the options that fit your needs.</p>
               </div>
             </div>
             <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$39</div>
@@ -2307,7 +2507,7 @@ function renderClientAgreement() {
               <input type="checkbox" class="ca-chk-service" data-price="29" data-name="Contractor Recommendation" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Contractor Recommendation</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Provide recommendation based on responsiveness and submitted quotes.</p>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">We’ll summarize relevant information such as responsiveness and submitted quotes to help inform your review. You retain the final decision about whether to contact or hire any contractor.</p>
               </div>
             </div>
             <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$29</div>
@@ -2319,7 +2519,7 @@ function renderClientAgreement() {
               <input type="checkbox" class="ca-chk-service" data-price="69" data-name="Scheduling Coordination" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Scheduling Coordination</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Coordinate scheduling between client and contractor.</p>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">We’ll help coordinate scheduling conversations, proposed dates, and logistics between you and an independent contractor.</p>
               </div>
             </div>
             <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$69</div>
@@ -2331,7 +2531,7 @@ function renderClientAgreement() {
               <input type="checkbox" class="ca-chk-service" data-price="49" data-name="Communication Assistance" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Communication Assistance</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Assist with communications and follow-ups.</p>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">We’ll help organize messages and follow-ups between you and an independent contractor so project-related communication is easier to manage.</p>
               </div>
             </div>
             <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$49</div>
@@ -2343,7 +2543,7 @@ function renderClientAgreement() {
               <input type="checkbox" class="ca-chk-service" data-price="29" data-name="Completion Confirmation" style="width: 1.2rem; height: 1.2rem; accent-color: var(--gold); margin-top: 0.15rem; cursor: pointer;" />
               <div>
                 <h4 style="margin: 0; font-size: 0.95rem; color: #111111; text-transform: none; font-family: var(--serif); font-weight: 700;">Completion Confirmation</h4>
-                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">Confirm work completion with client.</p>
+                <p style="margin: 0.15rem 0 0; font-size: 0.8rem; color: #555555;">After a scheduled service, we can follow up with you to record whether you consider the requested project or service complete. This is an administrative check-in, not an inspection or quality certification.</p>
               </div>
             </div>
             <div style="font-family: var(--mono); font-size: 0.95rem; font-weight: bold; color: var(--gold-dark); margin-top: 0.15rem;">$29</div>
@@ -2456,6 +2656,54 @@ function renderClientAgreement() {
           </div>
 
           <button id="ca-pay-btn" class="btn btn--gold" style="width:100%; justify-content:center; background:var(--gold-dark);">Proceed to Secure Payment →</button>
+
+  document.querySelectorAll('.ca-service-item-card, #ca-full-service-card').forEach((card) => {
+    card.addEventListener('click', (event) => {
+      if (event.target && event.target.matches('input, button')) return;
+      const input = card.querySelector('input[type="checkbox"]');
+      if (!input) return;
+      input.checked = !input.checked;
+      updateLaborSummary();
+    });
+  });
+
+  document.querySelectorAll('.ca-chk-service').forEach((input) => {
+    input.addEventListener('change', updateLaborSummary);
+  });
+
+  const fullService = document.getElementById('ca-chk-full-service');
+  if (fullService) {
+    fullService.addEventListener('change', () => {
+      document.querySelectorAll('.ca-chk-service').forEach((input) => {
+        input.checked = fullService.checked;
+      });
+      updateLaborSummary();
+    });
+  }
+
+  const selectAllBtn = document.getElementById('ca-select-all');
+  if (selectAllBtn) {
+    selectAllBtn.addEventListener('click', () => {
+      document.querySelectorAll('.ca-chk-service').forEach((input) => { input.checked = true; });
+      if (fullService) fullService.checked = true;
+      updateLaborSummary();
+    });
+  }
+
+  const clearAllBtn = document.getElementById('ca-clear-all');
+  if (clearAllBtn) {
+    clearAllBtn.addEventListener('click', () => {
+      document.querySelectorAll('.ca-chk-service, #ca-chk-full-service').forEach((input) => { input.checked = false; });
+      updateLaborSummary();
+    });
+  }
+
+  const payBtn = document.getElementById('ca-pay-btn');
+  if (payBtn) {
+    payBtn.addEventListener('click', openLaborCheckout);
+  }
+
+  updateLaborSummary();
         </div>
 
         <div id="ca-submit-success" style="display:none; margin-top:1.5rem; padding:1.5rem; background:rgba(61,92,68,0.1); border-left:3px solid var(--moss); font-size:0.95rem; color:#222222; line-height:1.6;">
@@ -2699,7 +2947,7 @@ function renderPortal() {
       <div class="section__head">
         <div class="section__eyebrow">Nationwide Network</div>
         <h2 class="section__title">Labor Coordination</h2>
-        <p class="section__subtitle">Fast, reliable local labor coordinated same-week.</p>
+        <p class="section__subtitle">Research and coordination support for local property-service requests.</p>
       </div>
       <div class="card-grid">
         <div class="service-card">
@@ -2752,7 +3000,7 @@ function renderPortal() {
           <div class="service-card__body">
             <div class="service-card__cat">Category 06</div>
             <h3 class="service-card__title">Other Services</h3>
-            <p class="service-card__text">Custom contractor coordination, assembly, and general labor tasks.</p>
+            <p class="service-card__text">Have a project that doesn’t fit the categories above? Describe the task and we’ll help research independent providers who may offer the service you’re looking for.</p>
             <a href="#/vorvo" class="btn btn--gold btn--small">Request Quote</a>
           </div>
         </div>
@@ -2767,7 +3015,7 @@ function renderPortal() {
       <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
         <div class="feature-block">
           <h4 class="text-gold mb-3">Fast Response</h4>
-          <p class="text-body">Quotes delivered within 24 hours.</p>
+          <p class="text-body">We aim to follow up with next steps promptly.</p>
         </div>
         <div class="feature-block">
           <h4 class="text-gold mb-3">Nationwide</h4>
@@ -2775,7 +3023,7 @@ function renderPortal() {
         </div>
         <div class="feature-block">
           <h4 class="text-gold mb-3">Verified Network</h4>
-          <p class="text-body">Independent third-party providers vetted for quality.</p>
+          <p class="text-body">Independent third-party providers you can review and compare.</p>
         </div>
         <div class="feature-block">
           <h4 class="text-gold mb-3">Real-time Tracking</h4>
@@ -2802,7 +3050,7 @@ function renderVorvoLanding() {
       <div class="hero__inner">
         <div class="hero__eyebrow">Vorvo Coordination Services</div>
         <h1 class="hero__title">Local Workers. Same Week. <em>Done Right.</em></h1>
-        <p class="hero__lede">Vorvo Services helps property owners find, compare, and coordinate qualified service providers nationwide.</p>
+        <p class="hero__lede">Vorvo Services helps property owners research independent service providers, compare available information, and coordinate communication nationwide.</p>
         <div class="hero__cta-row">
           <a href="javascript:void(0)" onclick="document.getElementById('vorvo-form')?.scrollIntoView({behavior: 'smooth'})" class="btn btn--gold">Request a Quote <span class="btn__arrow">→</span></a>
           <a href="tel:8327350603" class="btn btn--ghost">Call/Text (832) 735-0603</a>
@@ -2820,7 +3068,7 @@ function renderVorvoLanding() {
       <div class="section__head">
         <div class="section__eyebrow">Our Services</div>
         <h2 class="section__title">Coordination for Essential Local Services Nationwide</h2>
-        <p class="section__subtitle">We identify, research, and coordinate with independent third-party service providers on behalf of clients.</p>
+        <p class="section__subtitle">We research independent third-party service providers, organize available information, and coordinate communication on your behalf while you make the final hiring decision.</p>
       </div>
       
       <div class="card-grid">
@@ -2879,7 +3127,7 @@ function renderVorvoLanding() {
           <div class="service-card__body">
             <div class="service-card__cat">Category 06</div>
             <h3 class="service-card__title">Other Services</h3>
-            <p class="service-card__text">Custom contractor coordination, assembly, and general labor tasks.</p>
+            <p class="service-card__text">Have a project that doesn’t fit the categories above? Describe the task and we’ll help research independent providers who may offer the service you’re looking for.</p>
             <div class="service-card__footer"><span class="upper fw-bold text-gold ls-wide" style="font-size:0.75rem;">Call/Text: (832) 735-0603</span></div>
           </div>
         </div>
@@ -3025,28 +3273,28 @@ function renderVorvoLanding() {
         <div class="split__content">
           <div class="section__eyebrow">Get Started</div>
           <h2 class="section__title">Request a Quote</h2>
-          <p class="text-body mb-4">Submit your project details below. Our team performs active local research and coordination to match you with qualified providers in your area. Our coordination services include:</p>
+          <p class="text-body mb-4">Tell us about your project below. Our team will organize the details, research independent service-provider options in your area, and help coordinate the next steps you choose.</p>
           
           <div style="display:grid; gap:1rem; margin-bottom:2.5rem;">
             <div style="display:flex; align-items:flex-start; gap:0.75rem;">
               <span style="color:var(--gold); font-weight:bold; font-size:1.1rem;">✓</span>
               <div>
                 <strong style="color:var(--ink); display:block; font-size:0.95rem;">Contractor Research</strong>
-                <span style="color:var(--ink-soft); font-size:0.85rem; display:block; line-height:1.4;">Identifying up to 3 vetted, licensed independent contractors in your local area.</span>
+                <span style="color:var(--ink-soft); font-size:0.85rem; display:block; line-height:1.4;">Researching and presenting up to three independent contractor options based on the information available for your request.</span>
               </div>
             </div>
             <div style="display:flex; align-items:flex-start; gap:0.75rem;">
               <span style="color:var(--gold); font-weight:bold; font-size:1.1rem;">✓</span>
               <div>
                 <strong style="color:var(--ink); display:block; font-size:0.95rem;">Quote Collection &amp; Comparison</strong>
-                <span style="color:var(--ink-soft); font-size:0.85rem; display:block; line-height:1.4;">Contacting local providers, collecting estimates, and summarizing your best options.</span>
+                <span style="color:var(--ink-soft); font-size:0.85rem; display:block; line-height:1.4;">Contacting independent providers when appropriate, gathering available estimates, and organizing the information for your review.</span>
               </div>
             </div>
             <div style="display:flex; align-items:flex-start; gap:0.75rem;">
               <span style="color:var(--gold); font-weight:bold; font-size:1.1rem;">✓</span>
               <div>
                 <strong style="color:var(--ink); display:block; font-size:0.95rem;">Contractor Recommendation</strong>
-                <span style="color:var(--ink-soft); font-size:0.85rem; display:block; line-height:1.4;">Helping you select the most responsive and highly rated provider.</span>
+                <span style="color:var(--ink-soft); font-size:0.85rem; display:block; line-height:1.4;">Summarizing available information, such as responsiveness, ratings, and submitted quotes, so you can make your own selection.</span>
               </div>
             </div>
             <div style="display:flex; align-items:flex-start; gap:0.75rem;">
@@ -4471,7 +4719,7 @@ function bindHandlers(route) {
         headers: { 'Accept': 'application/json' }
       }).catch(err => console.warn('Formspree submission error:', err));
 
-      successEl.innerHTML = `<strong>Quote request received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your quote request has been registered under Tracking ID: <strong style="font-family:var(--mono); color:var(--gold-soft);">${trackingId}</strong>.<br><br>We will coordinate with independent third-party service providers and contact you within 24 hours with a transparent estimate. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
+      successEl.innerHTML = `<strong>Quote request received!</strong><br><br>Thank you, ${esc(payload.full_name)}. Your quote request has been registered.<div class="tracking-id-alert" role="status" aria-live="polite" style="margin:1.25rem 0; padding:1.25rem; border:2px solid var(--gold-dark); border-radius:4px; background:rgba(140,106,59,0.12); text-align:center; overflow-wrap:anywhere;"><div class="tracking-id-alert__label" style="font-family:var(--serif); font-size:0.95rem; font-weight:700; letter-spacing:0.08em; color:var(--gold-dark);">SAVE YOUR TRACKING ID</div><div class="tracking-id-alert__value" style="margin:0.5rem 0; font-family:var(--mono); font-size:clamp(1.35rem, 5vw, 2rem); font-weight:700; color:var(--gold-dark); overflow-wrap:anywhere;">${esc(trackingId)}</div><p style="margin:0; color:var(--ink-soft);">Save or copy this ID — you'll need it to check your request status later.</p></div>We will coordinate with independent third-party service providers and contact you within 24 hours with a transparent estimate. You can track your request status anytime using the "Track Status" tab or by visiting <a href="#/track" style="color:var(--gold);">vorvoservices.com/#/track</a>.`;
       successEl.style.display = 'block';
       form.reset();
       selectedFiles = [];
