@@ -1774,7 +1774,7 @@ const supabaseKey = "sb_publishable_l165SNZrHJ4XqQh46bqS9g_d9L-EsJX";
 
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const STORE_KEY = 'vorvo_signed_v1';
-const LEGAL_ACCEPTANCE_KEY = 'vorvo_legal_acceptance_v3';
+const LEGAL_ACCEPTANCE_KEY = 'vorvo_legal_acceptance_v4';
 const LEGAL_ACCEPTANCE_VERSION = '2026-08-15';
 const PRIVACY_POLICY_VERSION = '2026-08-15';
 const LABOR_CHECKOUT_ENDPOINT = '/api/labor-services/checkout';
@@ -1830,14 +1830,14 @@ function hasLegalAcceptance() {
 
 function clearLegacyLegalAcceptance() {
   try {
-    const legacyKeys = ['vorvo_legal_acceptance_v1', 'vorvo_legal_acceptance_v2'];
+    const legacyKeys = ['vorvo_legal_acceptance_v1', 'vorvo_legal_acceptance_v2', 'vorvo_legal_acceptance_v3'];
     for (const legacyKey of legacyKeys) {
-      const legacy = JSON.parse(localStorage.getItem(legacyKey) || 'null');
-      if (legacy?.accepted) localStorage.removeItem(legacyKey);
+      localStorage.removeItem(legacyKey);
     }
   } catch (e) {
     localStorage.removeItem('vorvo_legal_acceptance_v1');
     localStorage.removeItem('vorvo_legal_acceptance_v2');
+    localStorage.removeItem('vorvo_legal_acceptance_v3');
   }
 }
 
