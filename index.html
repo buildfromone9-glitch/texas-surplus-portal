@@ -212,11 +212,13 @@
   body.legal-gate-active select,
   body.legal-gate-active textarea {
     pointer-events: none !important;
+    user-select: none !important;
   }
 
   body.legal-gate-active #legal-acceptance-gate,
   body.legal-gate-active #legal-acceptance-gate * {
     pointer-events: auto !important;
+    user-select: auto !important;
   }
 
   #legal-acceptance-gate {
@@ -227,20 +229,21 @@
     z-index: 10000;
     display: flex;
     justify-content: center;
-    padding: 0.35rem 0.5rem;
-    background: linear-gradient(180deg, rgba(17,17,17,0) 0%, rgba(17,17,17,0.55) 30%, rgba(17,17,17,0.9) 100%);
+    padding: 0.25rem 0.4rem;
+    background: linear-gradient(180deg, rgba(17,17,17,0) 0%, rgba(17,17,17,0.48) 30%, rgba(17,17,17,0.88) 100%);
     transform: translateY(0);
     transition: transform 420ms ease, opacity 420ms ease;
   }
 
   #legal-acceptance-gate.is-accepted {
-    transform: translateY(110%);
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .legal-acceptance-gate__card {
     width: 100%;
-    padding: 0.6rem 1rem;
+    padding: 0.45rem 0.85rem;
     border-top: 1px solid rgba(176, 141, 87, 0.55);
     border-left: none;
     border-right: none;
@@ -251,7 +254,7 @@
     box-shadow: 0 -16px 45px rgba(0,0,0,0.35);
     backdrop-filter: blur(18px);
     display: grid;
-    gap: 0.45rem;
+    gap: 0.35rem;
   }
 
   .legal-acceptance-gate__links {
