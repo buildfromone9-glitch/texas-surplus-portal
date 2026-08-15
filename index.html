@@ -182,6 +182,22 @@
     --transition-hero: 1.2s ease-in-out;
   }
 
+  #app,
+  .site-header,
+  .site-footer,
+  main,
+  section,
+  article,
+  aside,
+  .btn,
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    pointer-events: auto !important;
+  }
+
   body.legal-gate-active #app,
   body.legal-gate-active .site-header,
   body.legal-gate-active .site-footer,
@@ -1808,11 +1824,31 @@ function hasLegalAcceptance() {
   }
 }
 
+
+function installLegalGateBlocker() {
+  if (document.getElementById('legal-gate-blocker')) return;
+  const blocker = document.createElement('div');
+  blocker.id = 'legal-gate-blocker';
+  blocker.style.position = 'fixed';
+  blocker.style.inset = '0';
+  blocker.style.zIndex = '9999';
+  blocker.style.background = 'transparent';
+  blocker.style.pointerEvents = 'auto';
+  blocker.style.cursor = 'not-allowed';
+  blocker.setAttribute('aria-hidden', 'true');
+  blocker.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
+  document.body.appendChild(blocker);
+}
+
 function showLegalAcceptanceGate() {
   const gate = document.getElementById('legal-acceptance-gate');
   if (!gate || hasLegalAcceptance()) return;
   document.body.classList.add('legal-gate-active');
   gate.hidden = false;
+  installLegalGateBlocker();
   const checkbox = document.getElementById('legal-acceptance-checkbox');
   const button = document.getElementById('legal-acceptance-button');
   checkbox?.addEventListener('change', () => {
@@ -1833,7 +1869,8 @@ function showLegalAcceptanceGate() {
       gate.hidden = true;
       document.body.classList.remove('legal-gate-active');
       gate.classList.remove('is-accepted');
-      window.location.reload();
+      const blocker = document.getElementById('legal-gate-blocker');
+      if (blocker) blocker.remove();
     }, 450);
   });
 }
